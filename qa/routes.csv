@@ -1,0 +1,17 @@
+url,expected_status,actual_status,final_url,title,notes
+/,200,PENDING,,Homepage,Not yet tested
+/appy,not_404,PENDING,,,Must resolve to configured application destination
+/privacy-policy-2/,301,PENDING,/publications/,,Must redirect permanently
+/publications/,200,PENDING,,Publications,
+/me-dashboard/,200,PENDING,,M&E Dashboard,
+/nutrition-policy-modeling/,200,PENDING,,Nutrition Policy,
+/open-datasets/,200,PENDING,,Open Datasets,
+/research-fellowships/,200,PENDING,,Research Fellowships,
+/scholarships-grants/,200,PENDING,,Grants and Funding,
+/contact/,200,PENDING,,,Check for placeholder contact data
+/volunteer/,200,PENDING,,,Check for Alumin Network title
+/our-team/,200,PENDING,,,Check for template staff names
+/hello-world/,PENDING,PENDING,,,Decision pending owner approval
+/lobortis-elementum-nibhtellus-molestie-adipiscing/,PENDING,PENDING,,,Should be noindexed or removed
+/duis-tristique-sollicitudin-nibh-sit-amet-commodo-nulla/,PENDING,PENDING,,,Should be noindexed or removed
+/author/edward_admin/,PENDING,PENDING,,,Should be noindexed unless approved
