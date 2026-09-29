@@ -1,0 +1,283 @@
+/**
+ * Public styles for CE-AFSN Research Fellowships.
+ *
+ * Status colours are chosen to be distinguishable without relying on hue:
+ * each badge carries its own text label, so the colour is reinforcement rather
+ * than the only signal. Contrast against white is at or above WCAG AA for the
+ * text sizes used here.
+ */
+
+.ceafsn-rf {
+	--ceafsn-rf-border: #d5d8dc;
+	--ceafsn-rf-muted: #5a6270;
+	--ceafsn-rf-accent: #1d4e6f;
+	--ceafsn-rf-open: #1c6b45;
+	--ceafsn-rf-open-bg: #e6f4ec;
+	--ceafsn-rf-closed: #6b7280;
+	--ceafsn-rf-closed-bg: #eef0f2;
+	--ceafsn-rf-upcoming: #8a5a00;
+	--ceafsn-rf-upcoming-bg: #fdf3e0;
+	--ceafsn-rf-unconfirmed: #8a2f2f;
+	--ceafsn-rf-unconfirmed-bg: #fbeaea;
+
+	margin: 1.5em 0;
+	color: inherit;
+}
+
+.ceafsn-rf * {
+	box-sizing: border-box;
+}
+
+.ceafsn-rf-summary {
+	display: flex;
+	gap: 0.75em;
+	align-items: baseline;
+	flex-wrap: wrap;
+	font-size: 0.9em;
+	color: var(--ceafsn-rf-muted);
+}
+
+/* Filters ------------------------------------------------------------------ */
+
+.ceafsn-rf-filters {
+	margin: 0 0 1.25em;
+	padding: 0.75em 1em;
+	background: #f7f8f9;
+	border: 1px solid var(--ceafsn-rf-border);
+	border-radius: 4px;
+}
+
+.ceafsn-rf-filters__row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	align-items: center;
+	margin: 0;
+}
+
+.ceafsn-rf-filters input[type="search"] {
+	flex: 1 1 14em;
+	min-width: 0;
+}
+
+/* Badges ------------------------------------------------------------------- */
+
+.ceafsn-rf-badge {
+	display: inline-block;
+	padding: 0.1em 0.6em;
+	font-size: 0.8em;
+	font-weight: 600;
+	line-height: 1.6;
+	border-radius: 999px;
+	border: 1px solid currentColor;
+	white-space: nowrap;
+}
+
+.ceafsn-rf-badge--status-open,
+.ceafsn-rf-badge--status-upcoming,
+.ceafsn-rf-badge--status-closed,
+.ceafsn-rf-badge--status-unconfirmed,
+.ceafsn-rf-badge--status-archived {
+	color: var(--ceafsn-rf-closed);
+	background: var(--ceafsn-rf-closed-bg);
+}
+
+.ceafsn-rf-badge--status-open {
+	color: var(--ceafsn-rf-open);
+	background: var(--ceafsn-rf-open-bg);
+}
+
+.ceafsn-rf-badge--status-upcoming {
+	color: var(--ceafsn-rf-upcoming);
+	background: var(--ceafsn-rf-upcoming-bg);
+}
+
+.ceafsn-rf-badge--status-unconfirmed {
+	color: var(--ceafsn-rf-unconfirmed);
+	background: var(--ceafsn-rf-unconfirmed-bg);
+}
+
+.ceafsn-rf-badge--override {
+	color: var(--ceafsn-rf-accent);
+	background: #e8f0f6;
+}
+
+/* Cards -------------------------------------------------------------------- */
+
+.ceafsn-rf-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 20em), 1fr));
+	gap: 1.25em;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ceafsn-rf-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6em;
+	margin: 0;
+	padding: 1.1em 1.25em;
+	background: #fff;
+	border: 1px solid var(--ceafsn-rf-border);
+	border-left: 4px solid var(--ceafsn-rf-closed);
+	border-radius: 4px;
+}
+
+.ceafsn-rf-card--open {
+	border-left-color: var(--ceafsn-rf-open);
+}
+
+.ceafsn-rf-card--upcoming {
+	border-left-color: var(--ceafsn-rf-upcoming);
+}
+
+.ceafsn-rf-card--unconfirmed {
+	border-left-color: var(--ceafsn-rf-unconfirmed);
+}
+
+.ceafsn-rf-card__status {
+	display: flex;
+	gap: 0.4em;
+	align-items: center;
+	margin: 0;
+}
+
+.ceafsn-rf-card__title {
+	margin: 0;
+	font-size: 1.15em;
+	line-height: 1.35;
+}
+
+.ceafsn-rf-card__meta {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(9em, 1fr));
+	gap: 0.5em 1em;
+	margin: 0;
+	font-size: 0.9em;
+}
+
+.ceafsn-rf-card__meta div {
+	margin: 0;
+}
+
+.ceafsn-rf-card__meta dt {
+	color: var(--ceafsn-rf-muted);
+	font-size: 0.85em;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.ceafsn-rf-card__meta dd {
+	margin: 0;
+}
+
+.ceafsn-rf-card__nodate {
+	color: var(--ceafsn-rf-unconfirmed);
+	font-style: italic;
+}
+
+.ceafsn-rf-card h4 {
+	margin: 0.4em 0 0.2em;
+	font-size: 0.85em;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--ceafsn-rf-muted);
+}
+
+.ceafsn-rf-card__eligibility p,
+.ceafsn-rf-card__stipend p {
+	margin: 0;
+}
+
+.ceafsn-rf-card__actions {
+	display: flex;
+	gap: 0.75em;
+	align-items: center;
+	flex-wrap: wrap;
+	margin: 0.3em 0 0;
+	padding-top: 0.6em;
+	border-top: 1px solid var(--ceafsn-rf-border);
+}
+
+.ceafsn-rf-card__contact,
+.ceafsn-rf-card__reason {
+	margin: 0;
+	font-size: 0.85em;
+	color: var(--ceafsn-rf-muted);
+}
+
+/* Apply control ----------------------------------------------------------- */
+
+.ceafsn-rf-apply {
+	display: inline-block;
+	padding: 0.55em 1.2em;
+	font-weight: 600;
+	text-decoration: none;
+	border-radius: 3px;
+	border: 1px solid transparent;
+}
+
+.ceafsn-rf-apply--active {
+	background: var(--ceafsn-rf-accent);
+	color: #fff;
+}
+
+.ceafsn-rf-apply--active:hover,
+.ceafsn-rf-apply--active:focus {
+	background: #163c56;
+	color: #fff;
+}
+
+.ceafsn-rf-apply--inactive {
+	background: #eceef0;
+	color: var(--ceafsn-rf-closed);
+	border-color: var(--ceafsn-rf-border);
+	cursor: not-allowed;
+}
+
+.ceafsn-rf-apply__reason {
+	font-size: 0.85em;
+	color: var(--ceafsn-rf-muted);
+}
+
+.ceafsn-rf-card__doc {
+	font-size: 0.9em;
+}
+
+/* Table -------------------------------------------------------------------- */
+
+.ceafsn-rf-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.95em;
+}
+
+.ceafsn-rf-table th,
+.ceafsn-rf-table td {
+	padding: 0.6em 0.7em;
+	text-align: left;
+	border-bottom: 1px solid var(--ceafsn-rf-border);
+	vertical-align: top;
+}
+
+.ceafsn-rf-table thead th {
+	border-bottom-width: 2px;
+	white-space: nowrap;
+}
+
+.ceafsn-rf-table thead a {
+	text-decoration: none;
+}
+
+/* Empty state ------------------------------------------------------------- */
+
+.ceafsn-rf-empty {
+	padding: 2em 1em;
+	text-align: center;
+	color: var(--ceafsn-rf-muted);
+	background: #f7f8f9;
+	border: 1px dashed var(--ceafsn-rf-border);
+	border-radius: 4px;
+}

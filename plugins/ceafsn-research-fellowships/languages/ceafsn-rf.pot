@@ -1,0 +1,625 @@
+# Copyright (C) 2026 CE-AFSN
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: CE-AFSN Research Fellowships 1.0.0\n"
+"Report-Msgid-Bugs-To: https://ceafsn.duckdns.org/\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ceafsn-rf\n"
+
+#. Plugin Name of the plugin
+#: ceafsn-research-fellowships.php
+msgid "CE-AFSN Research Fellowships"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: ceafsn-research-fellowships.php
+msgid "https://ceafsn.duckdns.org/research-fellowships/"
+msgstr ""
+
+#. Description of the plugin
+#: ceafsn-research-fellowships.php
+msgid "Admin-managed listing of CE-AFSN research fellowships and opportunities. Status is derived from real closing dates, so nothing is advertised as open without proof. Shortcode: [ceafsn_fellowships]"
+msgstr ""
+
+#. Author of the plugin
+#: ceafsn-research-fellowships.php
+msgid "CE-AFSN"
+msgstr ""
+
+#. Author URI of the plugin
+#: ceafsn-research-fellowships.php
+msgid "https://ceafsn.duckdns.org/"
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:53
+#: admin/class-ceafsn-rf-admin.php:54
+#: admin/partials/fellowships.php:56
+msgid "Research Fellowships"
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:64
+#: admin/class-ceafsn-rf-admin.php:65
+msgid "All Opportunities"
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:73
+#: admin/class-ceafsn-rf-admin.php:74
+msgid "Settings"
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:119
+msgid "Select the call document (PDF)"
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:120
+msgid "Use this document"
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:207
+msgid "The opportunity was saved as a draft instead."
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:360
+msgid "Title is required."
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:364
+msgid "Eligibility criteria are required."
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:368
+#: includes/class-ceafsn-rf-validator.php:199
+msgid "Invalid status value."
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:372
+#: includes/class-ceafsn-rf-validator.php:203
+msgid "Invalid record state."
+msgstr ""
+
+#: admin/class-ceafsn-rf-admin.php:389
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: admin/partials/fellowships.php:26
+msgid "Opportunity saved."
+msgstr ""
+
+#: admin/partials/fellowships.php:30
+msgid "Opportunity deleted."
+msgstr ""
+
+#: admin/partials/fellowships.php:58
+msgid "Add New"
+msgstr ""
+
+#: admin/partials/fellowships.php:63
+msgid "The status a visitor sees is worked out from the opening and closing dates every time the page loads. A deadline that passes closes the listing on its own."
+msgstr ""
+
+#: admin/partials/fellowships.php:68
+msgid "No opportunities yet. Add the first one using \"Add New\"."
+msgstr ""
+
+#: admin/partials/fellowships.php:70
+msgid "Opportunities stay invisible on the public page until they are published with a real closing date or a documented status override."
+msgstr ""
+
+#: admin/partials/fellowships.php:77
+msgid "Title"
+msgstr ""
+
+#: admin/partials/fellowships.php:78
+#: admin/partials/fellowships.php:196
+msgid "Track / domain"
+msgstr ""
+
+#: admin/partials/fellowships.php:79
+msgid "Opening"
+msgstr ""
+
+#: admin/partials/fellowships.php:80
+msgid "Closing"
+msgstr ""
+
+#: admin/partials/fellowships.php:81
+msgid "Shown as"
+msgstr ""
+
+#: admin/partials/fellowships.php:82
+#: admin/partials/fellowships.php:335
+msgid "Call PDF"
+msgstr ""
+
+#: admin/partials/fellowships.php:83
+#: admin/partials/fellowships.php:374
+msgid "Record state"
+msgstr ""
+
+#: admin/partials/fellowships.php:84
+msgid "Actions"
+msgstr ""
+
+#: admin/partials/fellowships.php:104
+#: public/partials/fellowships.php:176
+msgid "Override"
+msgstr ""
+
+#: admin/partials/fellowships.php:110
+msgid "PDF"
+msgstr ""
+
+#: admin/partials/fellowships.php:112
+msgid "None"
+msgstr ""
+
+#: admin/partials/fellowships.php:122
+msgid "Edit"
+msgstr ""
+
+#: admin/partials/fellowships.php:127
+msgid "Delete"
+msgstr ""
+
+#: admin/partials/fellowships.php:142
+msgid "Edit Opportunity"
+msgstr ""
+
+#: admin/partials/fellowships.php:143
+msgid "Add New Opportunity"
+msgstr ""
+
+#. translators: %s: the status a visitor will see.
+#: admin/partials/fellowships.php:154
+#, php-format
+msgid "This opportunity will be shown to visitors as: %s"
+msgstr ""
+
+#: admin/partials/fellowships.php:161
+msgid "The opening date has passed but no closing date is recorded, so the listing cannot say applications are open. Add a closing date, set the status to Upcoming or Closed, or tick the override and explain why."
+msgstr ""
+
+#: admin/partials/fellowships.php:169
+msgid "The attached call document is not usable:"
+msgstr ""
+
+#: admin/partials/fellowships.php:187
+msgid "Fellowship title"
+msgstr ""
+
+#: admin/partials/fellowships.php:201
+msgid "Optional. Used by the public filter."
+msgstr ""
+
+#: admin/partials/fellowships.php:206
+#: public/partials/fellowships.php:121
+#: public/partials/fellowships.php:193
+msgid "Duration"
+msgstr ""
+
+#: admin/partials/fellowships.php:210
+msgid "e.g. 12 months"
+msgstr ""
+
+#: admin/partials/fellowships.php:216
+msgid "Eligibility criteria"
+msgstr ""
+
+#: admin/partials/fellowships.php:222
+msgid "Required. A visitor who cannot tell whether they are eligible will not apply."
+msgstr ""
+
+#: admin/partials/fellowships.php:228
+msgid "Host / supervisor"
+msgstr ""
+
+#: admin/partials/fellowships.php:237
+msgid "Stipend / funding info"
+msgstr ""
+
+#: admin/partials/fellowships.php:243
+msgid "Stored but never shown until it is approved below."
+msgstr ""
+
+#: admin/partials/fellowships.php:248
+#: admin/partials/fellowships.php:365
+msgid "Approved for public display"
+msgstr ""
+
+#. translators: %s: field name, for example "Closing date".
+#: admin/partials/fellowships.php:254
+#: includes/class-ceafsn-rf-validator.php:227
+msgid "Opening date"
+msgstr ""
+
+#: admin/partials/fellowships.php:259
+msgid "Optional. A future date makes the opportunity Upcoming."
+msgstr ""
+
+#. translators: %s: field name, for example "Closing date".
+#: admin/partials/fellowships.php:264
+#: includes/class-ceafsn-rf-validator.php:227
+msgid "Closing date"
+msgstr ""
+
+#: admin/partials/fellowships.php:270
+msgid "Required for an opportunity to be shown as Open. Compared against today in the site timezone."
+msgstr ""
+
+#: admin/partials/fellowships.php:276
+msgid "Status when no dates are set"
+msgstr ""
+
+#: admin/partials/fellowships.php:288
+msgid "Only used when neither date is set. \"Open\" is still refused on publish without a closing date or an override."
+msgstr ""
+
+#: admin/partials/fellowships.php:294
+msgid "Status override"
+msgstr ""
+
+#: admin/partials/fellowships.php:300
+msgid "Ignore the dates and show this as Open"
+msgstr ""
+
+#: admin/partials/fellowships.php:303
+msgid "Use this only when applications really are open past the closing date, for example after a deadline extension agreed with the funder."
+msgstr ""
+
+#: admin/partials/fellowships.php:309
+msgid "Override note"
+msgstr ""
+
+#: admin/partials/fellowships.php:315
+msgid "Required whenever the override is ticked. This is the audit record of why the dates were set aside."
+msgstr ""
+
+#: admin/partials/fellowships.php:321
+msgid "Application URL"
+msgstr ""
+
+#: admin/partials/fellowships.php:329
+msgid "A full http or https address. Without one the Apply button is shown as inactive rather than as a broken link."
+msgstr ""
+
+#: admin/partials/fellowships.php:340
+msgid "No file selected"
+msgstr ""
+
+#: admin/partials/fellowships.php:344
+msgid "Select PDF"
+msgstr ""
+
+#: admin/partials/fellowships.php:347
+msgid "Clear"
+msgstr ""
+
+#: admin/partials/fellowships.php:350
+msgid "Optional. The official call document, attached from the Media Library."
+msgstr ""
+
+#: admin/partials/fellowships.php:356
+msgid "Contact email"
+msgstr ""
+
+#: admin/partials/fellowships.php:368
+msgid "Stored but never shown until it is approved. Leave the address blank if there is no verified contact."
+msgstr ""
+
+#: admin/partials/fellowships.php:386
+msgid "Only Published opportunities appear on the public page."
+msgstr ""
+
+#: admin/partials/fellowships.php:394
+msgid "Save opportunity"
+msgstr ""
+
+#: admin/partials/fellowships.php:395
+msgid "Cancel"
+msgstr ""
+
+#: admin/partials/settings.php:13
+msgid "Research Fellowships Settings"
+msgstr ""
+
+#: admin/partials/settings.php:16
+msgid "Settings saved."
+msgstr ""
+
+#: admin/partials/settings.php:23
+msgid "Public display"
+msgstr ""
+
+#: admin/partials/settings.php:27
+msgid "Closed opportunities"
+msgstr ""
+
+#: admin/partials/settings.php:32
+msgid "Keep listing opportunities whose closing date has passed"
+msgstr ""
+
+#: admin/partials/settings.php:35
+msgid "Kept on by default: a closed call still shows its status and its documents, and the Apply button is inactive rather than dead. Untick to show only opportunities that are open or upcoming."
+msgstr ""
+
+#: admin/partials/settings.php:42
+msgid "Export"
+msgstr ""
+
+#: admin/partials/settings.php:46
+msgid "Download all opportunities (JSON)"
+msgstr ""
+
+#: admin/partials/settings.php:50
+msgid "A full backup of the fellowship records, including the text of each description. Keep it somewhere safe before a site migration."
+msgstr ""
+
+#: admin/partials/settings.php:53
+msgid "Uninstall"
+msgstr ""
+
+#: admin/partials/settings.php:57
+msgid "Data on uninstall"
+msgstr ""
+
+#: admin/partials/settings.php:62
+msgid "Permanently delete all fellowship records and settings when the plugin is deleted"
+msgstr ""
+
+#: admin/partials/settings.php:65
+msgid "Off by default, so removing the plugin never destroys content by surprise. Deactivating the plugin never deletes anything either. Attached PDFs stay in the Media Library either way."
+msgstr ""
+
+#: includes/class-ceafsn-rf-status.php:215
+msgid "Open"
+msgstr ""
+
+#: includes/class-ceafsn-rf-status.php:216
+msgid "Upcoming"
+msgstr ""
+
+#: includes/class-ceafsn-rf-status.php:217
+msgid "Closed"
+msgstr ""
+
+#: includes/class-ceafsn-rf-status.php:218
+msgid "Archived"
+msgstr ""
+
+#: includes/class-ceafsn-rf-status.php:219
+msgid "Status not confirmed"
+msgstr ""
+
+#: includes/class-ceafsn-rf-status.php:237
+msgid "No closing date is recorded, so we cannot confirm that applications are still being accepted."
+msgstr ""
+
+#: includes/class-ceafsn-rf-status.php:240
+msgid "Applications have not opened yet."
+msgstr ""
+
+#: includes/class-ceafsn-rf-status.php:243
+msgid "The closing date has passed."
+msgstr ""
+
+#: includes/class-ceafsn-rf-status.php:246
+msgid "This opportunity is archived."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:40
+msgid "The attached call file is empty or could not be read."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:45
+msgid "The attached call file is not a PDF."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:49
+msgid "The call PDF appears to be truncated or corrupt."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:54
+msgid "The page count could not be read from the call PDF."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:94
+msgid "No call PDF is attached to this record."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:103
+msgid "The call PDF is missing from the media library."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:111
+msgid "The attached call file is not a PDF. Allowed type: application/pdf."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:159
+msgid "A title is required."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:163
+msgid "Eligibility criteria are required so a visitor can tell whether they can apply."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:171
+msgid "The application link must be a full http or https address."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:176
+msgid "The contact email address is not valid."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:182
+msgid "Tick \"Show the contact email on the public page\" only after entering an address."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:187
+msgid "Tick \"Show the funding information\" only after entering it."
+msgstr ""
+
+#. translators: %s: field name, for example "Closing date".
+#: includes/class-ceafsn-rf-validator.php:227
+#, php-format
+msgid "%s is not a valid date."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:233
+msgid "The closing date is before the opening date."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:254
+msgid "A status override needs a note explaining why the dates were set aside."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:265
+msgid "This opportunity has no closing date, so it cannot be confirmed open. Add a closing date, or set the status to Upcoming or Closed."
+msgstr ""
+
+#: includes/class-ceafsn-rf-validator.php:277
+msgid "A manual status of Open needs a closing date or a documented override. Until then the opportunity cannot be published as open."
+msgstr ""
+
+#: public/class-ceafsn-rf-public.php:181
+msgid "Call document currently unavailable"
+msgstr ""
+
+#: public/class-ceafsn-rf-public.php:182
+msgid "View the call document"
+msgstr ""
+
+#. translators: 1: formatted date, 2: site timezone name.
+#: public/class-ceafsn-rf-public.php:240
+#, php-format
+msgid "%1$s (%2$s time)"
+msgstr ""
+
+#: public/class-ceafsn-rf-public.php:301
+msgid "Apply now"
+msgstr ""
+
+#: public/class-ceafsn-rf-public.php:309
+msgid "Application details will be published shortly."
+msgstr ""
+
+#: public/class-ceafsn-rf-public.php:317
+msgid "Applications closed"
+msgstr ""
+
+#: public/class-ceafsn-rf-public.php:317
+#: public/partials/fellowships.php:142
+msgid "Apply"
+msgstr ""
+
+#: public/partials/fellowships.php:35
+msgid "Skip to the opportunity list"
+msgstr ""
+
+#: public/partials/fellowships.php:36
+msgid "Read the full eligibility criteria"
+msgstr ""
+
+#: public/partials/fellowships.php:37
+msgid "Show less"
+msgstr ""
+
+#. translators: 1: number of opportunities, 2: shortcode attribute, e.g. [ceafsn_fellowships].
+#: public/partials/fellowships.php:44
+#, php-format
+msgid "%1$s opportunity shown."
+msgid_plural "%1$s opportunities shown."
+msgstr[0] ""
+msgstr[1] ""
+
+#: public/partials/fellowships.php:48
+msgid "Clear filters"
+msgstr ""
+
+#: public/partials/fellowships.php:69
+msgid "Search opportunities"
+msgstr ""
+
+#: public/partials/fellowships.php:72
+msgid "Search titles and eligibility"
+msgstr ""
+
+#: public/partials/fellowships.php:74
+msgid "Filter by track or domain"
+msgstr ""
+
+#: public/partials/fellowships.php:76
+msgid "All tracks and domains"
+msgstr ""
+
+#: public/partials/fellowships.php:84
+msgid "Filter by status"
+msgstr ""
+
+#: public/partials/fellowships.php:86
+msgid "All statuses"
+msgstr ""
+
+#: public/partials/fellowships.php:98
+msgid "Filter"
+msgstr ""
+
+#: public/partials/fellowships.php:106
+msgid "There are no opportunities to show right now. Please check back soon."
+msgstr ""
+
+#: public/partials/fellowships.php:112
+msgid "Research fellowship opportunities"
+msgstr ""
+
+#: public/partials/fellowships.php:117
+msgid "Opportunity"
+msgstr ""
+
+#: public/partials/fellowships.php:118
+#: public/partials/fellowships.php:186
+msgid "Track"
+msgstr ""
+
+#: public/partials/fellowships.php:119
+msgid "Opens"
+msgstr ""
+
+#: public/partials/fellowships.php:120
+#: public/partials/fellowships.php:206
+msgid "Closes"
+msgstr ""
+
+#: public/partials/fellowships.php:134
+msgid "(sort ascending)"
+msgstr ""
+
+#: public/partials/fellowships.php:135
+msgid "(sort descending)"
+msgstr ""
+
+#: public/partials/fellowships.php:200
+msgid "Host"
+msgstr ""
+
+#: public/partials/fellowships.php:213
+msgid "No closing date recorded"
+msgstr ""
+
+#: public/partials/fellowships.php:220
+msgid "Who can apply"
+msgstr ""
+
+#: public/partials/fellowships.php:226
+msgid "Funding"
+msgstr ""
+
+#. translators: %s: contact email address.
+#: public/partials/fellowships.php:245
+#, php-format
+msgid "Questions? Email %s"
+msgstr ""

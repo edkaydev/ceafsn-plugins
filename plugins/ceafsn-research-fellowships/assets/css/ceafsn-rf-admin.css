@@ -1,0 +1,101 @@
+/**
+ * Admin styles for CE-AFSN Research Fellowships.
+ */
+
+.ceafsn-rf-wrap .ceafsn-rf-empty {
+	max-width: 40em;
+	margin: 2em 0;
+	padding: 2em;
+	text-align: center;
+	background: #fff;
+	border: 1px dashed #c3c4c7;
+	border-radius: 4px;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-empty__hint {
+	color: #646970;
+	font-size: 0.9em;
+}
+
+.ceafsn-rf-admin-table .ceafsn-rf-badge {
+	vertical-align: middle;
+}
+
+.ceafsn-rf-admin-table .ceafsn-rf-delete-link {
+	color: #b32d2e;
+}
+
+.ceafsn-rf-admin-table .ceafsn-rf-delete-link:hover {
+	color: #8a1f20;
+}
+
+/* Status badges, admin palette */
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--status-open {
+	color: #1c6b45;
+	background: #e6f4ec;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--status-upcoming {
+	color: #8a5a00;
+	background: #fdf3e0;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--status-closed {
+	color: #50575e;
+	background: #eef0f2;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--status-unconfirmed {
+	color: #8a2f2f;
+	background: #fbeaea;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--override {
+	color: #1d4e6f;
+	background: #e8f0f6;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--ok {
+	color: #1c6b45;
+	background: #e6f4ec;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--warn {
+	color: #8a5a00;
+	background: #fdf3e0;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--state-draft {
+	color: #50575e;
+	background: #f0f0f1;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--state-published {
+	color: #1c6b45;
+	background: #e6f4ec;
+}
+
+.ceafsn-rf-wrap .ceafsn-rf-badge--state-archived {
+	color: #646970;
+	background: #f0f0f1;
+}
+
+/* Editor form */
+
+.ceafsn-rf-fields th[scope="row"] {
+	width: 14em;
+}
+
+.ceafsn-rf-fields label {
+	font-weight: 600;
+}
+
+.ceafsn-rf-form .ceafsn-rf-media-button {
+	margin-left: 0.4em;
+}
+
+.ceafsn-rf-form .ceafsn-rf-media-clear {
+	margin-left: 0.4em;
+	color: #b32d2e;
+}

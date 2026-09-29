@@ -33,6 +33,20 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   the visitor passes the `ceafsn_pp_can_view_members_only` filter. Ships with
   `readme.txt`, `languages/ceafsn-pp.pot`, JSON export, opt-in uninstall, and a
   332-assertion dependency-free test suite
+- `ceafsn-research-fellowships` v1.0.0 — fellowship and opportunity listing
+  where status is derived from the opening and closing dates on every request
+  rather than stored as an opinion. An opportunity is never shown as Open
+  without a closing date proving applications are still accepted, or an
+  explicit admin override with a written audit note; a passed opening date with
+  no closing date shows as "Status not confirmed" instead. Dates are compared
+  against the WordPress site timezone. The Apply button is a real link only
+  when the opportunity is open and a valid http(s) URL exists, otherwise an
+  inert `aria-disabled` element with the reason. Stipend information and the
+  contact email are stored freely but shown publicly only once approved per
+  record. Cards and a sortable, accessible table from one query, with track,
+  status, and free-text filtering. Ships with `readme.txt`,
+  `languages/ceafsn-rf.pot`, JSON export, opt-in uninstall, and a 212-assertion
+  dependency-free test suite
 
 ### Changed
 - `ceafsn-nutrition-policy`: the PDF-only upload restriction is now scoped to
@@ -54,7 +68,6 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   for an image MIME type and required alt text.
 
 ### Planned
-- Plugin 5: `ceafsn-research-fellowships`
 - Plugin 6: `ceafsn-grants-funding`
 - Fix `/appy` 404
 - Demo content cleanup
