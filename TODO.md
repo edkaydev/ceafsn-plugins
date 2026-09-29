@@ -16,31 +16,37 @@
 ## Phase 2 — Plugin Development
 
 ### Plugin 1: ceafsn-me-dashboard
-- [ ] Plugin header and bootstrap file
-- [ ] Admin CRUD for metrics, demographics, projects
-- [ ] Front-end shortcode `[ceafsn_me_dashboard]`
-- [ ] Accessible tabs (Overview, Demographics, Project Registry)
-- [ ] SVG/HTML charts with accessible data tables
-- [ ] Empty state / Preview badge
-- [ ] Tests
+- [x] Plugin header and bootstrap file
+- [x] Admin CRUD for metrics, demographics, projects
+- [x] Front-end shortcode `[ceafsn_me_dashboard]`
+- [x] Accessible tabs (Overview, Demographics, Project Registry)
+- [x] SVG/HTML charts with accessible data tables
+- [x] Empty state / Preview badge
+- [x] Tests (177 assertions, `php plugins/ceafsn-me-dashboard/tests/run-tests.php`)
 
 ### Plugin 2: ceafsn-nutrition-policy
-- [ ] Plugin header and bootstrap file
-- [ ] Admin CRUD for policy records
-- [ ] Front-end shortcode `[ceafsn_policy_table]`
-- [ ] Filterable, sortable accessible table
-- [ ] PDF validation on publish
-- [ ] Empty state
-- [ ] Tests
+- [x] Plugin header and bootstrap file
+- [x] Admin CRUD for policy records
+- [x] Front-end shortcode `[ceafsn_policy_table]`
+- [x] Filterable, sortable accessible table
+- [x] PDF validation on publish
+- [x] Empty state
+- [x] Scoped PDF-only upload restriction, registered per request
+- [x] `topic` shortcode attribute honoured as the default filter
+- [x] Tests (241 assertions, `php plugins/ceafsn-nutrition-policy/tests/run-tests.php`)
 
 ### Plugin 3: ceafsn-open-datasets
-- [ ] Plugin header and bootstrap file
-- [ ] Admin CRUD for dataset records
-- [ ] Front-end shortcode `[ceafsn_open_datasets]`
-- [ ] Repository table with download links
-- [ ] CSV/ZIP validation
-- [ ] No-download empty state
-- [ ] Tests
+- [x] Plugin header and bootstrap file
+- [x] Admin CRUD for dataset records
+- [x] Front-end shortcode `[ceafsn_open_datasets]`
+- [x] Repository table with download links
+- [x] CSV/ZIP/XLSX structural validation on publish
+- [x] External URL validation (HTTP 200, size, content type, http/https only)
+- [x] File size measured or reported, never taken from the form
+- [x] No-download empty state and honest unavailable row
+- [x] Contact privacy, "other" file type opt-in, scoped upload restriction
+- [x] JSON export and opt-in uninstall that never touches the Media Library
+- [x] Tests (381 assertions, `php plugins/ceafsn-open-datasets/tests/run-tests.php`)
 
 ### Plugin 4: ceafsn-projects-publications
 - [ ] Plugin header and bootstrap file

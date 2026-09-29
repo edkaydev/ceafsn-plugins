@@ -1,0 +1,284 @@
+/**
+ * CE-AFSN Open Datasets — Public Styles
+ * Component-scoped to .ceafsn-od. Inherits theme typography; never overrides
+ * global styles.
+ */
+
+/* =====================
+   Layout
+   ===================== */
+
+.ceafsn-od {
+  --ceafsn-od-border: 1px solid #d5d8dc;
+  --ceafsn-od-radius: 4px;
+  --ceafsn-od-gap: 1.25rem;
+  --ceafsn-od-muted: #5a6169;
+  --ceafsn-od-accent: #1f5c3d;
+  --ceafsn-od-accent-dark: #17472e;
+  --ceafsn-od-warn-bg: #fdf3e3;
+  --ceafsn-od-warn-text: #6b4a12;
+}
+
+.ceafsn-od-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ceafsn-od-gap);
+  align-items: flex-end;
+  margin-bottom: var(--ceafsn-od-gap);
+}
+
+.ceafsn-od-filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.ceafsn-od-filters__field label {
+  font-weight: 600;
+}
+
+.ceafsn-od-filters__field input,
+.ceafsn-od-filters__field select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.6rem;
+  border: var(--ceafsn-od-border);
+  border-radius: var(--ceafsn-od-radius);
+  font: inherit;
+  color: inherit;
+  background: #fff;
+}
+
+.ceafsn-od-filters__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* =====================
+   Buttons
+   ===================== */
+
+.ceafsn-od-btn {
+  display: inline-block;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--ceafsn-od-accent);
+  border-radius: var(--ceafsn-od-radius);
+  background: var(--ceafsn-od-accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ceafsn-od-btn:hover,
+.ceafsn-od-btn:focus-visible {
+  background: var(--ceafsn-od-accent-dark);
+  border-color: var(--ceafsn-od-accent-dark);
+  color: #fff;
+}
+
+.ceafsn-od-btn--ghost {
+  background: transparent;
+  color: var(--ceafsn-od-accent);
+}
+
+.ceafsn-od-btn--ghost:hover,
+.ceafsn-od-btn--ghost:focus-visible {
+  background: transparent;
+  color: var(--ceafsn-od-accent-dark);
+  text-decoration: underline;
+}
+
+.ceafsn-od-btn--small {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+/* =====================
+   Results region
+   ===================== */
+
+.ceafsn-od-results:focus {
+  outline: 3px solid #b8860b;
+  outline-offset: 4px;
+}
+
+.ceafsn-od-results:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.ceafsn-od-count {
+  margin: 0 0 0.75rem;
+  color: var(--ceafsn-od-muted);
+  font-size: 0.95em;
+}
+
+.ceafsn-od-empty {
+  padding: 2rem 1.25rem;
+  border: 1px dashed var(--ceafsn-od-border);
+  border-radius: var(--ceafsn-od-radius);
+  background: #fafbfb;
+  color: var(--ceafsn-od-muted);
+  text-align: center;
+}
+
+.ceafsn-od-empty p {
+  margin: 0 0 0.5rem;
+}
+
+/* =====================
+   Table
+   ===================== */
+
+.ceafsn-od-table-wrap {
+  overflow-x: auto;
+}
+
+.ceafsn-od-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ceafsn-od-table th,
+.ceafsn-od-table td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: var(--ceafsn-od-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.ceafsn-od-table thead th {
+  border-bottom: 2px solid var(--ceafsn-od-accent);
+  white-space: nowrap;
+}
+
+.ceafsn-od-table thead th a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ceafsn-od-table thead th a:hover,
+.ceafsn-od-table thead th a:focus-visible {
+  text-decoration: underline;
+}
+
+.ceafsn-od-table__title {
+  font-weight: 600;
+  max-width: 24rem;
+}
+
+.ceafsn-od-table__description {
+  margin: 0.35rem 0 0;
+  font-weight: 400;
+  font-size: 0.92em;
+  color: var(--ceafsn-od-muted);
+}
+
+.ceafsn-od-table__meta {
+  margin: 0.4rem 0 0;
+  font-size: 0.9em;
+}
+
+.ceafsn-od-table__download {
+  white-space: nowrap;
+}
+
+.ceafsn-od-source {
+  display: inline-block;
+}
+
+.ceafsn-od-missing {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--ceafsn-od-radius);
+  background: var(--ceafsn-od-warn-bg);
+  color: var(--ceafsn-od-warn-text);
+  font-size: 0.9em;
+  white-space: normal;
+  max-width: 16rem;
+}
+
+/* =====================
+   Pagination
+   ===================== */
+
+.ceafsn-od-pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: var(--ceafsn-od-gap);
+}
+
+.ceafsn-od-pagination__status {
+  color: var(--ceafsn-od-muted);
+}
+
+/* =====================
+   Small screens — stack each row into a labelled card
+   ===================== */
+
+@media (max-width: 48rem) {
+  .ceafsn-od-table,
+  .ceafsn-od-table thead,
+  .ceafsn-od-table tbody,
+  .ceafsn-od-table tr,
+  .ceafsn-od-table th,
+  .ceafsn-od-table td {
+    display: block;
+  }
+
+  .ceafsn-od-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .ceafsn-od-table tr {
+    margin-bottom: 1rem;
+    border: var(--ceafsn-od-border);
+    border-radius: var(--ceafsn-od-radius);
+  }
+
+  .ceafsn-od-table th,
+  .ceafsn-od-table td {
+    border-bottom: 0;
+    padding: 0.4rem 0.85rem;
+    white-space: normal;
+  }
+
+  .ceafsn-od-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ceafsn-od-muted);
+  }
+
+  .ceafsn-od-table__download {
+    padding-top: 0.75rem;
+  }
+}
+
+/* =====================
+   Reduced motion
+   ===================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .ceafsn-od * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

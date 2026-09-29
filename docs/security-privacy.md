@@ -57,11 +57,20 @@ Every state-changing HTTP request (create, update, delete, export, import, unins
 ## File Upload Security
 
 - PDF uploads: only `application/pdf` MIME type accepted; `%PDF` file signature verified
-- CSV/ZIP uploads: only `text/csv`, `application/zip` MIME types accepted
-- Image uploads: WordPress Media Library handles MIME type validation
+- CSV uploads: must have a readable header row, so a binary file renamed to `.csv` is rejected
+- ZIP uploads: must have a readable central directory and at least one entry
+- XLSX uploads: must contain `[Content_Types].xml`
+- Upload restrictions are **scoped to each plugin's own admin screen**, so they never
+  remove an upload type the rest of the site depends on. The file picker is a usability
+  guard only; the authoritative check is the server-side validator run on save.
 - Direct PHP file access blocked by `defined('ABSPATH') or exit;` at the top of every PHP file
 - No arbitrary file path input accepted from users
-- No SSRF risk: external URLs validated before any server-side HTTP request
+- External download URLs are restricted to `http`/`https` and are only ever requested by
+  the server during an admin save, so the front end makes no request on a visitor's behalf.
+  Non-HTTP schemes are rejected before any request is sent, and the response must be
+  HTTP 200, report a size, and serve a content type matching the declared file type.
+  Saving a record is privileged (capability plus nonce), which keeps this off the
+  unauthenticated request path.
 
 ---
 

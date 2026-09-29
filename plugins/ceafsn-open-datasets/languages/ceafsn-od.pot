@@ -1,0 +1,604 @@
+# Copyright (C) 2026 CE-AFSN
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: CE-AFSN Open Datasets 1.0.0\n"
+"Report-Msgid-Bugs-To: https://ceafsn.duckdns.org/\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ceafsn-od\n"
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Open Datasets"
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Datasets"
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Settings"
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "The record was saved as a draft instead."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Dataset name is required."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Description is required."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Category / sector is required."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Coverage area is required."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Data license is required."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Attach a dataset file or enter a download URL. One of the two is required."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Provide either a file attachment or a download URL, not both. The attachment takes precedence, so remove the URL."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "The attached file is zero bytes or could not be read."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Download URL is not a valid URL."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Last updated must be a valid date (YYYY-MM-DD)."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Invalid status value."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Invalid file type."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "The \"other\" file type is not enabled. Enable it in Settings, or choose CSV, ZIP, or XLSX."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "Methodology / data dictionary URL is not a valid URL."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "This record has no download target."
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Dataset record saved."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Dataset record deleted."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Open Dataset Records"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Add New Dataset"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "No dataset records yet. Add the first one using \"Add New Dataset\"."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Records stay invisible on the public page until they are published with a working download target."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Dataset"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Category"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Coverage"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Updated"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Type"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Size"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Download"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Status"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Actions"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "File"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "URL"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "No download"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Edit"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Delete"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Edit Dataset"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "This published record no longer has a working download:"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "This record has no working download:"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Dataset name"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Description"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "What the dataset contains, how it was collected, and any known limitations."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Category / sector"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Coverage area"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Geographic or administrative scope, e.g. \"All 15 counties\" or \"Northern Province\"."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Last updated"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "File type"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "The type is used to validate the file. Pick the real format, not a guess."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "The \"other\" file type is not enabled. Turn it on in Settings if you need a format this plugin cannot inspect."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Dataset file"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "No file selected"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Select file"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Clear"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "The file name and size are read from the attachment itself, never from this form. A record can only be published when the file is non-empty and passes the checks for its declared type."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Download URL"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Use this instead of a file for datasets hosted elsewhere. The URL must return HTTP 200 and report a file size. Provide one route, not both."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Data license"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Methodology / data dictionary URL"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Contact / owner"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Kept private unless \"Show contact on the public page\" is enabled in Settings."
+msgstr ""
+
+#. translators: %d: number of entries or rows.
+#: admin/partials/datasets.php
+msgid "Download verified: readable, %d item(s)."
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Save dataset"
+msgstr ""
+
+#: admin/partials/datasets.php
+msgid "Cancel"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Settings saved."
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Open Datasets — Settings"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Settings sections"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "General"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Export"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Uninstall"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Privacy and file types"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Contact visibility"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Show the contact / owner on the public page"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Off by default. Contact details stay in the database and are only rendered publicly when this is enabled."
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Other file types"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Allow the \"Other\" file type in the media picker"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Off by default. When enabled, files that are not CSV, ZIP, or XLSX can be attached. \"Other\" files are checked for a non-zero size but their contents are not inspected."
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Export records"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Download every dataset record as JSON before making bulk changes or uninstalling the plugin."
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Download export"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Data removal on uninstall"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Deactivating the plugin never deletes anything. Tick the box below only if you intend to delete the plugin and permanently remove the dataset table."
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Delete all dataset records and plugin options when the plugin is deleted"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Files in the Media Library are never removed — other pages may still link to them."
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Save settings"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php
+msgid "CSV"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php
+msgid "ZIP"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php
+msgid "XLSX"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php
+msgid "Other"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php
+msgid "Draft"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php
+msgid "Published"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php
+msgid "Archived"
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The dataset file is empty or could not be read."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The CSV header row could not be read. The first row must contain at least one column name."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The attached file is not a ZIP archive."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The ZIP archive appears to be truncated or corrupt."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The ZIP archive contains no files."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The attached file is not a valid XLSX workbook."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The XLSX workbook is missing [Content_Types].xml and cannot be opened."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "No dataset file is attached to this record."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The attached dataset file is missing from the media library."
+msgstr ""
+
+#. translators: %s: MIME type.
+#: includes/class-ceafsn-od-validator.php
+msgid "The attached file has an unexpected type (%s)."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "unknown"
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The attached dataset file is zero bytes."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The download URL is not a valid URL."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The download URL must be an http:// or https:// address."
+msgstr ""
+
+#. translators: %s: error message.
+#: includes/class-ceafsn-od-validator.php
+msgid "The download URL could not be reached: %s"
+msgstr ""
+
+#. translators: %d: HTTP status code.
+#: includes/class-ceafsn-od-validator.php
+msgid "The download URL returned HTTP %d instead of 200."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "The download URL did not report a file size."
+msgstr ""
+
+#. translators: 1: declared file type, 2: content type reported by the server.
+#: includes/class-ceafsn-od-validator.php
+msgid "The download URL serves %2$s, which does not match the declared file type (%1$s)."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "Attach a dataset file or enter a download URL. One of the two is required."
+msgstr ""
+
+#: includes/class-ceafsn-od-validator.php
+msgid "Not available"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Dataset"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Category"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Last updated"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "File type / size"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Search datasets"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Name, description, or area"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Filter by category"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "All categories"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Filter by file type"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "All file types"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Apply filters"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Clear filters"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "%d dataset"
+msgid_plural "%d datasets"
+msgstr[0] ""
+msgstr[1] ""
+
+#: public/partials/datasets.php
+msgid "No public dataset is currently available for download."
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Published open food security and nutrition datasets"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Coverage area"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "License"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Download"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Data dictionary"
+msgstr ""
+
+#. translators: %s: dataset name.
+#: public/partials/datasets.php
+msgid "(opens the data dictionary for %s in a new tab)"
+msgstr ""
+
+#. translators: %s: contact owner.
+#: public/partials/datasets.php
+msgid "Contact: %s"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Download %1$s, %2$s"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Download %1$s as %2$s, %3$s"
+msgstr ""
+
+#. translators: %s: file type.
+#: public/partials/datasets.php
+msgid "Download %s"
+msgstr ""
+
+#. translators: %s: dataset name.
+#: public/partials/datasets.php
+msgid "(opens %s in a new tab)"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Download currently unavailable. Please contact the publisher."
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Dataset record pages"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Previous"
+msgstr ""
+
+#. translators: 1: current page, 2: total pages.
+#: public/partials/datasets.php
+msgid "Page %1$d of %2$d"
+msgstr ""
+
+#: public/partials/datasets.php
+msgid "Next"
+msgstr ""

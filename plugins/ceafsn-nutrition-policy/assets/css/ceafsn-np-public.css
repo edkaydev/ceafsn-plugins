@@ -1,0 +1,283 @@
+/**
+ * CE-AFSN Nutrition Policy — Public Styles
+ * Component-scoped to .ceafsn-np. Inherits theme typography; never overrides
+ * global styles.
+ */
+
+/* =====================
+   Layout
+   ===================== */
+
+.ceafsn-np {
+  --ceafsn-np-border: 1px solid #d5d8dc;
+  --ceafsn-np-radius: 4px;
+  --ceafsn-np-gap: 1.25rem;
+  --ceafsn-np-muted: #5a6169;
+  --ceafsn-np-accent: #1f5c3d;
+  --ceafsn-np-accent-dark: #17472e;
+  --ceafsn-np-warn-bg: #fdf3e3;
+  --ceafsn-np-warn-text: #6b4a12;
+}
+
+.ceafsn-np-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ceafsn-np-gap);
+  align-items: flex-end;
+  margin-bottom: var(--ceafsn-np-gap);
+}
+
+.ceafsn-np-filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.ceafsn-np-filters__field label {
+  font-weight: 600;
+}
+
+.ceafsn-np-filters__field input,
+.ceafsn-np-filters__field select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.6rem;
+  border: var(--ceafsn-np-border);
+  border-radius: var(--ceafsn-np-radius);
+  font: inherit;
+  color: inherit;
+  background: #fff;
+}
+
+.ceafsn-np-filters__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* =====================
+   Buttons
+   ===================== */
+
+.ceafsn-np-btn {
+  display: inline-block;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--ceafsn-np-accent);
+  border-radius: var(--ceafsn-np-radius);
+  background: var(--ceafsn-np-accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ceafsn-np-btn:hover,
+.ceafsn-np-btn:focus-visible {
+  background: var(--ceafsn-np-accent-dark);
+  border-color: var(--ceafsn-np-accent-dark);
+  color: #fff;
+}
+
+.ceafsn-np-btn--ghost {
+  background: transparent;
+  color: var(--ceafsn-np-accent);
+}
+
+.ceafsn-np-btn--ghost:hover,
+.ceafsn-np-btn--ghost:focus-visible {
+  background: transparent;
+  color: var(--ceafsn-np-accent-dark);
+  text-decoration: underline;
+}
+
+.ceafsn-np-btn--small {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.9em;
+}
+
+/* =====================
+   Results region
+   ===================== */
+
+.ceafsn-np-results:focus {
+  outline: 3px solid #b8860b;
+  outline-offset: 4px;
+}
+
+.ceafsn-np-results:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.ceafsn-np-count {
+  margin: 0 0 0.75rem;
+  color: var(--ceafsn-np-muted);
+  font-size: 0.95em;
+}
+
+.ceafsn-np-empty {
+  padding: 2rem 1.25rem;
+  border: 1px dashed var(--ceafsn-np-border);
+  border-radius: var(--ceafsn-np-radius);
+  background: #fafbfb;
+  color: var(--ceafsn-np-muted);
+  text-align: center;
+}
+
+.ceafsn-np-empty p {
+  margin: 0 0 0.5rem;
+}
+
+/* =====================
+   Table
+   ===================== */
+
+.ceafsn-np-table-wrap {
+  overflow-x: auto;
+}
+
+.ceafsn-np-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ceafsn-np-table th,
+.ceafsn-np-table td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: var(--ceafsn-np-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.ceafsn-np-table thead th {
+  border-bottom: 2px solid var(--ceafsn-np-accent);
+  white-space: nowrap;
+}
+
+.ceafsn-np-table thead th a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ceafsn-np-table thead th a:hover,
+.ceafsn-np-table thead th a:focus-visible {
+  text-decoration: underline;
+}
+
+.ceafsn-np-table thead th[aria-sort="ascending"] a::after {
+  content: " \2191";
+}
+
+.ceafsn-np-table thead th[aria-sort="descending"] a::after {
+  content: " \2193";
+}
+
+.ceafsn-np-table__title {
+  font-weight: 600;
+  max-width: 26rem;
+}
+
+.ceafsn-np-table__description {
+  margin: 0.35rem 0 0;
+  font-weight: 400;
+  font-size: 0.92em;
+  color: var(--ceafsn-np-muted);
+}
+
+.ceafsn-np-table__doc {
+  white-space: nowrap;
+}
+
+.ceafsn-np-source {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.9em;
+}
+
+.ceafsn-np-missing {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--ceafsn-np-radius);
+  background: var(--ceafsn-np-warn-bg);
+  color: var(--ceafsn-np-warn-text);
+  font-size: 0.9em;
+  white-space: normal;
+}
+
+/* =====================
+   Pagination
+   ===================== */
+
+.ceafsn-np-pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: var(--ceafsn-np-gap);
+}
+
+.ceafsn-np-pagination__status {
+  color: var(--ceafsn-np-muted);
+}
+
+/* =====================
+   Small screens — stack each row into a labelled card
+   ===================== */
+
+@media (max-width: 48rem) {
+  .ceafsn-np-table,
+  .ceafsn-np-table thead,
+  .ceafsn-np-table tbody,
+  .ceafsn-np-table tr,
+  .ceafsn-np-table th,
+  .ceafsn-np-table td {
+    display: block;
+  }
+
+  .ceafsn-np-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .ceafsn-np-table tr {
+    margin-bottom: 1rem;
+    border: var(--ceafsn-np-border);
+    border-radius: var(--ceafsn-np-radius);
+  }
+
+  .ceafsn-np-table th,
+  .ceafsn-np-table td {
+    border-bottom: 0;
+    padding: 0.4rem 0.85rem;
+    white-space: normal;
+  }
+
+  .ceafsn-np-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ceafsn-np-muted);
+  }
+}
+
+/* =====================
+   Reduced motion
+   ===================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .ceafsn-np * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

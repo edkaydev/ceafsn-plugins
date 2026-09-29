@@ -50,11 +50,25 @@ Step-by-step guide for CE-AFSN staff to publish and manage content across all si
 ### Adding a Dataset
 1. Go to **CE-AFSN → Open Datasets → Add New**.
 2. Fill in all required fields.
-3. Either upload a CSV/ZIP via the Media Library, or enter an approved external Download URL.
-4. The plugin will validate the file or URL. You cannot publish if validation fails.
+3. Either upload a CSV, ZIP, or XLSX via the Media Library, or enter an external Download URL.
+4. Click **Validate & Save**. The plugin checks the file's structure, or for a URL that it
+   returns HTTP 200, reports a size, and serves a content type matching the file type you
+   selected. The file size is measured or reported, never typed in.
 5. Set Status to **Published** and click **Save**.
 
+If validation fails, the record is saved as **Draft** with the reason shown above the form.
+Nothing is published with a broken download.
+
 > **Important:** Never enter a download URL that returns a 404 or redirects to a placeholder.
+> The URL is fetched by the server during the save only, so it must be reachable from the web
+> server, not just from your own machine.
+
+**"Other" file type:** hidden and rejected unless you enable it under
+**CE-AFSN → Open Datasets → Settings → Enable "other" file type**. It bypasses every structural
+check, so leave it off unless you have a reason and will review those records yourself.
+
+**File deleted from the Media Library:** the row renders as "Download currently unavailable"
+rather than a broken link. Restore the file or switch the record to a URL.
 
 ---
 

@@ -97,17 +97,52 @@ Provides a public-facing M&E dashboard showing real, admin-entered institutional
 
 ```
 ceafsn-me-dashboard/
-├── ceafsn-me-dashboard.php   ← main plugin file (header only, no logic yet)
+├── ceafsn-me-dashboard.php   ← header, constants, autoload, hooks
+├── readme.txt                ← WordPress.org readme
 ├── README.md
 ├── uninstall.php
-├── includes/                 ← core classes (to be built)
-├── admin/                    ← admin screens (to be built)
-├── public/                   ← front-end shortcode (to be built)
+├── includes/
+│   ├── class-ceafsn-med-db.php
+│   └── class-ceafsn-med-activator.php
+├── admin/
+│   ├── class-ceafsn-med-admin.php
+│   └── partials/
+│       ├── metrics.php
+│       ├── demographics.php
+│       ├── projects.php
+│       └── settings.php
+├── public/
+│   ├── class-ceafsn-med-public.php
+│   └── partials/
+│       └── dashboard.php
 ├── assets/
 │   ├── css/
+│   │   ├── ceafsn-med-public.css
+│   │   └── ceafsn-med-admin.css
 │   └── js/
+│       ├── ceafsn-med-public.js
+│       └── ceafsn-med-admin.js
+├── languages/
+│   └── ceafsn-med.pot
 └── tests/
+    ├── bootstrap.php         ← WordPress function stubs
+    ├── run-tests.php         ← test suite entry point
+    └── uninstall-cases.php   ← uninstall scenarios (subprocess)
 ```
+
+---
+
+## Tests
+
+The suite is dependency free — no Composer, no PHPUnit, no WordPress install:
+
+```bash
+php plugins/ceafsn-me-dashboard/tests/run-tests.php
+```
+
+Exit code `0` means every assertion passed. Coverage includes input validation, output escaping,
+SQL parameterisation, the ARIA tab contract, empty states, uninstall safety, and content hygiene
+(no Lorem ipsum or template copy anywhere in the shipped files).
 
 ---
 

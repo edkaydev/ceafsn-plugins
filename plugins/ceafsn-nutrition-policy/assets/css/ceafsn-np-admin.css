@@ -1,0 +1,112 @@
+/**
+ * CE-AFSN Nutrition Policy — Admin Styles
+ * Scoped to .ceafsn-np-wrap to avoid theme conflicts.
+ */
+
+/* Wrapper */
+.ceafsn-np-wrap {
+  max-width: 1200px;
+}
+
+/* Badges */
+.ceafsn-np-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.ceafsn-np-badge--status-published {
+  background: #e3f2e8;
+  color: #1f5c3d;
+}
+
+.ceafsn-np-badge--status-draft {
+  background: #eef0f2;
+  color: #5a6169;
+}
+
+.ceafsn-np-badge--status-archived {
+  background: #f3ece1;
+  color: #6b4a12;
+}
+
+.ceafsn-np-badge--ok {
+  background: #e3f2e8;
+  color: #1f5c3d;
+  max-width: 22rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ceafsn-np-badge--warn {
+  background: #fdf3e3;
+  color: #6b4a12;
+}
+
+/* Empty state on the list screen */
+.ceafsn-np-empty {
+  padding: 2.5rem 1.5rem;
+  border: 1px dashed #c3c7cc;
+  border-radius: 4px;
+  background: #fafbfb;
+  text-align: center;
+}
+
+.ceafsn-np-empty p {
+  margin: 0 0 0.5rem;
+  font-size: 15px;
+}
+
+.ceafsn-np-empty__hint {
+  color: #646970;
+}
+
+/* Admin table column sizing */
+.ceafsn-np-admin-table th.column-primary,
+.ceafsn-np-admin-table td:first-child {
+  width: 28%;
+}
+
+/* Media picker field */
+.ceafsn-np-form .ceafsn-np-media-button {
+  margin-left: 0.5rem;
+}
+
+.ceafsn-np-form .ceafsn-np-media-clear {
+  margin-left: 0.5rem;
+  color: #b32d2e;
+}
+
+.ceafsn-np-form .ceafsn-np-media-clear[hidden] {
+  display: none;
+}
+
+/* Validation result line */
+.ceafsn-np-validation {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.85rem;
+  border-left: 4px solid #c3c7cc;
+  background: #f6f7f7;
+  font-size: 13px;
+}
+
+.ceafsn-np-validation--ok {
+  border-left-color: #1f5c3d;
+  background: #f0f7f2;
+  color: #1f5c3d;
+}
+
+.ceafsn-np-validation--fail {
+  border-left-color: #b32d2e;
+  background: #fcf0f1;
+  color: #b32d2e;
+}
+
+/* Delete link */
+.ceafsn-np-wrap a.ceafsn-np-delete-link {
+  color: #b32d2e;
+}

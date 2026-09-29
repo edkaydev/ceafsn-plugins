@@ -1,0 +1,99 @@
+/**
+ * CE-AFSN M&E Dashboard — Admin Styles
+ * Scoped to .ceafsn-med-wrap to avoid theme conflicts.
+ */
+
+/* Wrapper */
+.ceafsn-med-wrap {
+	max-width: 1200px;
+}
+
+/* Status / visibility badges */
+.ceafsn-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.6;
+	white-space: nowrap;
+}
+
+/* Visibility */
+.ceafsn-badge--public {
+	background: #d4edda;
+	color: #155724;
+	border: 1px solid #c3e6cb;
+}
+
+.ceafsn-badge--private {
+	background: #f8d7da;
+	color: #721c24;
+	border: 1px solid #f5c6cb;
+}
+
+/* Project status */
+.ceafsn-badge--status-active {
+	background: #d4edda;
+	color: #155724;
+	border: 1px solid #c3e6cb;
+}
+
+.ceafsn-badge--status-completed {
+	background: #cce5ff;
+	color: #004085;
+	border: 1px solid #b8daff;
+}
+
+.ceafsn-badge--status-suspended {
+	background: #fff3cd;
+	color: #856404;
+	border: 1px solid #ffeeba;
+}
+
+/* Verification status */
+.ceafsn-badge--verif-verified {
+	background: #d4edda;
+	color: #155724;
+	border: 1px solid #c3e6cb;
+}
+
+.ceafsn-badge--verif-pending {
+	background: #fff3cd;
+	color: #856404;
+	border: 1px solid #ffeeba;
+}
+
+.ceafsn-badge--verif-unverified {
+	background: #f8d7da;
+	color: #721c24;
+	border: 1px solid #f5c6cb;
+}
+
+/* Delete link — red text, no underline until hover */
+.ceafsn-delete-link {
+	color: #a00;
+	text-decoration: none;
+}
+
+.ceafsn-delete-link:hover,
+.ceafsn-delete-link:focus {
+	color: #dc3232;
+	text-decoration: underline;
+}
+
+/* Table improvements */
+.ceafsn-med-wrap .wp-list-table td,
+.ceafsn-med-wrap .wp-list-table th {
+	vertical-align: middle;
+}
+
+/* Focus rings for accessibility */
+.ceafsn-med-wrap a:focus,
+.ceafsn-med-wrap button:focus,
+.ceafsn-med-wrap input:focus,
+.ceafsn-med-wrap select:focus,
+.ceafsn-med-wrap textarea:focus {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+}

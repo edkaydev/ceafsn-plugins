@@ -1,0 +1,177 @@
+# Copyright (C) 2026 CE-AFSN
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: CE-AFSN M&E Dashboard 1.0.0\n"
+"Report-Msgid-Bugs-To: https://ceafsn.duckdns.org/\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: ceafsn-med\n"
+
+#: admin/class-ceafsn-med-admin.php
+msgid "M&E Dashboard"
+msgstr ""
+
+#: admin/class-ceafsn-med-admin.php
+msgid "Metrics"
+msgstr ""
+
+#: admin/class-ceafsn-med-admin.php
+msgid "Demographics"
+msgstr ""
+
+#: admin/class-ceafsn-med-admin.php
+msgid "Projects"
+msgstr ""
+
+#: admin/class-ceafsn-med-admin.php
+msgid "Settings"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Add New Metric"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Edit Metric"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Label"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Value"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Unit"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Definition"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Source"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Reporting period"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Public"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Private"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Published"
+msgstr ""
+
+#: admin/partials/metrics.php
+msgid "Draft"
+msgstr ""
+
+#: admin/partials/demographics.php
+msgid "Add New Indicator"
+msgstr ""
+
+#: admin/partials/demographics.php
+msgid "Edit Indicator"
+msgstr ""
+
+#: admin/partials/demographics.php
+msgid "Category"
+msgstr ""
+
+#: admin/partials/demographics.php
+msgid "Percentage"
+msgstr ""
+
+#: admin/partials/projects.php
+msgid "Add New Project"
+msgstr ""
+
+#: admin/partials/projects.php
+msgid "Edit Project"
+msgstr ""
+
+#: admin/partials/projects.php
+msgid "Project title"
+msgstr ""
+
+#: admin/partials/projects.php
+msgid "Start date"
+msgstr ""
+
+#: admin/partials/projects.php
+msgid "End date"
+msgstr ""
+
+#: admin/partials/projects.php
+msgid "Status"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Settings saved."
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Preview mode"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Export data"
+msgstr ""
+
+#: admin/partials/settings.php
+msgid "Uninstall"
+msgstr ""
+
+#: public/class-ceafsn-med-public.php
+msgid "M&E Dashboard"
+msgstr ""
+
+#: public/partials/dashboard.php
+msgid "Overview"
+msgstr ""
+
+#: public/partials/dashboard.php
+msgid "Demographics"
+msgstr ""
+
+#: public/partials/dashboard.php
+msgid "Project Registry"
+msgstr ""
+
+#: public/partials/dashboard.php
+msgid "No data has been published yet."
+msgstr ""
+
+#: public/partials/dashboard.php
+msgid "Data table"
+msgstr ""
+
+#: public/partials/dashboard.php
+msgid "Search projects"
+msgstr ""
+
+#: public/partials/dashboard.php
+msgid "No projects found."
+msgstr ""
+
+#: public/partials/dashboard.php
+msgid "Preview"
+msgstr ""
+
+#: uninstall.php
+msgid "M&E Dashboard data deleted."
+msgstr ""

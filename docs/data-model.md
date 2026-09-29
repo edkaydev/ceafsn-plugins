@@ -80,13 +80,16 @@ Entities, fields, statuses, and relationships across the CE-AFSN plugin suite.
 | `file_attachment_id` | BIGINT | WP attachment ID (nullable if using URL) |
 | `download_url` | TEXT | External URL (nullable if using attachment) |
 | `file_type` | ENUM('csv','zip','xlsx','other') | Required |
-| `file_size` | VARCHAR(50) | Auto-calculated or manual |
+| `file_size` | VARCHAR(50) | Server-derived only: bytes on disk, or the reported `Content-Length` for external URLs. Never accepted from form input. |
 | `data_license` | VARCHAR(255) | Required |
 | `methodology_url` | TEXT | Optional |
 | `contact_owner` | VARCHAR(255) | Optional |
 | `status` | ENUM('draft','published','archived') | Default: draft |
 
-Constraint: `file_attachment_id` or `download_url` must be non-null at publish time.
+Constraint: at publish time `file_attachment_id` or `download_url` must be present **and**
+pass validation — the file's structure for attachments, or HTTP 200 plus a reported size
+plus a matching content type for external URLs. A record that fails is downgraded to
+`draft` with a reason rather than published with a broken link.
 
 ---
 

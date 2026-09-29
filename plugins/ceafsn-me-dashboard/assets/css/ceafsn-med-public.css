@@ -1,0 +1,369 @@
+/**
+ * CE-AFSN M&E Dashboard — Public Styles
+ * Component-scoped to .ceafsn-med-dashboard.
+ * Inherits theme typography; never overrides global styles.
+ */
+
+/* =====================
+   Layout
+   ===================== */
+
+.ceafsn-med-dashboard {
+	/* Use CSS custom properties for component-local values only */
+	--ceafsn-med-border: 1px solid #ddd;
+	--ceafsn-med-radius: 4px;
+	--ceafsn-med-spacing: 1.25rem;
+	--ceafsn-med-font-sm: 0.875em;
+}
+
+/* =====================
+   Preview Banner
+   ===================== */
+
+.ceafsn-med-preview-banner {
+	background: #fff3cd;
+	border: 1px solid #ffc107;
+	border-radius: var(--ceafsn-med-radius);
+	color: #856404;
+	padding: 0.75rem var(--ceafsn-med-spacing);
+	margin-bottom: var(--ceafsn-med-spacing);
+}
+
+/* =====================
+   Tabs
+   ===================== */
+
+.ceafsn-med-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	border-bottom: 2px solid #ddd;
+	margin-bottom: var(--ceafsn-med-spacing);
+}
+
+.ceafsn-med-tab {
+	/* Inherit theme font; don't set font-family */
+	background: transparent;
+	border: none;
+	border-bottom: 3px solid transparent;
+	cursor: pointer;
+	padding: 0.6rem 1.25rem;
+	margin-bottom: -2px;
+	font-size: inherit;
+	color: inherit;
+	text-decoration: none;
+	transition: border-color 0.15s;
+}
+
+.ceafsn-med-tab:hover {
+	border-bottom-color: #999;
+}
+
+.ceafsn-med-tab--active,
+.ceafsn-med-tab[aria-selected="true"] {
+	border-bottom-color: currentColor;
+	font-weight: 600;
+}
+
+.ceafsn-med-tab:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* =====================
+   Panels
+   ===================== */
+
+.ceafsn-med-panel {
+	padding-top: 0.5rem;
+}
+
+/* =====================
+   Stat Cards (Overview)
+   ===================== */
+
+.ceafsn-med-cards {
+	list-style: none;
+	margin: 0 0 var(--ceafsn-med-spacing);
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: var(--ceafsn-med-spacing);
+}
+
+.ceafsn-med-card {
+	border: var(--ceafsn-med-border);
+	border-radius: var(--ceafsn-med-radius);
+	padding: var(--ceafsn-med-spacing);
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.ceafsn-med-card__label {
+	font-size: var(--ceafsn-med-font-sm);
+	opacity: 0.75;
+}
+
+.ceafsn-med-card__value {
+	font-size: 1.75em;
+	font-weight: 700;
+	line-height: 1.2;
+}
+
+.ceafsn-med-card__unit {
+	font-size: 0.75em;
+	font-weight: 400;
+}
+
+.ceafsn-med-card__definition {
+	font-size: var(--ceafsn-med-font-sm);
+	font-style: italic;
+}
+
+.ceafsn-med-card__meta {
+	font-size: var(--ceafsn-med-font-sm);
+	opacity: 0.7;
+	margin-top: auto;
+}
+
+/* =====================
+   Accessible Table
+   ===================== */
+
+.ceafsn-med-table-details {
+	margin-top: var(--ceafsn-med-spacing);
+}
+
+.ceafsn-med-table-details summary {
+	cursor: pointer;
+	font-size: var(--ceafsn-med-font-sm);
+	opacity: 0.8;
+}
+
+.ceafsn-med-table-details summary:focus-visible {
+	outline: 2px solid currentColor;
+}
+
+.ceafsn-med-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 0.75rem;
+	font-size: var(--ceafsn-med-font-sm);
+}
+
+.ceafsn-med-table caption {
+	text-align: left;
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+
+.ceafsn-med-table th,
+.ceafsn-med-table td {
+	border: var(--ceafsn-med-border);
+	padding: 0.5rem 0.75rem;
+	text-align: left;
+	vertical-align: top;
+}
+
+.ceafsn-med-table thead th {
+	background: rgba(0, 0, 0, 0.04);
+	font-weight: 600;
+}
+
+.ceafsn-med-table tbody tr:nth-child(even) {
+	background: rgba(0, 0, 0, 0.02);
+}
+
+/* =====================
+   Bar Chart (Demographics)
+   ===================== */
+
+.ceafsn-med-chart {
+	margin-bottom: var(--ceafsn-med-spacing);
+}
+
+.ceafsn-med-chart__bar-row {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.ceafsn-med-chart__bar-label {
+	width: 160px;
+	flex-shrink: 0;
+	font-size: var(--ceafsn-med-font-sm);
+	text-align: right;
+}
+
+.ceafsn-med-chart__bar {
+	display: block;
+	height: 1.25rem;
+	background: currentColor;
+	opacity: 0.5;
+	border-radius: 2px;
+	min-width: 2px;
+	transition: width 0.3s ease;
+}
+
+.ceafsn-med-chart__bar-value {
+	font-size: var(--ceafsn-med-font-sm);
+	white-space: nowrap;
+}
+
+/* =====================
+   Filter Form (Projects)
+   ===================== */
+
+.ceafsn-med-filter {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	align-items: center;
+	margin-bottom: var(--ceafsn-med-spacing);
+}
+
+.ceafsn-med-filter__search {
+	flex: 1 1 200px;
+	min-width: 160px;
+	padding: 0.4rem 0.6rem;
+	border: var(--ceafsn-med-border);
+	border-radius: var(--ceafsn-med-radius);
+	font-size: inherit;
+}
+
+.ceafsn-med-filter__select {
+	padding: 0.4rem 0.6rem;
+	border: var(--ceafsn-med-border);
+	border-radius: var(--ceafsn-med-radius);
+	font-size: inherit;
+}
+
+.ceafsn-med-filter__submit {
+	padding: 0.4rem 1rem;
+	border: var(--ceafsn-med-border);
+	border-radius: var(--ceafsn-med-radius);
+	cursor: pointer;
+	font-size: inherit;
+	background: transparent;
+	color: inherit;
+}
+
+.ceafsn-med-filter__submit:hover,
+.ceafsn-med-filter__submit:focus-visible {
+	outline: 2px solid currentColor;
+}
+
+.ceafsn-med-filter__reset {
+	font-size: var(--ceafsn-med-font-sm);
+	opacity: 0.8;
+}
+
+/* =====================
+   Status Badges (Public)
+   ===================== */
+
+.ceafsn-badge {
+	display: inline-block;
+	padding: 2px 7px;
+	border-radius: 3px;
+	font-size: 0.8em;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/* Use text + shape, not color alone — icons added via CSS content */
+.ceafsn-badge--status-active    { background: #d4edda; color: #155724; }
+.ceafsn-badge--status-completed { background: #cce5ff; color: #004085; }
+.ceafsn-badge--status-suspended { background: #fff3cd; color: #856404; }
+
+.ceafsn-badge--verif-verified   { background: #d4edda; color: #155724; }
+.ceafsn-badge--verif-pending    { background: #fff3cd; color: #856404; }
+.ceafsn-badge--verif-unverified { background: #f8d7da; color: #721c24; }
+
+/* =====================
+   Pagination
+   ===================== */
+
+.ceafsn-med-pagination {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	margin-top: var(--ceafsn-med-spacing);
+}
+
+.ceafsn-med-pagination__link {
+	display: inline-block;
+	padding: 0.3rem 0.65rem;
+	border: var(--ceafsn-med-border);
+	border-radius: var(--ceafsn-med-radius);
+	text-decoration: none;
+	color: inherit;
+	font-size: var(--ceafsn-med-font-sm);
+}
+
+.ceafsn-med-pagination__link:hover,
+.ceafsn-med-pagination__link:focus-visible {
+	outline: 2px solid currentColor;
+}
+
+.ceafsn-med-pagination__link--current {
+	font-weight: 700;
+	border-color: currentColor;
+}
+
+/* =====================
+   Empty state
+   ===================== */
+
+.ceafsn-med-empty {
+	padding: var(--ceafsn-med-spacing);
+	border: var(--ceafsn-med-border);
+	border-radius: var(--ceafsn-med-radius);
+	background: rgba(0, 0, 0, 0.02);
+	font-style: italic;
+	color: inherit;
+}
+
+/* =====================
+   Source link
+   ===================== */
+
+.ceafsn-med-source-link {
+	font-size: var(--ceafsn-med-font-sm);
+	opacity: 0.75;
+	text-decoration: underline;
+}
+
+/* =====================
+   Responsive
+   ===================== */
+
+@media (max-width: 600px) {
+	.ceafsn-med-cards {
+		grid-template-columns: 1fr;
+	}
+
+	.ceafsn-med-chart__bar-label {
+		width: 100px;
+	}
+
+	.ceafsn-med-filter {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.ceafsn-med-filter__search,
+	.ceafsn-med-filter__select,
+	.ceafsn-med-filter__submit {
+		width: 100%;
+	}
+
+	/* Allow horizontal scroll on tables on small screens */
+	.ceafsn-med-table--projects {
+		display: block;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+}

@@ -1,0 +1,94 @@
+/**
+ * CE-AFSN Projects & Publications — Admin Styles
+ *
+ * Only styles the plugin's own admin screens. Nothing here is applied to the
+ * rest of wp-admin.
+ */
+
+.ceafsn-pp-wrap .ceafsn-pp-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  border: 1px dashed #c3c4c7;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.ceafsn-pp-wrap .ceafsn-pp-empty__hint {
+  color: #646970;
+  font-style: italic;
+}
+
+.ceafsn-pp-badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.8em;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.ceafsn-pp-badge--draft {
+  color: #646970;
+}
+
+.ceafsn-pp-badge--published {
+  color: #1f5c3d;
+}
+
+.ceafsn-pp-badge--archived {
+  color: #646970;
+}
+
+.ceafsn-pp-badge--in_progress {
+  color: #1b4965;
+}
+
+.ceafsn-pp-badge--completed {
+  color: #1f5c3d;
+}
+
+.ceafsn-pp-badge--under_review {
+  color: #6b4a12;
+}
+
+.ceafsn-pp-badge--members {
+  color: #5b3a8e;
+}
+
+.ceafsn-pp-badge--ok {
+  color: #1f5c3d;
+}
+
+.ceafsn-pp-badge--warn {
+  color: #8a5700;
+}
+
+.ceafsn-pp-validation {
+  margin: 1rem 0;
+  padding: 0.6rem 0.8rem;
+  border-left: 4px solid transparent;
+  background: #fff;
+}
+
+.ceafsn-pp-validation--ok {
+  border-left-color: #1f5c3d;
+  background: #f2f7f4;
+}
+
+.ceafsn-pp-validation--fail {
+  border-left-color: #8a5700;
+  background: #fdf3e3;
+}
+
+.ceafsn-pp-shared-list {
+  margin: 0.5rem 0 0 1.25rem;
+  list-style: disc;
+}
+
+.ceafsn-pp-form .description {
+  color: #646970;
+}
+
+.ceafsn-pp-media-clear {
+  margin-left: 0.5rem;
+}
