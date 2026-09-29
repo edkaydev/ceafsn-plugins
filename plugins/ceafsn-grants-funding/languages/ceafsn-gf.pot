@@ -1,0 +1,574 @@
+# Copyright (C) 2026 CE-AFSN
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: CE-AFSN Grants & Funding 1.0.0\n"
+"Report-Msgid-Bugs-To: https://ceafsn.duckdns.org/\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ceafsn-gf\n"
+
+#. Plugin Name of the plugin
+#: ceafsn-grants-funding.php
+msgid "CE-AFSN Grants & Funding"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: ceafsn-grants-funding.php
+msgid "https://ceafsn.duckdns.org/scholarships-grants/"
+msgstr ""
+
+#. Description of the plugin
+#: ceafsn-grants-funding.php
+msgid "Admin-managed listing of CE-AFSN grants and scholarships. No funding amounts, statuses, or deadlines are ever invented, and every record requires its own validated, unique Official Call PDF. Shortcode: [ceafsn_grants]"
+msgstr ""
+
+#. Author of the plugin
+#: ceafsn-grants-funding.php
+msgid "CE-AFSN"
+msgstr ""
+
+#. Author URI of the plugin
+#: ceafsn-grants-funding.php
+msgid "https://ceafsn.duckdns.org/"
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:53
+#: admin/class-ceafsn-gf-admin.php:54
+#: admin/partials/grants.php:59
+msgid "Grants & Funding"
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:64
+#: admin/class-ceafsn-gf-admin.php:65
+msgid "All Grants"
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:73
+#: admin/class-ceafsn-gf-admin.php:74
+msgid "Settings"
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:119
+msgid "Select the Official Call PDF"
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:120
+msgid "Use this document"
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:212
+msgid "The record was saved as a draft instead."
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:367
+msgid "Title is required."
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:371
+msgid "Eligibility criteria are required."
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:375
+#: includes/class-ceafsn-gf-validator.php:233
+msgid "Invalid status value."
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:379
+#: includes/class-ceafsn-gf-validator.php:237
+msgid "Invalid record state."
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:384
+msgid "The deadline is not a valid date and time."
+msgstr ""
+
+#: admin/class-ceafsn-gf-admin.php:401
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: admin/partials/grants.php:27
+msgid "Grant saved."
+msgstr ""
+
+#: admin/partials/grants.php:31
+msgid "Grant deleted."
+msgstr ""
+
+#: admin/partials/grants.php:61
+msgid "Add New"
+msgstr ""
+
+#: admin/partials/grants.php:66
+msgid "Nothing here is invented: a record cannot be published without a real deadline and a validated, non-duplicated Official Call PDF."
+msgstr ""
+
+#: admin/partials/grants.php:71
+msgid "No grants yet. Add the first one using \"Add New\"."
+msgstr ""
+
+#: admin/partials/grants.php:77
+msgid "Title"
+msgstr ""
+
+#: admin/partials/grants.php:78
+#: public/partials/grants.php:112
+#: public/partials/grants.php:185
+msgid "Institution"
+msgstr ""
+
+#: admin/partials/grants.php:79
+#: admin/partials/grants.php:226
+#: public/partials/grants.php:113
+#: public/partials/grants.php:193
+msgid "Deadline"
+msgstr ""
+
+#: admin/partials/grants.php:80
+#: admin/partials/grants.php:340
+msgid "Status"
+msgstr ""
+
+#: admin/partials/grants.php:81
+msgid "Call PDF"
+msgstr ""
+
+#: admin/partials/grants.php:82
+#: admin/partials/grants.php:363
+msgid "Record state"
+msgstr ""
+
+#: admin/partials/grants.php:83
+msgid "Actions"
+msgstr ""
+
+#: admin/partials/grants.php:104
+msgid "PDF"
+msgstr ""
+
+#: admin/partials/grants.php:106
+msgid "Shared"
+msgstr ""
+
+#: admin/partials/grants.php:109
+msgid "Missing"
+msgstr ""
+
+#: admin/partials/grants.php:119
+msgid "Edit"
+msgstr ""
+
+#: admin/partials/grants.php:124
+msgid "Delete"
+msgstr ""
+
+#: admin/partials/grants.php:139
+msgid "Edit Grant"
+msgstr ""
+
+#: admin/partials/grants.php:140
+msgid "Add New Grant"
+msgstr ""
+
+#: admin/partials/grants.php:147
+msgid "This published record no longer passes PDF validation:"
+msgstr ""
+
+#. translators: %d: number of other records.
+#: admin/partials/grants.php:163
+#, php-format
+msgid "The same call PDF is attached to %d other record. Each grant should have its own document."
+msgid_plural "The same call PDF is attached to %d other records. Each grant should have its own document."
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/partials/grants.php:197
+msgid "Grant / scholarship title"
+msgstr ""
+
+#: admin/partials/grants.php:206
+#: public/partials/grants.php:134
+#: public/partials/grants.php:189
+msgid "Award range"
+msgstr ""
+
+#: admin/partials/grants.php:210
+msgid "e.g. USD 5,000-10,000, or \"Not disclosed\""
+msgstr ""
+
+#: admin/partials/grants.php:212
+msgid "Use \"Not disclosed\" rather than leaving this blank if the amount is unknown."
+msgstr ""
+
+#: admin/partials/grants.php:217
+msgid "Funding institution"
+msgstr ""
+
+#. translators: %s: site timezone name.
+#: admin/partials/grants.php:236
+#, php-format
+msgid "Entered and displayed in the site timezone (%s), stored as UTC."
+msgstr ""
+
+#: admin/partials/grants.php:245
+msgid "Target beneficiaries"
+msgstr ""
+
+#: admin/partials/grants.php:249
+msgid "Optional. Who this grant is meant for."
+msgstr ""
+
+#: admin/partials/grants.php:254
+#: public/partials/grants.php:214
+msgid "Eligibility"
+msgstr ""
+
+#: admin/partials/grants.php:260
+msgid "Required. A visitor who cannot tell whether they are eligible will not apply."
+msgstr ""
+
+#: admin/partials/grants.php:266
+msgid "Official Call PDF"
+msgstr ""
+
+#: admin/partials/grants.php:271
+msgid "No file selected"
+msgstr ""
+
+#: admin/partials/grants.php:275
+msgid "Select PDF"
+msgstr ""
+
+#: admin/partials/grants.php:278
+msgid "Clear"
+msgstr ""
+
+#: admin/partials/grants.php:281
+msgid "Required to publish. Validated on save: must be a real, readable PDF, and unique to this record unless sharing is confirmed below."
+msgstr ""
+
+#: admin/partials/grants.php:287
+#: public/partials/grants.php:176
+msgid "Shared document"
+msgstr ""
+
+#: admin/partials/grants.php:293
+msgid "This document is intentionally shared with another record"
+msgstr ""
+
+#: admin/partials/grants.php:296
+msgid "Only tick this when two grant listings genuinely point at the same call PDF. This is shown to visitors on both records."
+msgstr ""
+
+#: admin/partials/grants.php:298
+msgid "Sharing note"
+msgstr ""
+
+#: admin/partials/grants.php:302
+msgid "Required whenever the box above is ticked."
+msgstr ""
+
+#: admin/partials/grants.php:308
+msgid "Application URL"
+msgstr ""
+
+#: admin/partials/grants.php:316
+msgid "A full http or https address. Without one the Apply button is shown as inactive rather than as a broken link."
+msgstr ""
+
+#: admin/partials/grants.php:322
+msgid "Contact"
+msgstr ""
+
+#: admin/partials/grants.php:331
+msgid "Approved for public display"
+msgstr ""
+
+#: admin/partials/grants.php:334
+msgid "Stored but never shown until it is approved. Leave blank if there is no verified contact."
+msgstr ""
+
+#: admin/partials/grants.php:352
+msgid "Set directly by the administrator. Keep this in step with the deadline above; the plugin does not change it automatically."
+msgstr ""
+
+#: admin/partials/grants.php:356
+msgid "The deadline above has already passed, but the status is still set to Open. Check this is correct."
+msgstr ""
+
+#: admin/partials/grants.php:375
+msgid "Only Published grants appear on the public page."
+msgstr ""
+
+#: admin/partials/grants.php:383
+msgid "Save grant"
+msgstr ""
+
+#: admin/partials/grants.php:384
+msgid "Cancel"
+msgstr ""
+
+#: admin/partials/settings.php:13
+msgid "Grants & Funding Settings"
+msgstr ""
+
+#: admin/partials/settings.php:16
+msgid "Settings saved."
+msgstr ""
+
+#: admin/partials/settings.php:23
+msgid "Public display"
+msgstr ""
+
+#: admin/partials/settings.php:27
+msgid "Closed opportunities"
+msgstr ""
+
+#: admin/partials/settings.php:32
+msgid "Keep listing grants whose status is Closed"
+msgstr ""
+
+#: admin/partials/settings.php:35
+msgid "Kept on by default: a closed grant still shows its status and its documents, and the Apply button is inactive rather than dead. Untick to hide closed grants unless a visitor filters for them."
+msgstr ""
+
+#: admin/partials/settings.php:42
+msgid "Export"
+msgstr ""
+
+#: admin/partials/settings.php:46
+msgid "Download all grants (JSON)"
+msgstr ""
+
+#: admin/partials/settings.php:50
+msgid "A full backup of the grant records. Keep it somewhere safe before a site migration."
+msgstr ""
+
+#: admin/partials/settings.php:53
+msgid "Uninstall"
+msgstr ""
+
+#: admin/partials/settings.php:57
+msgid "Data on uninstall"
+msgstr ""
+
+#: admin/partials/settings.php:62
+msgid "Permanently delete all grant records and settings when the plugin is deleted"
+msgstr ""
+
+#: admin/partials/settings.php:65
+msgid "Off by default, so removing the plugin never destroys content by surprise. Deactivating the plugin never deletes anything either. Attached PDFs stay in the Media Library either way."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:38
+msgid "The attached call file is empty or could not be read."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:43
+msgid "The attached call file is not a PDF."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:47
+msgid "The call PDF appears to be truncated or corrupt."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:52
+msgid "The page count could not be read from the call PDF."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:103
+msgid "No Official Call PDF is attached to this record."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:108
+msgid "The Official Call PDF is missing from the media library."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:112
+msgid "The attached call file is not a PDF. Allowed type: application/pdf."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:117
+msgid "The Official Call PDF is zero bytes."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:175
+msgid "A title is required."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:179
+msgid "An award range is required. Use \"Not disclosed\" if the amount is unknown."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:183
+msgid "The funding institution is required."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:187
+msgid "Eligibility criteria are required so a visitor can tell whether they can apply."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:191
+msgid "A deadline is required. Enter the real application deadline; nothing here is invented."
+msgstr ""
+
+#. translators: %d: number of other records using the same document.
+#: includes/class-ceafsn-gf-validator.php:206
+#, php-format
+msgid "The same call PDF is already attached to %d other record. Tick \"This document is intentionally shared\" and add a note explaining why."
+msgid_plural "The same call PDF is already attached to %d other records. Tick \"This document is intentionally shared\" and add a note explaining why."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-ceafsn-gf-validator.php:217
+msgid "A note is required when a call PDF is intentionally shared with another record."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:223
+msgid "The application link must be a full http or https address."
+msgstr ""
+
+#: includes/class-ceafsn-gf-validator.php:229
+msgid "Tick \"Show the contact on the public page\" only after entering one."
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:146
+msgid "Open"
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:147
+msgid "Upcoming"
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:148
+msgid "Closed"
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:149
+msgid "Archived"
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:197
+msgid "Call document currently unavailable"
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:198
+msgid "View the Official Call PDF"
+msgstr ""
+
+#. translators: 1: formatted deadline, 2: site timezone name.
+#: public/class-ceafsn-gf-public.php:258
+#, php-format
+msgid "%1$s (%2$s time)"
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:318
+msgid "Apply now"
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:326
+msgid "Application details will be published shortly."
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:328
+#: public/partials/grants.php:240
+msgid "The deadline has passed."
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:334
+msgid "Applications closed"
+msgstr ""
+
+#: public/class-ceafsn-gf-public.php:334
+#: public/partials/grants.php:135
+msgid "Apply"
+msgstr ""
+
+#: public/partials/grants.php:29
+msgid "Skip to the grant list"
+msgstr ""
+
+#: public/partials/grants.php:30
+msgid "Read the full eligibility criteria"
+msgstr ""
+
+#: public/partials/grants.php:31
+msgid "Show less"
+msgstr ""
+
+#. translators: %s: number of grants.
+#: public/partials/grants.php:38
+#, php-format
+msgid "%s funding opportunity shown."
+msgid_plural "%s funding opportunities shown."
+msgstr[0] ""
+msgstr[1] ""
+
+#: public/partials/grants.php:42
+msgid "Clear filters"
+msgstr ""
+
+#: public/partials/grants.php:63
+msgid "Search grants"
+msgstr ""
+
+#: public/partials/grants.php:66
+msgid "Search titles and eligibility"
+msgstr ""
+
+#: public/partials/grants.php:68
+msgid "Filter by funding institution"
+msgstr ""
+
+#: public/partials/grants.php:70
+msgid "All institutions"
+msgstr ""
+
+#: public/partials/grants.php:78
+msgid "Filter by status"
+msgstr ""
+
+#: public/partials/grants.php:80
+msgid "All statuses"
+msgstr ""
+
+#: public/partials/grants.php:92
+msgid "Filter"
+msgstr ""
+
+#: public/partials/grants.php:100
+msgid "No funding opportunities are currently open."
+msgstr ""
+
+#: public/partials/grants.php:106
+msgid "Grants and scholarships"
+msgstr ""
+
+#: public/partials/grants.php:111
+msgid "Opportunity"
+msgstr ""
+
+#: public/partials/grants.php:126
+msgid "(sort ascending)"
+msgstr ""
+
+#: public/partials/grants.php:127
+msgid "(sort descending)"
+msgstr ""
+
+#: public/partials/grants.php:200
+msgid "No deadline recorded"
+msgstr ""
+
+#: public/partials/grants.php:208
+msgid "Who this is for"
+msgstr ""
+
+#. translators: %s: contact detail.
+#: public/partials/grants.php:232
+#, php-format
+msgid "Questions? Contact %s"
+msgstr ""

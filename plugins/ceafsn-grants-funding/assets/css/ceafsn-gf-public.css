@@ -1,0 +1,271 @@
+/**
+ * Public styles for CE-AFSN Grants & Funding.
+ *
+ * Status colours are chosen to be distinguishable without relying on hue:
+ * each badge carries its own text label, so the colour is reinforcement rather
+ * than the only signal. Contrast against white is at or above WCAG AA for the
+ * text sizes used here.
+ */
+
+.ceafsn-gf {
+	--ceafsn-gf-border: #d5d8dc;
+	--ceafsn-gf-muted: #5a6270;
+	--ceafsn-gf-accent: #1d4e6f;
+	--ceafsn-gf-open: #1c6b45;
+	--ceafsn-gf-open-bg: #e6f4ec;
+	--ceafsn-gf-closed: #6b7280;
+	--ceafsn-gf-closed-bg: #eef0f2;
+	--ceafsn-gf-upcoming: #8a5a00;
+	--ceafsn-gf-upcoming-bg: #fdf3e0;
+
+	margin: 1.5em 0;
+	color: inherit;
+}
+
+.ceafsn-gf * {
+	box-sizing: border-box;
+}
+
+.ceafsn-gf-summary {
+	display: flex;
+	gap: 0.75em;
+	align-items: baseline;
+	flex-wrap: wrap;
+	font-size: 0.9em;
+	color: var(--ceafsn-gf-muted);
+}
+
+/* Filters ------------------------------------------------------------------ */
+
+.ceafsn-gf-filters {
+	margin: 0 0 1.25em;
+	padding: 0.75em 1em;
+	background: #f7f8f9;
+	border: 1px solid var(--ceafsn-gf-border);
+	border-radius: 4px;
+}
+
+.ceafsn-gf-filters__row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	align-items: center;
+	margin: 0;
+}
+
+.ceafsn-gf-filters input[type="search"] {
+	flex: 1 1 14em;
+	min-width: 0;
+}
+
+/* Badges ------------------------------------------------------------------- */
+
+.ceafsn-gf-badge {
+	display: inline-block;
+	padding: 0.1em 0.6em;
+	font-size: 0.8em;
+	font-weight: 600;
+	line-height: 1.6;
+	border-radius: 999px;
+	border: 1px solid currentColor;
+	white-space: nowrap;
+}
+
+.ceafsn-gf-badge--status-open,
+.ceafsn-gf-badge--status-upcoming,
+.ceafsn-gf-badge--status-closed,
+.ceafsn-gf-badge--status-archived {
+	color: var(--ceafsn-gf-closed);
+	background: var(--ceafsn-gf-closed-bg);
+}
+
+.ceafsn-gf-badge--status-open {
+	color: var(--ceafsn-gf-open);
+	background: var(--ceafsn-gf-open-bg);
+}
+
+.ceafsn-gf-badge--status-upcoming {
+	color: var(--ceafsn-gf-upcoming);
+	background: var(--ceafsn-gf-upcoming-bg);
+}
+
+.ceafsn-gf-badge--shared {
+	color: var(--ceafsn-gf-accent);
+	background: #e8f0f6;
+}
+
+/* Cards -------------------------------------------------------------------- */
+
+.ceafsn-gf-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 20em), 1fr));
+	gap: 1.25em;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ceafsn-gf-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6em;
+	margin: 0;
+	padding: 1.1em 1.25em;
+	background: #fff;
+	border: 1px solid var(--ceafsn-gf-border);
+	border-left: 4px solid var(--ceafsn-gf-closed);
+	border-radius: 4px;
+}
+
+.ceafsn-gf-card--open {
+	border-left-color: var(--ceafsn-gf-open);
+}
+
+.ceafsn-gf-card--upcoming {
+	border-left-color: var(--ceafsn-gf-upcoming);
+}
+
+.ceafsn-gf-card__status {
+	display: flex;
+	gap: 0.4em;
+	align-items: center;
+	margin: 0;
+}
+
+.ceafsn-gf-card__title {
+	margin: 0;
+	font-size: 1.15em;
+	line-height: 1.35;
+}
+
+.ceafsn-gf-card__meta {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(9em, 1fr));
+	gap: 0.5em 1em;
+	margin: 0;
+	font-size: 0.9em;
+}
+
+.ceafsn-gf-card__meta div {
+	margin: 0;
+}
+
+.ceafsn-gf-card__meta dt {
+	color: var(--ceafsn-gf-muted);
+	font-size: 0.85em;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.ceafsn-gf-card__meta dd {
+	margin: 0;
+}
+
+.ceafsn-gf-card__nodate {
+	color: var(--ceafsn-gf-upcoming);
+	font-style: italic;
+}
+
+.ceafsn-gf-card h4 {
+	margin: 0.4em 0 0.2em;
+	font-size: 0.85em;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--ceafsn-gf-muted);
+}
+
+.ceafsn-gf-card__beneficiaries p,
+.ceafsn-gf-card__eligibility p {
+	margin: 0;
+}
+
+.ceafsn-gf-card__actions {
+	display: flex;
+	gap: 0.75em;
+	align-items: center;
+	flex-wrap: wrap;
+	margin: 0.3em 0 0;
+	padding-top: 0.6em;
+	border-top: 1px solid var(--ceafsn-gf-border);
+}
+
+.ceafsn-gf-card__contact,
+.ceafsn-gf-card__reason {
+	margin: 0;
+	font-size: 0.85em;
+	color: var(--ceafsn-gf-muted);
+}
+
+/* Apply control ----------------------------------------------------------- */
+
+.ceafsn-gf-apply {
+	display: inline-block;
+	padding: 0.55em 1.2em;
+	font-weight: 600;
+	text-decoration: none;
+	border-radius: 3px;
+	border: 1px solid transparent;
+}
+
+.ceafsn-gf-apply--active {
+	background: var(--ceafsn-gf-accent);
+	color: #fff;
+}
+
+.ceafsn-gf-apply--active:hover,
+.ceafsn-gf-apply--active:focus {
+	background: #163c56;
+	color: #fff;
+}
+
+.ceafsn-gf-apply--inactive {
+	background: #eceef0;
+	color: var(--ceafsn-gf-closed);
+	border-color: var(--ceafsn-gf-border);
+	cursor: not-allowed;
+}
+
+.ceafsn-gf-apply__reason {
+	font-size: 0.85em;
+	color: var(--ceafsn-gf-muted);
+}
+
+.ceafsn-gf-card__doc {
+	font-size: 0.9em;
+}
+
+/* Table -------------------------------------------------------------------- */
+
+.ceafsn-gf-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.95em;
+}
+
+.ceafsn-gf-table th,
+.ceafsn-gf-table td {
+	padding: 0.6em 0.7em;
+	text-align: left;
+	border-bottom: 1px solid var(--ceafsn-gf-border);
+	vertical-align: top;
+}
+
+.ceafsn-gf-table thead th {
+	border-bottom-width: 2px;
+	white-space: nowrap;
+}
+
+.ceafsn-gf-table thead a {
+	text-decoration: none;
+}
+
+/* Empty state ------------------------------------------------------------- */
+
+.ceafsn-gf-empty {
+	padding: 2em 1em;
+	text-align: center;
+	color: var(--ceafsn-gf-muted);
+	background: #f7f8f9;
+	border: 1px dashed var(--ceafsn-gf-border);
+	border-radius: 4px;
+}

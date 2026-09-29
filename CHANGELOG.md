@@ -47,6 +47,22 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   status, and free-text filtering. Ships with `readme.txt`,
   `languages/ceafsn-rf.pot`, JSON export, opt-in uninstall, and a 212-assertion
   dependency-free test suite
+- `ceafsn-grants-funding` v1.0.0 — the sixth and final plugin, closing the
+  suite. Grants and scholarships require a real deadline and their own
+  validated Official Call PDF before publishing; the call PDF is required,
+  not optional, unlike the fellowships plugin. Deadlines are entered and
+  displayed in the site timezone (named explicitly) and stored as UTC, with a
+  round-trip conversion helper for the edit form. Status (Open, Closed,
+  Upcoming, Archived) is set directly by the administrator rather than
+  derived, matching the specification, but the public page still honestly
+  flags a deadline that has already passed even when the status still says
+  Open, so the mismatch is visible rather than hidden. Sharing one call PDF
+  between records must be confirmed with a note and is then shown to
+  visitors, mirroring the projects-publications duplicate-document pattern.
+  Cards and a sortable, accessible table from one query, with institution,
+  status, and free-text filtering. Ships with `readme.txt`,
+  `languages/ceafsn-gf.pot`, JSON export, opt-in uninstall, and a
+  157-assertion dependency-free test suite
 
 ### Changed
 - `ceafsn-nutrition-policy`: the PDF-only upload restriction is now scoped to
@@ -68,7 +84,6 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   for an image MIME type and required alt text.
 
 ### Planned
-- Plugin 6: `ceafsn-grants-funding`
 - Fix `/appy` 404
 - Demo content cleanup
 - Full QA suite and documentation
