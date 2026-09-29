@@ -277,6 +277,10 @@
   color: #5b3a8e;
 }
 
+.ceafsn-pp-badge--shared {
+  color: var(--ceafsn-pp-warn-text);
+}
+
 .ceafsn-pp-badge--ok {
   color: var(--ceafsn-pp-accent-dark);
 }

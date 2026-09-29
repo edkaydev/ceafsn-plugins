@@ -74,18 +74,60 @@ rather than a broken link. Restore the file or switch the record to a URL.
 
 ## 4. Projects and Publications (`ceafsn-projects-publications`)
 
-### Adding a Publication
-1. Go to **CE-AFSN → Publications → Add New**.
-2. Fill in all required fields.
-3. Upload the PDF from the Media Library.
-4. The plugin validates the PDF. You cannot publish if validation fails.
-5. If the same PDF is intentionally shared with another record, check **Duplicate Document** and enter a note explaining why.
-6. Set Status and Access Level, then click **Publish**.
+Menu: **Projects & Publications** → **All Records** and **Settings**.
 
-### Updating the `/appy` Destination
-1. Go to **CE-AFSN → Publications → Settings → Apply Link**.
-2. Enter the correct application destination URL.
-3. Save. The Apply Now buttons across the site will now point to this URL.
+### Adding a Publication
+1. Go to **Projects & Publications → All Records → Add New**.
+2. Fill in the required fields: title, content type, executive summary, author or
+   institution, publication date, and project status.
+3. Attach the PDF from the Media Library with **Select PDF**.
+4. Optionally attach a cover image. When you do, **Cover image alt text** becomes
+   required and describes what the image shows.
+5. Leave **Page count** at 0 if you do not know it: the plugin measures the
+   document and stores the real number. If you do enter a number, it must match
+   the document or publishing is refused.
+6. For a scanned, image-only PDF, tick **Scanned document**. The plugin otherwise
+   refuses to publish a PDF with no extractable text, because such a file is
+   usually a placeholder or a broken export.
+7. If the same PDF is intentionally shared with another record, tick **This
+   document is intentionally shared** and write a note explaining why. Visitors
+   then see a shared-document badge on the card.
+8. Set the publication state to **Published**, choose the access level, and save.
+
+If validation fails, the record is saved as a **draft** and the reason is shown
+in the notice above the form. Nothing is silently dropped.
+
+### Placeholder Files
+The old site pointed many records at the same placeholder file. **Settings →
+General** lists the file names treated as placeholders. A record using one of
+them cannot be published unless **Confirm this document is intentional** is
+ticked and a note explains why. Add or remove names on this screen as the
+library is cleaned up.
+
+### Known Placeholder Confirmation
+A file on the placeholder list is only ever a placeholder by name. If a genuine
+document happens to share that name, tick the confirmation and note the reason;
+it is then published like any other document.
+
+### The Legacy Redirect
+**Settings → Routes** controls the 301 from `/privacy-policy-2/` to
+`/publications/`. It is on by default. Untick it to stop redirecting.
+
+- A real page created at `/privacy-policy-2/` always wins over the redirect.
+- Deactivating the plugin deletes no data, including this preference, but a
+  deactivated plugin does not run, so the redirect stops until it is reactivated.
+
+### Cover Images
+`/publications/` shows a card image only when a cover is attached. Without one,
+the card is text-only rather than showing a broken or generic image.
+
+### Exporting Records
+**Settings → Export** downloads every record as JSON, including drafts and
+members-only records. Use it before deactivating or uninstalling.
+
+### Uninstalling
+**Settings → Uninstall** removes the plugin's table only when the opt-in box is
+ticked. Media Library files are never deleted. See "Uninstalling a Plugin" below.
 
 ---
 

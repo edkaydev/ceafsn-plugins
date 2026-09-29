@@ -37,13 +37,27 @@
   }
 
   /**
+   * Read the attachment ID a hidden field holds.
+   *
+   * The fields are server-rendered with 0 for "nothing selected", and the
+   * string "0" is truthy in JavaScript, so the value has to be read as a
+   * number before it can be compared with 0.
+   *
+   * @param {string} idField ID of the hidden value field.
+   * @return {number} Attachment ID, or 0 when nothing is selected.
+   */
+  function selectedId( idField ) {
+    return parseInt( $( '#' + idField ).val(), 10 ) || 0;
+  }
+
+  /**
    * Show or hide a Clear button based on whether its field holds a value.
    *
    * @param {string} idField   ID of the hidden value field.
    * @param {string} clearId   ID of the Clear button.
    */
   function syncClearButton( idField, clearId ) {
-    $( '#' + clearId ).prop( 'hidden', ! $( '#' + idField ).val() );
+    $( '#' + clearId ).prop( 'hidden', 0 === selectedId( idField ) );
   }
 
   /**
@@ -83,13 +97,19 @@
         },
         'image',
         function ( attachment ) {
-          if ( 'image' !== attachment.mime && 'image/jpeg' !== attachment.mime ) {
+          // The media library reports the type as "mime" in older versions of
+          // wp.media and as "mime_type" in newer ones. Any image/* is accepted,
+          // because the plugin already allows PNG, GIF, and WebP uploads and the
+          // server checks the type again when the record is saved.
+          var mime = attachment.mime || attachment.mime_type || '';
+
+          if ( 0 !== mime.indexOf( 'image/' ) ) {
             window.alert( t( 'That file is not an image.' ) );
             return;
           }
 
           $( '#' + IMAGE_ID_FIELD ).val( attachment.id );
-          $( '#' + IMAGE_NAME_FIELD ).val( attachment.alt || attachment.filename || '' );
+          $( '#' + IMAGE_NAME_FIELD ).val( attachment.filename || '' );
           syncClearButton( IMAGE_ID_FIELD, IMAGE_CLEAR );
         }
       );

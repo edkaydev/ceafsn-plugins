@@ -49,13 +49,19 @@
 - [x] Tests (381 assertions, `php plugins/ceafsn-open-datasets/tests/run-tests.php`)
 
 ### Plugin 4: ceafsn-projects-publications
-- [ ] Plugin header and bootstrap file
-- [ ] Admin CRUD for publications and projects
-- [ ] Front-end shortcode `[ceafsn_projects_pubs]`
-- [ ] Grid/list view with filters
-- [ ] PDF validation per record
-- [ ] Duplicate-document flag
-- [ ] Tests
+- [x] Plugin header and bootstrap file
+- [x] Admin CRUD for publications and projects
+- [x] Front-end shortcode `[ceafsn_projects_pubs]`
+- [x] Grid/list view with filters, sorting, and search
+- [x] PDF validation per record (signature, EOF, size, page count, extractable text)
+- [x] Placeholder document block with opt-in confirmation and note
+- [x] Duplicate-document flag surfaced on the card and in the list
+- [x] Publication state separated from project status
+- [x] Members-only access with a filterable capability check
+- [x] 301 redirect `/privacy-policy-2/` → `/publications/`, configurable
+- [x] JSON export and opt-in uninstall that never touches the Media Library
+- [x] `readme.txt` and `languages/ceafsn-pp.pot`
+- [x] Tests (332 assertions, `php plugins/ceafsn-projects-publications/tests/run-tests.php`)
 
 ### Plugin 5: ceafsn-research-fellowships
 - [ ] Plugin header and bootstrap file

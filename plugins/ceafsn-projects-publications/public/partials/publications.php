@@ -175,6 +175,11 @@ $column_labels = array(
 											<?php esc_html_e( 'Members only', 'ceafsn-pp' ); ?>
 										</span>
 									<?php endif; ?>
+									<?php if ( $card['is_duplicate'] ) : ?>
+										<span class="ceafsn-pp-badge ceafsn-pp-badge--shared">
+											<?php esc_html_e( 'Shared document', 'ceafsn-pp' ); ?>
+										</span>
+									<?php endif; ?>
 								</th>
 								<td data-label="<?php esc_attr_e( 'Date', 'ceafsn-pp' ); ?>">
 									<time datetime="<?php echo esc_attr( (string) $row->publication_date ); ?>">

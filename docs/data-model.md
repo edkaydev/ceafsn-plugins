@@ -96,23 +96,55 @@ plus a matching content type for external URLs. A record that fails is downgrade
 ## ceafsn-projects-publications
 
 ### Publication / Project Records
+Table: `{$wpdb->prefix}ceafsn_pp_publications`
+
 | Field | Type | Notes |
 |-------|------|-------|
-| `pub_id` | INT AUTO_INCREMENT | Primary key |
+| `publication_id` | BIGINT UNSIGNED AUTO_INCREMENT | Primary key |
 | `title` | VARCHAR(255) | Required |
-| `content_type` | ENUM('report','annual_report','policy_brief','working_paper','strategic_document','project') | Required |
+| `content_type` | ENUM('report','annual_report','policy_brief','working_paper','strategic_document','project') | Required, default `report` |
 | `executive_summary` | TEXT | Optional |
-| `authors` | VARCHAR(255) | Required |
+| `author_institution` | VARCHAR(255) | Required |
 | `publication_date` | DATE | Required |
-| `status` | ENUM('in_progress','completed','under_review','archived') | Required |
-| `cover_image_id` | BIGINT | WP attachment ID — optional |
-| `cover_image_alt` | VARCHAR(255) | Required if cover image set |
-| `pdf_attachment_id` | BIGINT | WP attachment ID — required |
-| `page_count` | SMALLINT | Optional |
-| `doi_url` | TEXT | Optional |
-| `access_level` | ENUM('public','members_only') | Required |
-| `duplicate_flag` | BOOLEAN | True if PDF shared with another record |
-| `duplicate_note` | TEXT | Required if duplicate_flag is true |
+| `project_status` | ENUM('in_progress','completed','under_review','archived') | Required, default `in_progress` |
+| `cover_image_id` | BIGINT UNSIGNED | WP attachment ID, 0 when none |
+| `cover_image_alt` | VARCHAR(255) | Required if `cover_image_id` is set |
+| `pdf_attachment_id` | BIGINT UNSIGNED | WP attachment ID — required to publish |
+| `page_count` | SMALLINT UNSIGNED | 0 means unknown; measured from the document on save when left at 0 |
+| `doi_citation` | TEXT | Optional |
+| `access_level` | ENUM('public','members_only') | Required, default `public` |
+| `duplicate_note` | TEXT | Required if `duplicate_ok` is 1 |
+| `scanned` | TINYINT(1) | 1 when the PDF has no extractable text by design |
+| `duplicate_ok` | TINYINT(1) | 1 when sharing one PDF across records is intentional |
+| `status` | ENUM('draft','published','archived') | Publication state, default `draft` |
+| `created_at` / `updated_at` | DATETIME | Auto |
+| `updated_by` | BIGINT UNSIGNED | WP user ID |
+
+Indexes: `status`, `content_type`, `project_status`, `access_level`,
+`publication_date`, `pdf_attachment_id`. The last one exists because the
+duplicate-document check counts other records by attachment.
+
+**Two status fields, not one.** `status` is the publication state and decides
+whether a record appears on the public page. `project_status` describes the work
+itself and is what the public filter offers. A finished project (`completed`) is
+still a `draft` until its document passes validation.
+
+Documents are attachment-only by design: `pdf_attachment_id` is the single source
+of the file, so validation, the duplicate check, and the front-end link all read
+the same attachment. An external URL field was removed rather than left as an
+unchecked second path.
+
+At publish time all of the following must hold, or the record is downgraded to
+`draft` with a reason:
+
+- `pdf_attachment_id` names an attachment whose MIME type is `application/pdf`,
+  whose bytes start with `%PDF-` and end with `%%EOF`, and which is not empty.
+- A page count can be read from the file. If the admin entered one, it matches;
+  if the field was 0, the measured value is stored.
+- The PDF contains extractable text, unless `scanned` is 1.
+- The filename is not on the placeholder list, unless confirmed with a note.
+- No other record uses the same attachment, unless `duplicate_ok` is 1 with a
+  note. A record is never counted as a duplicate of itself.
 
 ---
 

@@ -52,8 +52,12 @@ class CEAFSN_PP_Activator {
 			add_option( CEAFSN_PP_Validator::PLACEHOLDER_OPTION, array( 'ceafsn.pdf' ) );
 		}
 
-		// The redirect stays on until an administrator turns it off in Settings.
-		update_option( self::REDIRECT_OPTION, true );
+		// The redirect is on by default, but an administrator's earlier choice is
+		// never overwritten by a later activation. A null default tells a missing
+		// option apart from one that is deliberately set to false.
+		if ( null === get_option( self::REDIRECT_OPTION, null ) ) {
+			update_option( self::REDIRECT_OPTION, true );
+		}
 
 		flush_rewrite_rules( false );
 	}
@@ -61,9 +65,12 @@ class CEAFSN_PP_Activator {
 	/**
 	 * Plugin deactivation.
 	 *
-	 * Deactivation deliberately does NOT delete any data. The legacy redirect
-	 * also stays registered, because a deactivated plugin must not break inbound
-	 * links that are still being followed.
+	 * Deactivation deliberately deletes no data and no options, so the redirect
+	 * preference survives: reactivating the plugin restores the redirect without
+	 * the administrator having to set it up again. While the plugin is
+	 * deactivated its code does not run, so `/privacy-policy-2/` simply 404s
+	 * until it is switched back on. Turning the plugin back on is how the admin
+	 * "removes" the redirect without losing any of their data.
 	 *
 	 * @return void
 	 */
@@ -106,22 +113,23 @@ class CEAFSN_PP_Activator {
 	}
 
 	/**
-	 * Allow only PDF, but only while this plugin's screen is on screen.
+	 * Allow the document PDF and cover images, only on this plugin's screen.
 	 *
 	 * A global `upload_mimes` filter returns a value for every upload on the
 	 * site, so replacing the whole list would break images for pages, plugin
 	 * assets, and other plugins' imports. The restriction is therefore scoped
 	 * to this plugin's editor, where it does what it is meant to do.
 	 *
-	 * The authoritative check is server-side validation in CEAFSN_PP_Validator;
-	 * this filter is a usability guard that keeps the file picker honest.
+	 * The authoritative checks are server-side: CEAFSN_PP_Validator rejects
+	 * anything that is not a readable PDF, and the save handler rejects a cover
+	 * that is not an image. This filter only keeps the file picker honest, so
+	 * the cover image types it leaves available are the ones the record form
+	 * actually accepts.
 	 *
 	 * @param array<string,string> $mimes Allowed mime types keyed by extension group.
 	 * @return array<string,string>
 	 */
 	public static function restrict_upload_mimes( array $mimes ): array {
-		// The cover image needs to be attachable, so images stay available on
-		// this screen; the PDF is enforced at save time.
 		if ( ! self::is_plugin_screen() ) {
 			return $mimes;
 		}
@@ -129,7 +137,11 @@ class CEAFSN_PP_Activator {
 		unset( $mimes );
 
 		return array(
-			'pdf' => 'application/pdf',
+			'pdf'                                => 'application/pdf',
+			'jpg|jpeg'                           => 'image/jpeg',
+			'png'                                => 'image/png',
+			'gif'                                => 'image/gif',
+			'webp'                               => 'image/webp',
 		);
 	}
 
@@ -143,24 +155,41 @@ class CEAFSN_PP_Activator {
 	 * @return void
 	 */
 	public static function maybe_redirect_legacy_route(): void {
-		if ( ! get_option( self::REDIRECT_OPTION, true ) ) {
+		$target = self::legacy_redirect_target();
+
+		if ( '' === $target ) {
 			return;
 		}
 
-		$request = self::request_path();
+		wp_safe_redirect( $target, 301 );
+		exit;
+	}
 
-		if ( untrailingslashit( $request ) !== untrailingslashit( self::LEGACY_PATH ) ) {
-			return;
+	/**
+	 * The URL the legacy route should redirect to, or an empty string when it
+	 * should not redirect at all.
+	 *
+	 * Kept separate from the redirect itself so the decision can be checked
+	 * without terminating the request.
+	 *
+	 * @return string Absolute URL, or '' when the request is left alone.
+	 */
+	public static function legacy_redirect_target(): string {
+		if ( ! self::redirect_enabled() ) {
+			return '';
+		}
+
+		if ( untrailingslashit( self::request_path() ) !== untrailingslashit( self::LEGACY_PATH ) ) {
+			return '';
 		}
 
 		// is_404() guards the case where an administrator has since created a
 		// real page at the legacy slug: that page wins over the redirect.
 		if ( function_exists( 'is_404' ) && ! is_404() ) {
-			return;
+			return '';
 		}
 
-		wp_safe_redirect( home_url( self::TARGET_PATH ), 301 );
-		exit;
+		return home_url( self::TARGET_PATH );
 	}
 
 	/**

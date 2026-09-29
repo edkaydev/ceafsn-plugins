@@ -21,6 +21,18 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   measured file sizes, a seven-column accessible table, contact privacy behind
   an opt-in, scoped upload restrictions, JSON export, and a 381-assertion
   dependency-free test suite
+- `ceafsn-projects-publications` v1.0.0 — publication and project library where
+  a record's own validated PDF gates the Published status. Per-record checks for
+  the `%PDF-` signature, `%%EOF` terminator, non-zero size, a readable page count
+  that must match the admin-entered value, and extractable text unless the
+  record is flagged as scanned. The known placeholder file is blocked until it
+  is confirmed with a note, and sharing one document between records must be
+  confirmed the same way and is then shown to visitors. Publication state is
+  stored separately from project status. Grid and list views from one query,
+  with filters, sorting, and search; members-only records are excluded unless
+  the visitor passes the `ceafsn_pp_can_view_members_only` filter. Ships with
+  `readme.txt`, `languages/ceafsn-pp.pot`, JSON export, opt-in uninstall, and a
+  332-assertion dependency-free test suite
 
 ### Changed
 - `ceafsn-nutrition-policy`: the PDF-only upload restriction is now scoped to
@@ -30,12 +42,20 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   honoured as the default filter, with the query string still taking precedence.
 - `ceafsn-open-datasets`: the public table shows file type and size in one
   column, matching the seven columns in the specification.
+- `ceafsn-projects-publications`: the legacy redirect is registered on every
+  request rather than only at activation, is enabled by default, and can be
+  switched off in Settings without the preference being deleted on
+  deactivation.
+- `ceafsn-projects-publications`: the upload restriction is scoped to the
+  plugin's own screen and allows the cover image types as well as PDF, so
+  images for the rest of the site are unaffected.
+- `ceafsn-projects-publications`: the page count is measured from the document
+  when the field is left empty, and the cover attachment is checked server-side
+  for an image MIME type and required alt text.
 
 ### Planned
-- Plugin 4: `ceafsn-projects-publications`
 - Plugin 5: `ceafsn-research-fellowships`
 - Plugin 6: `ceafsn-grants-funding`
-- Route migration: `/privacy-policy-2/` → `/publications/`
 - Fix `/appy` 404
 - Demo content cleanup
 - Full QA suite and documentation

@@ -174,18 +174,19 @@ class CEAFSN_PP_Admin {
 			return;
 		}
 
+		// The page count is read from the document, never from the form alone, so
+		// a card never shows a number the PDF does not have. An admin who typed a
+		// different number is already being sent back with an error below, so by
+		// this point the measured value is the only honest one to keep.
+		$data = $this->apply_measured_page_count( $data );
+
 		// Publishing is gated on a valid, readable, non-placeholder document
 		// that belongs to this record.
 		if ( 'published' === $data['status'] ) {
 			$blockers = CEAFSN_PP_Validator::publish_blockers( $data );
 			if ( ! empty( $blockers ) ) {
 				$data['status'] = 'draft';
-
-				if ( $id > 0 ) {
-					CEAFSN_PP_DB::update_publication( $id, $data );
-				} else {
-					CEAFSN_PP_DB::insert_publication( $data );
-				}
+				$this->persist_publication( $data, $id );
 
 				$this->redirect_back_with_error(
 					implode( ' ', $blockers ) . ' ' . __( 'The record was saved as a draft instead.', 'ceafsn-pp' )
@@ -194,20 +195,7 @@ class CEAFSN_PP_Admin {
 			}
 		}
 
-		// An admin-entered page count of 0 means "I did not fill this in", so
-		// the measured value is stored instead of leaving the card blank.
-		if ( 0 === (int) $data['page_count'] && $id > 0 ) {
-			$existing = CEAFSN_PP_DB::get_publication( $id );
-			if ( $existing && (int) $existing->pdf_attachment_id === (int) $data['pdf_attachment_id'] ) {
-				$data['page_count'] = (int) $existing->page_count;
-			}
-		}
-
-		if ( $id > 0 ) {
-			CEAFSN_PP_DB::update_publication( $id, $data );
-		} else {
-			CEAFSN_PP_DB::insert_publication( $data );
-		}
+		$this->persist_publication( $data, $id );
 
 		wp_safe_redirect(
 			add_query_arg(
@@ -335,6 +323,48 @@ class CEAFSN_PP_Admin {
 	}
 
 	// ---------------------------------------------------------------------------
+	// Persistence helpers
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Store the record, updating it when an ID is known.
+	 *
+	 * @param array<string,mixed> $data Prepared record fields.
+	 * @param int                 $id   Record ID, or 0 for a new record.
+	 * @return int|false Result of the write.
+	 */
+	private function persist_publication( array $data, int $id ) {
+		return $id > 0
+			? CEAFSN_PP_DB::update_publication( $id, $data )
+			: CEAFSN_PP_DB::insert_publication( $data );
+	}
+
+	/**
+	 * Replace an empty page count with the number of pages in the document.
+	 *
+	 * Page count is measured, not trusted: the admin can be wrong, and a card
+	 * that claims four pages for a ten-page report is worse than a blank field.
+	 * A value the admin typed is left alone here, because a value that disagrees
+	 * with the document is reported back to them rather than silently corrected.
+	 *
+	 * @param array<string,mixed> $data Prepared record fields.
+	 * @return array<string,mixed> Fields with a measured page count.
+	 */
+	private function apply_measured_page_count( array $data ): array {
+		if ( 0 !== (int) ( $data['page_count'] ?? 0 ) ) {
+			return $data;
+		}
+
+		$measured = CEAFSN_PP_Validator::validate_attachment( (int) ( $data['pdf_attachment_id'] ?? 0 ) );
+
+		if ( $measured['valid'] ) {
+			$data['page_count'] = (int) $measured['pages'];
+		}
+
+		return $data;
+	}
+
+	// ---------------------------------------------------------------------------
 	// Validation helpers
 	// ---------------------------------------------------------------------------
 
@@ -375,8 +405,19 @@ class CEAFSN_PP_Admin {
 
 		// A cover image needs alt text, otherwise a screen reader announces the
 		// cover as an unlabelled image.
-		if ( ! empty( $data['cover_image_id'] ) && '' === trim( (string) $data['cover_image_alt'] ) ) {
-			$errors[] = __( 'Describe the cover image in the alt text field.', 'ceafsn-pp' );
+		if ( ! empty( $data['cover_image_id'] ) ) {
+			if ( '' === trim( (string) $data['cover_image_alt'] ) ) {
+				$errors[] = __( 'Describe the cover image in the alt text field.', 'ceafsn-pp' );
+			}
+
+			// The picker can be bypassed by posting any attachment ID, and the
+			// cover is rendered as an <img>, so the ID is checked to be a real
+			// image rather than trusted because it arrived in the form.
+			$cover_mime = get_post_mime_type( (int) $data['cover_image_id'] );
+
+			if ( ! is_string( $cover_mime ) || ! str_starts_with( $cover_mime, 'image/' ) ) {
+				$errors[] = __( 'The cover must be an image from the media library.', 'ceafsn-pp' );
+			}
 		}
 
 		if ( ! empty( $data['doi_citation'] ) && ! filter_var( (string) $data['doi_citation'], FILTER_VALIDATE_URL ) ) {

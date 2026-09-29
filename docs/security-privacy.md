@@ -91,6 +91,25 @@ All custom database queries use WordPress `$wpdb->prepare()` with parameterized 
 | Contact on grants | Only shown if admin has explicitly approved `show_public = true` |
 | Internal admin notes (e.g., duplicate flags, override notes) | Never shown on front end |
 | Application data / form submissions | Never shown publicly; accessible only to admins |
+| Members-only publication records | Excluded from the public query unless the visitor is signed in and passes the membership check; the document link is replaced with a sign-in message instead of a download |
+| Publication duplicate and placeholder notes | Admin-only; visitors see only a "shared document" badge, never the reason |
+
+### Members-Only Publications Are Link-Gating, Not Access Control
+
+`ceafsn-projects-publications` hides members-only records and their document
+links from visitors who do not pass the membership check. It does not make the
+file secret: a document in the Media Library can still be fetched directly by
+anyone who already knows its URL, and WordPress does not authenticate file
+downloads. Restricted documents must therefore be treated as *unlisted*, not
+*confidential*. A site that needs real confidentiality must store those files
+outside the web root or behind a server that enforces access.
+
+The membership check defaults to the `manage_options` capability and is
+filterable:
+
+```php
+add_filter( 'ceafsn_pp_can_view_members_only', fn( $allowed ) => my_membership_check() );
+```
 
 ---
 

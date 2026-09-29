@@ -50,10 +50,13 @@ class CEAFSN_PP_Public {
 
 		$query_type = sanitize_text_field( wp_unslash( $_GET['pp_type'] ?? '' ) );
 
-		$view = self::normalize_view( sanitize_key( $_GET['pp_view'] ?? '' ) );
-		if ( '' === $view ) {
-			$view = self::normalize_view( (string) $atts['view'] );
-		}
+		// The query string wins over the shortcode attribute, so a shared link
+		// behaves the same for every visitor. An absent or unrecognised value
+		// falls back to the attribute, and then to the grid.
+		$requested_view = sanitize_key( $_GET['pp_view'] ?? '' );
+		$view           = '' !== $requested_view
+			? self::normalize_view( $requested_view )
+			: self::normalize_view( (string) $atts['view'] );
 
 		$args = array(
 			'published_only' => true,

@@ -39,6 +39,19 @@ $statuses   = CEAFSN_PP_DB::statuses();
 $types      = CEAFSN_PP_DB::content_types();
 $projects   = CEAFSN_PP_DB::project_statuses();
 $access     = CEAFSN_PP_DB::access_levels();
+
+// The pickers show which file is attached, so the name has to come from the
+// attachment itself. A record whose cover has been deleted from the media
+// library falls back to the ID rather than pretending the field is empty.
+$cover_image_id   = (int) ( $row->cover_image_id ?? 0 );
+$cover_image_name = '';
+if ( $cover_image_id > 0 ) {
+	$cover_image_path = get_attached_file( $cover_image_id );
+	$cover_image_name = $cover_image_path
+		? basename( (string) $cover_image_path )
+		: sprintf( '#%d', $cover_image_id );
+}
+$pdf_attachment_id = (int) ( $row->pdf_attachment_id ?? 0 );
 ?>
 
 <div class="wrap ceafsn-pp-wrap">
@@ -266,10 +279,10 @@ $access     = CEAFSN_PP_DB::access_levels();
 						</th>
 						<td>
 							<input type="hidden" id="ceafsn-pp-cover-id" name="cover_image_id"
-								value="<?php echo esc_attr( (string) ( $row->cover_image_id ?? 0 ) ); ?>" />
+								value="<?php echo esc_attr( (string) $cover_image_id ); ?>" />
 							<input type="text" id="ceafsn-pp-cover-field" class="regular-text" readonly
 								placeholder="<?php esc_attr_e( 'No image selected', 'ceafsn-pp' ); ?>"
-								value="<?php echo esc_attr( (string) ( $row->cover_image_alt ?? '' ) ); ?>" />
+								value="<?php echo esc_attr( $cover_image_name ); ?>" />
 							<button type="button" class="button ceafsn-pp-media-button" id="ceafsn-pp-cover-button"
 								data-target="ceafsn-pp-cover-id">
 								<?php esc_html_e( 'Select image', 'ceafsn-pp' ); ?>
@@ -299,10 +312,10 @@ $access     = CEAFSN_PP_DB::access_levels();
 						</th>
 						<td>
 							<input type="hidden" id="ceafsn-pp-pdf-id" name="pdf_attachment_id"
-								value="<?php echo esc_attr( (string) ( $row->pdf_attachment_id ?? 0 ) ); ?>" />
+								value="<?php echo esc_attr( (string) $pdf_attachment_id ); ?>" />
 							<input type="text" id="ceafsn-pp-pdf-field" class="regular-text" readonly
 								placeholder="<?php esc_attr_e( 'No file selected', 'ceafsn-pp' ); ?>"
-								value="<?php echo esc_attr( (string) ( $row->title ?? '' ) !== '' ? __( 'Document attached', 'ceafsn-pp' ) : '' ); ?>" />
+								value="<?php echo esc_attr( $pdf_attachment_id > 0 ? __( 'Document attached', 'ceafsn-pp' ) : '' ); ?>" />
 							<button type="button" class="button ceafsn-pp-media-button" id="ceafsn-pp-pdf-button"
 								data-target="ceafsn-pp-pdf-id">
 								<?php esc_html_e( 'Select PDF', 'ceafsn-pp' ); ?>
