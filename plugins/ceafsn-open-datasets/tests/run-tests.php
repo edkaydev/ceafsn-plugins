@@ -1544,7 +1544,73 @@ rmdir( $fake_wp_admin );
 rmdir( dirname( $fake_wp_admin ) );
 rmdir( dirname( $fake_wp_admin, 2 ) );
 
+test( 'the datasets page shows the shortcode too' );
+$main_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/datasets.php' );
+has_substring( '[ceafsn_open_datasets]', $main_partial, 'the dashboard page shows the exact shortcode' );
+foreach ( array( 'per_page', 'category', 'file_type' ) as $shortcode_attribute ) {
+	has_substring( $shortcode_attribute, $main_partial, "the dashboard card mentions {$shortcode_attribute}" );
+}
+has_substring( 'ceafsn-embed__code', $main_partial, 'the dashboard card uses the shared code block' );
+has_substring( "&tab=display", $main_partial, 'the card links to the Display settings tab' );
+
 // -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+section( 'Admin: settings scopes' );
+
+global $plugin_dir;
+$od_admin_ref = new ReflectionClass( new CEAFSN_OD_Admin() );
+
+/**
+ * Call OD's private settings writer with a given POST body.
+ *
+ * @param ReflectionClass $class Admin class.
+ * @param array           $post  POST body to save.
+ * @return void
+ */
+function save_od_settings( ReflectionClass $class, array $post ): void {
+	$method = $class->getMethod( 'persist_settings' );
+	$method->setAccessible( true );
+	$method->invoke( $class->newInstanceWithoutConstructor(), $post );
+}
+
+test( 'saving the Display tab leaves the uninstall opt-in untouched' );
+CEAFSN_OD_Test_State::$options = array(
+	'ceafsn_od_show_contact'          => 1,
+	'ceafsn_od_allow_other_files'     => 0,
+	'ceafsn_od_uninstall_delete_data' => true,
+);
+save_od_settings( $od_admin_ref, array( 'ceafsn_od_settings_scope' => 'display' ) );
+is_same( 0, get_option( 'ceafsn_od_show_contact' ), 'an unticked display box is saved as zero' );
+is_same( 0, get_option( 'ceafsn_od_allow_other_files' ), 'the second display box is saved too' );
+is_same( true, get_option( 'ceafsn_od_uninstall_delete_data' ), 'the uninstall opt-in on another tab survives' );
+
+test( 'saving the Uninstall tab leaves the display options untouched' );
+CEAFSN_OD_Test_State::$options = array(
+	'ceafsn_od_show_contact'          => 1,
+	'ceafsn_od_allow_other_files'     => 1,
+	'ceafsn_od_uninstall_delete_data' => false,
+);
+save_od_settings( $od_admin_ref, array( 'ceafsn_od_settings_scope' => 'uninstall', 'ceafsn_od_uninstall_delete_data' => '1' ) );
+is_same( true, get_option( 'ceafsn_od_uninstall_delete_data' ), 'the opt-in saves as true' );
+is_same( 1, get_option( 'ceafsn_od_show_contact' ), 'contact visibility is not reset' );
+is_same( 1, get_option( 'ceafsn_od_allow_other_files' ), 'the file type option is not reset' );
+
+test( 'a missing or unknown scope writes nothing' );
+CEAFSN_OD_Test_State::$options = array(
+	'ceafsn_od_show_contact'          => 1,
+	'ceafsn_od_allow_other_files'     => 1,
+	'ceafsn_od_uninstall_delete_data' => false,
+);
+save_od_settings( $od_admin_ref, array( 'ceafsn_od_show_contact' => '1', 'ceafsn_od_uninstall_delete_data' => '1' ) );
+is_same( 1, get_option( 'ceafsn_od_show_contact' ), 'no scope changes nothing' );
+is_same( false, get_option( 'ceafsn_od_uninstall_delete_data' ), 'the opt-in is not silently enabled' );
+
+test( 'the editable settings forms declare the scope they own' );
+$od_set_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+foreach ( array( 'display', 'uninstall' ) as $scope ) {
+	has_substring( 'value="' . $scope . '"', $od_set_partial, "the {$scope} scope is posted by its own form" );
+}
+
 $pass = $GLOBALS['ceafsn_od_test_pass'];
 $fail = $GLOBALS['ceafsn_od_test_fail'];
 

@@ -176,6 +176,7 @@ $pp_tab_url = static function ( string $tab ) use ( $settings_url ): string {
 		<form class="ceafsn-form ceafsn-form__spaced" method="post" action="<?php echo esc_url( $form_url ); ?>">
 			<?php wp_nonce_field( 'ceafsn_pp_settings_nonce', 'ceafsn_pp_nonce' ); ?>
 			<input type="hidden" name="action" value="ceafsn_pp_save_settings" />
+			<input type="hidden" name="ceafsn_pp_settings_scope" value="placeholders" />
 
 			<section class="ceafsn-card">
 				<div class="ceafsn-card__head">
@@ -228,6 +229,7 @@ $pp_tab_url = static function ( string $tab ) use ( $settings_url ): string {
 		<form class="ceafsn-form ceafsn-form__spaced" method="post" action="<?php echo esc_url( $form_url ); ?>">
 			<?php wp_nonce_field( 'ceafsn_pp_settings_nonce', 'ceafsn_pp_nonce' ); ?>
 			<input type="hidden" name="action" value="ceafsn_pp_save_settings" />
+			<input type="hidden" name="ceafsn_pp_settings_scope" value="routes" />
 
 			<section class="ceafsn-card">
 				<div class="ceafsn-card__head">
@@ -322,6 +324,7 @@ $pp_tab_url = static function ( string $tab ) use ( $settings_url ): string {
 				<form class="ceafsn-form" method="post" action="<?php echo esc_url( $form_url ); ?>">
 					<?php wp_nonce_field( 'ceafsn_pp_settings_nonce', 'ceafsn_pp_nonce' ); ?>
 					<input type="hidden" name="action" value="ceafsn_pp_save_settings" />
+					<input type="hidden" name="ceafsn_pp_settings_scope" value="uninstall" />
 
 					<div class="ceafsn-check">
 						<input type="checkbox" id="ceafsn-pp-uninstall-delete" name="ceafsn_pp_uninstall_delete_data" value="1"

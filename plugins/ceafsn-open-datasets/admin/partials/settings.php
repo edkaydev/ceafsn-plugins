@@ -179,6 +179,7 @@ $od_tab_url = static function ( string $tab ) use ( $settings_url ): string {
 				<form class="ceafsn-form" method="post" action="<?php echo esc_url( $form_url ); ?>">
 					<?php wp_nonce_field( 'ceafsn_od_settings_nonce', 'ceafsn_od_nonce' ); ?>
 					<input type="hidden" name="action" value="ceafsn_od_save_settings" />
+					<input type="hidden" name="ceafsn_od_settings_scope" value="display" />
 
 					<div class="ceafsn-check">
 						<input type="checkbox" name="ceafsn_od_show_contact" value="1" id="ceafsn-od-show-contact" <?php checked( true, $show_contact ); ?>>
@@ -248,6 +249,7 @@ $od_tab_url = static function ( string $tab ) use ( $settings_url ): string {
 				<form class="ceafsn-form" method="post" action="<?php echo esc_url( $form_url ); ?>">
 					<?php wp_nonce_field( 'ceafsn_od_settings_nonce', 'ceafsn_od_nonce' ); ?>
 					<input type="hidden" name="action" value="ceafsn_od_save_settings" />
+					<input type="hidden" name="ceafsn_od_settings_scope" value="uninstall" />
 
 					<div class="ceafsn-check">
 						<input type="checkbox" name="ceafsn_od_uninstall_delete_data" value="1" id="ceafsn-od-uninstall-delete" <?php checked( true, (bool) $delete_flag ); ?>>

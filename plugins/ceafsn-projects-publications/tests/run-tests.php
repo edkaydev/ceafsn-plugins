@@ -1722,6 +1722,15 @@ foreach ( array( $pp_pub_partial, $pp_set_partial ) as $partial ) {
 	has_substring( 'CEAFSN_PP_Admin::SETTINGS_SLUG', $partial, 'the settings URL uses the constant' );
 }
 
+test( 'the publications page shows the shortcode too' );
+$main_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/publications.php' );
+has_substring( '[ceafsn_projects_pubs]', $main_partial, 'the dashboard page shows the exact shortcode' );
+foreach ( array( 'per_page', 'content_type', 'view' ) as $shortcode_attribute ) {
+	has_substring( $shortcode_attribute, $main_partial, "the dashboard card mentions {$shortcode_attribute}" );
+}
+has_substring( 'ceafsn-embed__code', $main_partial, 'the dashboard card uses the shared code block' );
+has_substring( "&tab=display", $main_partial, 'the card links to the Display settings tab' );
+
 test( 'the translation template exists and covers every translatable string' );
 $pot_path = $plugin_dir . '/languages/ceafsn-pp.pot';
 ok( file_exists( $pot_path ), 'languages/ceafsn-pp.pot exists' );
@@ -1760,6 +1769,66 @@ if ( file_exists( $pot_path ) ) {
 // -----------------------------------------------------------------------------
 // Summary
 // -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+section( 'Admin: settings scopes' );
+
+global $plugin_dir;
+$pp_settings_admin_ref = new ReflectionClass( new CEAFSN_PP_Admin() );
+
+/**
+ * Call PP's private settings writer with a given POST body.
+ *
+ * @param ReflectionClass $class Admin class.
+ * @param array           $post  POST body to save.
+ * @return void
+ */
+function save_pp_settings( ReflectionClass $class, array $post ): void {
+	$method = $class->getMethod( 'persist_settings' );
+	$method->setAccessible( true );
+	$method->invoke( $class->newInstanceWithoutConstructor(), $post );
+}
+
+test( 'each PP settings tab only touches the options it owns' );
+CEAFSN_PP_Test_State::$options = array(
+	CEAFSN_PP_Validator::PLACEHOLDER_OPTION => array( 'keep.pdf' ),
+	CEAFSN_PP_Activator::REDIRECT_OPTION     => true,
+	'ceafsn_pp_uninstall_delete_data'        => true,
+);
+save_pp_settings( $pp_settings_admin_ref, array( 'ceafsn_pp_settings_scope' => 'placeholders', 'ceafsn_pp_placeholder_files' => 'new.pdf' ) );
+is_same( array( 'new.pdf' ), get_option( CEAFSN_PP_Validator::PLACEHOLDER_OPTION ), 'the placeholder list is saved' );
+is_same( true, get_option( CEAFSN_PP_Activator::REDIRECT_OPTION ), 'the Routes tab option survives' );
+is_same( true, get_option( 'ceafsn_pp_uninstall_delete_data' ), 'the uninstall opt-in survives' );
+
+save_pp_settings( $pp_settings_admin_ref, array( 'ceafsn_pp_settings_scope' => 'routes' ) );
+is_same( false, get_option( CEAFSN_PP_Activator::REDIRECT_OPTION ), 'an unticked redirect saves as false' );
+is_same( array( 'new.pdf' ), get_option( CEAFSN_PP_Validator::PLACEHOLDER_OPTION ), 'the placeholder list is not reset' );
+is_same( true, get_option( 'ceafsn_pp_uninstall_delete_data' ), 'the uninstall opt-in survives the Routes tab' );
+
+save_pp_settings( $pp_settings_admin_ref, array( 'ceafsn_pp_settings_scope' => 'uninstall', 'ceafsn_pp_uninstall_delete_data' => '1' ) );
+is_same( true, get_option( 'ceafsn_pp_uninstall_delete_data' ), 'the opt-in saves as true' );
+is_same( array( 'new.pdf' ), get_option( CEAFSN_PP_Validator::PLACEHOLDER_OPTION ), 'the placeholder list is not reset' );
+is_same( false, get_option( CEAFSN_PP_Activator::REDIRECT_OPTION ), 'the Routes option is not reset' );
+
+test( 'a missing or unknown scope writes nothing' );
+CEAFSN_PP_Test_State::$options = array(
+	CEAFSN_PP_Validator::PLACEHOLDER_OPTION => array( 'keep.pdf' ),
+	CEAFSN_PP_Activator::REDIRECT_OPTION     => true,
+	'ceafsn_pp_uninstall_delete_data'        => false,
+);
+save_pp_settings( $pp_settings_admin_ref, array( 'ceafsn_pp_placeholder_files' => 'new.pdf', 'ceafsn_pp_uninstall_delete_data' => '1' ) );
+is_same( array( 'keep.pdf' ), get_option( CEAFSN_PP_Validator::PLACEHOLDER_OPTION ), 'no scope changes nothing' );
+is_same( false, get_option( 'ceafsn_pp_uninstall_delete_data' ), 'the opt-in is not silently enabled' );
+
+test( 'the editable settings forms declare the scope they own' );
+$pp_settings_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+foreach ( array( 'placeholders', 'routes', 'uninstall' ) as $scope ) {
+	has_substring( 'value="' . $scope . '"', $pp_settings_partial, "the {$scope} scope is posted by its own form" );
+}
+$pp_admin_class_src = (string) file_get_contents( $plugin_dir . '/admin/class-ceafsn-pp-admin.php' );
+has_substring( 'private function persist_settings( array $post ): void', $pp_admin_class_src, 'the writer is a separate method' );
+has_substring( '$this->persist_settings( wp_unslash( $_POST ) );', $pp_admin_class_src, 'the handler delegates to the writer' );
+has_substring( '$this->require_manage_options();', $pp_admin_class_src, 'the capability check still guards the handler' );
 
 $pass = $GLOBALS['ceafsn_pp_test_pass'];
 $fail = $GLOBALS['ceafsn_pp_test_fail'];

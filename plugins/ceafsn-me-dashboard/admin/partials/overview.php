@@ -190,6 +190,28 @@ foreach ( $med_steps as $med_index => $med_step ) {
 			<section class="ceafsn-card">
 				<div class="ceafsn-card__head">
 					<div>
+						<h2 class="ceafsn-card__title"><?php esc_html_e( 'Display on a page', 'ceafsn-med' ); ?></h2>
+						<p class="ceafsn-card__hint"><?php esc_html_e( 'The dashboard only appears where this shortcode is placed.', 'ceafsn-med' ); ?></p>
+					</div>
+					<a class="ceafsn-btn ceafsn-btn--quiet"
+						href="<?php echo esc_url( $med_url( CEAFSN_MED_Admin::PAGE_SETTINGS, '&tab=display' ) ); ?>">
+						<?php esc_html_e( 'How it works', 'ceafsn-med' ); ?>
+					</a>
+				</div>
+				<div class="ceafsn-card__body">
+					<div class="ceafsn-embed">
+						<p class="ceafsn-embed__label"><?php esc_html_e( 'Paste into the page that should show the dashboard', 'ceafsn-med' ); ?></p>
+						<code class="ceafsn-embed__code">[ceafsn_me_dashboard]</code>
+					</div>
+					<p class="ceafsn-card__hint">
+						<?php esc_html_e( 'This shortcode takes no attributes — it decides for itself what to show from the published records.', 'ceafsn-med' ); ?>
+					</p>
+				</div>
+			</section>
+
+			<section class="ceafsn-card">
+				<div class="ceafsn-card__head">
+					<div>
 						<h2 class="ceafsn-card__title"><?php esc_html_e( 'Publishing workflow', 'ceafsn-med' ); ?></h2>
 						<p class="ceafsn-card__hint"><?php esc_html_e( 'Counted from your records. A step is only complete when the numbers prove it.', 'ceafsn-med' ); ?></p>
 					</div>

@@ -16,6 +16,16 @@ class CEAFSN_RF_Admin {
 	const MENU_SLUG = 'ceafsn-rf';
 
 	/**
+	 * Settings sub-page slug.
+	 *
+	 * Linked from the Display cards and the Export buttons, so it lives in a
+	 * constant instead of being repeated as a literal in the partials.
+	 *
+	 * @var string
+	 */
+	const SETTINGS_SLUG = 'ceafsn-rf-settings';
+
+	/**
 	 * Hook suffixes returned when the menu was registered.
 	 *
 	 * Empty before admin_menu has fired, which is also the safe state: nothing
@@ -73,7 +83,7 @@ class CEAFSN_RF_Admin {
 			__( 'Settings', 'ceafsn-rf' ),
 			__( 'Settings', 'ceafsn-rf' ),
 			'manage_options',
-			'ceafsn-rf-settings',
+			self::SETTINGS_SLUG,
 			array( $this, 'page_settings' )
 		);
 	}
@@ -253,22 +263,44 @@ class CEAFSN_RF_Admin {
 		$this->require_manage_options();
 		check_admin_referer( 'ceafsn_rf_settings_nonce', 'ceafsn_rf_nonce' );
 
-		// Both boxes are explicit opt-ins, so an unticked box is stored as false
-		// rather than left at whatever it was before.
-		update_option(
-			CEAFSN_RF_Activator::SHOW_CLOSED_OPTION,
-			isset( $_POST['ceafsn_rf_show_closed'] )
-		);
-
-		update_option( 'ceafsn_rf_uninstall_delete_data', isset( $_POST['ceafsn_rf_uninstall_delete_data'] ) );
+		$this->persist_settings( wp_unslash( $_POST ) );
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'ceafsn-rf-settings', 'saved' => '1' ),
+				array( 'page' => self::SETTINGS_SLUG, 'saved' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
 		exit;
+	}
+
+	/**
+	 * Write the settings owned by the tab that posted the form.
+	 *
+	 * Each settings tab posts its own form and declares which options it owns
+	 * with a `ceafsn_rf_settings_scope` hidden field. Only those options are
+	 * written, so saving one tab cannot reset a checkbox that lives on another.
+	 * Within a scope a checkbox is still an explicit opt-in, so an unticked box
+	 * is stored as false rather than left at whatever it was before.
+	 *
+	 * @param array<string,mixed> $post Unslashed POST data.
+	 * @return void
+	 */
+	private function persist_settings( array $post ): void {
+		$scope = isset( $post['ceafsn_rf_settings_scope'] ) && is_string( $post['ceafsn_rf_settings_scope'] )
+			? sanitize_key( $post['ceafsn_rf_settings_scope'] )
+			: '';
+
+		if ( 'display' === $scope ) {
+			update_option(
+				CEAFSN_RF_Activator::SHOW_CLOSED_OPTION,
+				isset( $post['ceafsn_rf_show_closed'] )
+			);
+		}
+
+		if ( 'uninstall' === $scope ) {
+			update_option( 'ceafsn_rf_uninstall_delete_data', isset( $post['ceafsn_rf_uninstall_delete_data'] ) );
+		}
 	}
 
 	/**

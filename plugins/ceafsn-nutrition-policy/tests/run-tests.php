@@ -1066,7 +1066,77 @@ rmdir( $fake_wp_admin );
 rmdir( dirname( $fake_wp_admin ) );
 rmdir( dirname( $fake_wp_admin, 2 ) );
 
+test( 'the overview page shows the shortcode too' );
+$main_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/overview.php' );
+has_substring( '[ceafsn_policy_table]', $main_partial, 'the dashboard page shows the exact shortcode' );
+foreach ( array( 'per_page', 'topic' ) as $shortcode_attribute ) {
+	has_substring( $shortcode_attribute, $main_partial, "the dashboard card mentions {$shortcode_attribute}" );
+}
+has_substring( 'ceafsn-embed__code', $main_partial, 'the dashboard card uses the shared code block' );
+has_substring( "add_query_arg( 'tab', 'display'", $main_partial, 'the card links to the Display settings tab' );
+
 // -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+section( 'Admin: settings scopes' );
+
+global $plugin_dir;
+$np_admin_ref = new ReflectionClass( new CEAFSN_NP_Admin() );
+
+/**
+ * Call NP's private settings writer with a given POST body.
+ *
+ * @param ReflectionClass $class Admin class.
+ * @param array           $post  POST body to save.
+ * @return void
+ */
+function save_np_settings( ReflectionClass $class, array $post ): void {
+	$method = $class->getMethod( 'persist_settings' );
+	$method->setAccessible( true );
+	$method->invoke( $class->newInstanceWithoutConstructor(), $post );
+}
+
+test( 'saving the Placeholders tab leaves the uninstall opt-in untouched' );
+CEAFSN_NP_Test_State::$options = array(
+	CEAFSN_NP_Validator::PLACEHOLDER_OPTION => array( 'keep.pdf' ),
+	'ceafsn_np_uninstall_delete_data'         => true,
+);
+save_np_settings( $np_admin_ref, array( 'ceafsn_np_settings_scope' => 'general', 'ceafsn_np_placeholder_files' => 'new.pdf' ) );
+is_same( array( 'new.pdf' ), get_option( CEAFSN_NP_Validator::PLACEHOLDER_OPTION ), 'the placeholder list is saved' );
+is_same( true, get_option( 'ceafsn_np_uninstall_delete_data' ), 'the uninstall opt-in on another tab survives' );
+
+test( 'saving the Uninstall tab leaves the placeholder list untouched' );
+CEAFSN_NP_Test_State::$options = array(
+	CEAFSN_NP_Validator::PLACEHOLDER_OPTION => array( 'keep.pdf' ),
+	'ceafsn_np_uninstall_delete_data'         => false,
+);
+save_np_settings( $np_admin_ref, array( 'ceafsn_np_settings_scope' => 'uninstall', 'ceafsn_np_uninstall_delete_data' => '1' ) );
+is_same( true, get_option( 'ceafsn_np_uninstall_delete_data' ), 'the opt-in saves as true' );
+is_same( array( 'keep.pdf' ), get_option( CEAFSN_NP_Validator::PLACEHOLDER_OPTION ), 'the placeholder list is not reset' );
+
+test( 'a missing or unknown scope writes nothing' );
+CEAFSN_NP_Test_State::$options = array(
+	CEAFSN_NP_Validator::PLACEHOLDER_OPTION => array( 'keep.pdf' ),
+	'ceafsn_np_uninstall_delete_data'         => false,
+);
+save_np_settings( $np_admin_ref, array( 'ceafsn_np_placeholder_files' => 'new.pdf', 'ceafsn_np_uninstall_delete_data' => '1' ) );
+is_same( array( 'keep.pdf' ), get_option( CEAFSN_NP_Validator::PLACEHOLDER_OPTION ), 'no scope changes nothing' );
+is_same( false, get_option( 'ceafsn_np_uninstall_delete_data' ), 'the opt-in is not silently enabled' );
+save_np_settings( $np_admin_ref, array( 'ceafsn_np_settings_scope' => 'bogus', 'ceafsn_np_placeholder_files' => 'new.pdf' ) );
+is_same( array( 'keep.pdf' ), get_option( CEAFSN_NP_Validator::PLACEHOLDER_OPTION ), 'an unknown scope changes nothing' );
+
+test( 'the editable settings forms declare the scope they own' );
+$np_set_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+// NP posts one form for every editable tab, so the scope is decided by the tab
+// that is open rather than by the form itself.
+has_substring( 'name="ceafsn_np_settings_scope"', $np_set_partial, 'the settings form declares a scope' );
+has_substring( "$np_is_general ? 'general' : 'uninstall'", $np_set_partial, 'the scope follows the active tab' );
+has_substring( '<input type="checkbox" id="ceafsn-np-uninstall-delete"', $np_set_partial, 'the uninstall box still exists' );
+has_substring( 'id="ceafsn-np-placeholder-files"', $np_set_partial, 'the placeholder list still exists' );
+$np_admin_class = (string) file_get_contents( $plugin_dir . '/admin/class-ceafsn-np-admin.php' );
+has_substring( 'private function persist_settings( array $post ): void', $np_admin_class, 'the writer is a separate method' );
+has_substring( '$this->persist_settings( wp_unslash( $_POST ) );', $np_admin_class, 'the handler delegates to the writer' );
+has_substring( '$this->require_manage_options();', $np_admin_class, 'the capability check still guards the handler' );
+
 $pass = $GLOBALS['ceafsn_np_test_pass'];
 $fail = $GLOBALS['ceafsn_np_test_fail'];
 

@@ -1,0 +1,47 @@
+# Analysis and internal notes — not for version control
+docs/analysis.md
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# WordPress
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/backup-db/
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+
+# Node (if any tooling is added later)
+node_modules/
+npm-debug.log*
+yarn-error.log
+
+# Composer (if added later)
+vendor/
+
+# Build output
+dist/
+build/
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+
+# ZIP builds (re-generated from source; no need to track)
+plugins/*.zip

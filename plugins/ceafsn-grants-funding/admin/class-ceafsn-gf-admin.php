@@ -15,6 +15,9 @@ class CEAFSN_GF_Admin {
 	/** @var string Admin page parent slug. */
 	const MENU_SLUG = 'ceafsn-gf';
 
+	/** @var string Settings page slug. */
+	const PAGE_SETTINGS = 'ceafsn-gf-settings';
+
 	/**
 	 * Hook suffixes returned when the menu was registered.
 	 *
@@ -73,7 +76,7 @@ class CEAFSN_GF_Admin {
 			__( 'Settings', 'ceafsn-gf' ),
 			__( 'Settings', 'ceafsn-gf' ),
 			'manage_options',
-			'ceafsn-gf-settings',
+			self::PAGE_SETTINGS,
 			array( $this, 'page_settings' )
 		);
 	}
@@ -101,10 +104,13 @@ class CEAFSN_GF_Admin {
 			CEAFSN_GF_VERSION
 		);
 
+		// wp-i18n is a dependency because the script translates its own alerts
+		// and the delete confirmation. The code degrades to the source strings
+		// if it is ever missing, so a failed load is not a broken page.
 		wp_enqueue_script(
 			'ceafsn-gf-admin',
 			CEAFSN_GF_PLUGIN_URL . 'assets/js/ceafsn-gf-admin.js',
-			array( 'jquery' ),
+			array( 'jquery', 'wp-i18n' ),
 			CEAFSN_GF_VERSION,
 			true
 		);
@@ -258,22 +264,45 @@ class CEAFSN_GF_Admin {
 		$this->require_manage_options();
 		check_admin_referer( 'ceafsn_gf_settings_nonce', 'ceafsn_gf_nonce' );
 
-		// Both boxes are explicit opt-ins, so an unticked box is stored as false
-		// rather than left at whatever it was before.
-		update_option(
-			CEAFSN_GF_Activator::SHOW_CLOSED_OPTION,
-			isset( $_POST['ceafsn_gf_show_closed'] )
-		);
-
-		update_option( 'ceafsn_gf_uninstall_delete_data', isset( $_POST['ceafsn_gf_uninstall_delete_data'] ) );
+		$this->persist_settings( wp_unslash( $_POST ) );
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'ceafsn-gf-settings', 'saved' => '1' ),
+				array( 'page' => self::PAGE_SETTINGS, 'saved' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
 		exit;
+	}
+
+	/**
+	 * Persist settings for one tab only.
+	 *
+	 * Each settings tab is its own form, so a tab only submits its own fields.
+	 * The scope field says which tab is being saved: writing one tab's options
+	 * unconditionally would clear the checkboxes of a tab that was never on
+	 * screen, because an unticked checkbox is simply absent from the POST.
+	 *
+	 * @param array<string,mixed> $post Unslashed $_POST.
+	 * @return void
+	 */
+	private function persist_settings( array $post ): void {
+		$scope = isset( $post['ceafsn_gf_settings_scope'] ) && is_string( $post['ceafsn_gf_settings_scope'] )
+			? sanitize_key( $post['ceafsn_gf_settings_scope'] )
+			: '';
+
+		if ( 'general' === $scope ) {
+			// Explicit opt-in: an unticked box is stored as false rather than
+			// left at whatever it was before.
+			update_option(
+				CEAFSN_GF_Activator::SHOW_CLOSED_OPTION,
+				isset( $post['ceafsn_gf_show_closed'] )
+			);
+		}
+
+		if ( 'uninstall' === $scope ) {
+			update_option( 'ceafsn_gf_uninstall_delete_data', isset( $post['ceafsn_gf_uninstall_delete_data'] ) );
+		}
 	}
 
 	/**

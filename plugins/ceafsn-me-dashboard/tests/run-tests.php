@@ -826,7 +826,66 @@ ok(
 	'the admin stylesheet braces are still balanced'
 );
 
+test( 'the overview page shows the shortcode too' );
+$main_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/overview.php' );
+has_substring( '[ceafsn_me_dashboard]', $main_partial, 'the dashboard page shows the exact shortcode' );
+has_substring( 'ceafsn-embed__code', $main_partial, 'the dashboard card uses the shared code block' );
+has_substring( "no attributes", $main_partial, 'the card says the shortcode takes no attributes' );
+lacks_substring( '<code>per_page</code>', $main_partial, 'no attribute is claimed for a shortcode that takes none' );
+
 // -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+section( 'Admin: settings scopes' );
+
+global $plugin_dir;
+$med_admin_ref = new ReflectionClass( new CEAFSN_MED_Admin() );
+
+/**
+ * Call MED's private settings writer with a given POST body.
+ *
+ * @param ReflectionClass $class Admin class.
+ * @param array           $post  POST body to save.
+ * @return void
+ */
+function save_med_settings( ReflectionClass $class, array $post ): void {
+	$method = $class->getMethod( 'persist_settings' );
+	$method->setAccessible( true );
+	$method->invoke( $class->newInstanceWithoutConstructor(), $post );
+}
+
+test( 'saving the preview tab leaves the uninstall opt-in untouched' );
+CEAFSN_Test_State::$options = array(
+	'ceafsn_med_preview_mode'          => '0',
+	'ceafsn_med_uninstall_delete_data' => true,
+);
+save_med_settings( $med_admin_ref, array( 'ceafsn_med_settings_scope' => 'settings', 'ceafsn_med_preview_mode' => '1' ) );
+is_same( '1', get_option( 'ceafsn_med_preview_mode' ), 'preview mode is saved' );
+is_same( true, get_option( 'ceafsn_med_uninstall_delete_data' ), 'the uninstall opt-in on another tab survives' );
+
+test( 'saving the Uninstall tab leaves preview mode untouched' );
+CEAFSN_Test_State::$options = array(
+	'ceafsn_med_preview_mode'          => '1',
+	'ceafsn_med_uninstall_delete_data' => false,
+);
+save_med_settings( $med_admin_ref, array( 'ceafsn_med_settings_scope' => 'uninstall', 'ceafsn_med_uninstall_delete_data' => '1' ) );
+is_same( true, get_option( 'ceafsn_med_uninstall_delete_data' ), 'the opt-in saves as true' );
+is_same( '1', get_option( 'ceafsn_med_preview_mode' ), 'preview mode is not reset' );
+
+test( 'a missing or unknown scope writes nothing' );
+CEAFSN_Test_State::$options = array(
+	'ceafsn_med_preview_mode'          => '0',
+	'ceafsn_med_uninstall_delete_data' => false,
+);
+save_med_settings( $med_admin_ref, array( 'ceafsn_med_preview_mode' => '1', 'ceafsn_med_uninstall_delete_data' => '1' ) );
+is_same( '0', get_option( 'ceafsn_med_preview_mode' ), 'no scope changes nothing' );
+is_same( false, get_option( 'ceafsn_med_uninstall_delete_data' ), 'the opt-in is not silently enabled' );
+
+test( 'the editable settings forms declare the scope they own' );
+$med_set_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+foreach ( array( 'settings', 'uninstall' ) as $scope ) {
+	has_substring( 'value="' . $scope . '"', $med_set_partial, "the {$scope} scope is posted by its own form" );
+}
+
 $pass = $GLOBALS['ceafsn_test_pass'];
 $fail = $GLOBALS['ceafsn_test_fail'];
 

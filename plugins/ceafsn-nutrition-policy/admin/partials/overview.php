@@ -215,6 +215,27 @@ foreach ( $np_steps as $np_index => $np_step ) {
 			<section class="ceafsn-card">
 				<div class="ceafsn-card__head">
 					<div>
+						<h2 class="ceafsn-card__title"><?php esc_html_e( 'Display on a page', 'ceafsn-np' ); ?></h2>
+						<p class="ceafsn-card__hint"><?php esc_html_e( 'Nothing is visible to visitors until this shortcode is on a page.', 'ceafsn-np' ); ?></p>
+					</div>
+					<a class="ceafsn-btn ceafsn-btn--quiet" href="<?php echo esc_url( add_query_arg( 'tab', 'display', $np_settings_url ) ); ?>">
+						<?php esc_html_e( 'Attributes', 'ceafsn-np' ); ?>
+					</a>
+				</div>
+				<div class="ceafsn-card__body">
+					<div class="ceafsn-embed">
+						<p class="ceafsn-embed__label"><?php esc_html_e( 'Paste into the page that should list policies', 'ceafsn-np' ); ?></p>
+						<code class="ceafsn-embed__code">[ceafsn_policy_table]</code>
+					</div>
+					<p class="ceafsn-card__hint">
+						<?php esc_html_e( 'It takes optional per_page and topic attributes — open Display in settings for the full list.', 'ceafsn-np' ); ?>
+					</p>
+				</div>
+			</section>
+
+			<section class="ceafsn-card">
+				<div class="ceafsn-card__head">
+					<div>
 						<h2 class="ceafsn-card__title"><?php esc_html_e( 'Publishing workflow', 'ceafsn-np' ); ?></h2>
 						<p class="ceafsn-card__hint"><?php esc_html_e( 'Counted from your records. A step is only complete when the numbers prove it.', 'ceafsn-np' ); ?></p>
 					</div>

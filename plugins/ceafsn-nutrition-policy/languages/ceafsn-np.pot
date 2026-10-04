@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04T13:13:36+00:00\n"
+"POT-Creation-Date: 2026-10-04T13:49:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-np\n"
@@ -65,39 +65,39 @@ msgstr ""
 msgid "The record was saved as a draft instead."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php:391
+#: admin/class-ceafsn-np-admin.php:416
 msgid "Title is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php:394
+#: admin/class-ceafsn-np-admin.php:419
 msgid "Description is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php:397
+#: admin/class-ceafsn-np-admin.php:422
 msgid "Topic is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php:400
+#: admin/class-ceafsn-np-admin.php:425
 msgid "Authoring institution is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php:403
+#: admin/class-ceafsn-np-admin.php:428
 msgid "A PDF attachment is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php:408
+#: admin/class-ceafsn-np-admin.php:433
 msgid "Publication date must be a valid date (YYYY-MM-DD)."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php:412
+#: admin/class-ceafsn-np-admin.php:437
 msgid "Invalid status value."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php:416
+#: admin/class-ceafsn-np-admin.php:441
 msgid "Source URL is not a valid URL."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php:431
+#: admin/class-ceafsn-np-admin.php:456
 msgid "You do not have permission to perform this action."
 msgstr ""
 
@@ -187,13 +187,13 @@ msgid "A record stays invisible on the public page until its own PDF passes vali
 msgstr ""
 
 #: admin/partials/overview.php:169
-#: admin/partials/overview.php:424
+#: admin/partials/overview.php:445
 #: admin/partials/policies.php:57
 msgid "+ Add policy record"
 msgstr ""
 
 #: admin/partials/overview.php:172
-#: admin/partials/overview.php:330
+#: admin/partials/overview.php:351
 msgid "All records"
 msgstr ""
 
@@ -223,171 +223,191 @@ msgid "<strong>%s</strong> topics"
 msgstr ""
 
 #: admin/partials/overview.php:218
-msgid "Publishing workflow"
+msgid "Display on a page"
 msgstr ""
 
 #: admin/partials/overview.php:219
+msgid "Nothing is visible to visitors until this shortcode is on a page."
+msgstr ""
+
+#: admin/partials/overview.php:222
+msgid "Attributes"
+msgstr ""
+
+#: admin/partials/overview.php:227
+msgid "Paste into the page that should list policies"
+msgstr ""
+
+#: admin/partials/overview.php:231
+msgid "It takes optional per_page and topic attributes — open Display in settings for the full list."
+msgstr ""
+
+#: admin/partials/overview.php:239
+msgid "Publishing workflow"
+msgstr ""
+
+#: admin/partials/overview.php:240
 msgid "Counted from your records. A step is only complete when the numbers prove it."
 msgstr ""
 
-#: admin/partials/overview.php:241
+#: admin/partials/overview.php:262
 msgid "Current step:"
 msgstr ""
 
-#: admin/partials/overview.php:247
+#: admin/partials/overview.php:268
 msgid "All steps complete"
 msgstr ""
 
-#: admin/partials/overview.php:259
+#: admin/partials/overview.php:280
 msgid "Records"
 msgstr ""
 
 #. translators: 1: published count, 2: draft count.
-#: admin/partials/overview.php:266
+#: admin/partials/overview.php:287
 #, php-format
 msgid "%1$s published · %2$s draft"
 msgstr ""
 
-#: admin/partials/overview.php:277
+#: admin/partials/overview.php:298
 msgid "With a PDF"
 msgstr ""
 
 #. translators: %s: number of records with no PDF.
-#: admin/partials/overview.php:284
+#: admin/partials/overview.php:305
 #, php-format
 msgid "%s still missing one"
 msgstr ""
 
-#: admin/partials/overview.php:294
+#: admin/partials/overview.php:315
 msgid "Topics covered"
 msgstr ""
 
-#: admin/partials/overview.php:297
+#: admin/partials/overview.php:318
 msgid "Distinct domains in use"
 msgstr ""
 
-#: admin/partials/overview.php:303
+#: admin/partials/overview.php:324
 msgid "Needs attention"
 msgstr ""
 
-#: admin/partials/overview.php:309
-#: admin/partials/overview.php:337
+#: admin/partials/overview.php:330
+#: admin/partials/overview.php:358
 msgid "Every record has its own document"
 msgstr ""
 
 #. translators: 1: records with no PDF, 2: documents shared by several records.
-#: admin/partials/overview.php:313
+#: admin/partials/overview.php:334
 #, php-format
 msgid "%1$s no PDF · %2$s shared"
 msgstr ""
 
-#: admin/partials/overview.php:326
+#: admin/partials/overview.php:347
 msgid "Needs your attention"
 msgstr ""
 
-#: admin/partials/overview.php:327
+#: admin/partials/overview.php:348
 msgid "Records with no PDF, or sharing a document with another record."
 msgstr ""
 
-#: admin/partials/overview.php:339
+#: admin/partials/overview.php:360
 msgid "No record is missing a PDF or sharing one with another record. Nothing to review here."
 msgstr ""
 
-#: admin/partials/overview.php:345
+#: admin/partials/overview.php:366
 msgid "Records needing attention"
 msgstr ""
 
-#: admin/partials/overview.php:348
+#: admin/partials/overview.php:369
 msgid "Record"
 msgstr ""
 
-#: admin/partials/overview.php:349
+#: admin/partials/overview.php:370
 #: admin/partials/policies.php:116
 #: admin/partials/policies.php:302
 msgid "Status"
 msgstr ""
 
-#: admin/partials/overview.php:350
+#: admin/partials/overview.php:371
 msgid "Issue"
 msgstr ""
 
-#: admin/partials/overview.php:351
+#: admin/partials/overview.php:372
 #: admin/partials/policies.php:117
 msgid "Actions"
 msgstr ""
 
-#: admin/partials/overview.php:371
+#: admin/partials/overview.php:392
 msgid "Review"
 msgstr ""
 
 #. translators: %s: number of remaining records.
-#: admin/partials/overview.php:385
+#: admin/partials/overview.php:406
 #, php-format
 msgid "and %s more — open All records to review the rest."
 msgstr ""
 
-#: admin/partials/overview.php:397
+#: admin/partials/overview.php:418
 msgid "Topics in use"
 msgstr ""
 
-#: admin/partials/overview.php:402
+#: admin/partials/overview.php:423
 msgid "No topic recorded yet."
 msgstr ""
 
-#: admin/partials/overview.php:418
+#: admin/partials/overview.php:439
 msgid "Get started"
 msgstr ""
 
-#: admin/partials/overview.php:419
+#: admin/partials/overview.php:440
 msgid "Add a policy record"
 msgstr ""
 
-#: admin/partials/overview.php:421
+#: admin/partials/overview.php:442
 msgid "One record per document. Attach the PDF from the media library and publish when it validates."
 msgstr ""
 
-#: admin/partials/overview.php:429
+#: admin/partials/overview.php:450
 msgid "Before you publish"
 msgstr ""
 
-#: admin/partials/overview.php:430
+#: admin/partials/overview.php:451
 msgid "Publishing rules"
 msgstr ""
 
-#: admin/partials/overview.php:432
+#: admin/partials/overview.php:453
 msgid "Each record needs its own PDF."
 msgstr ""
 
-#: admin/partials/overview.php:433
+#: admin/partials/overview.php:454
 msgid "The PDF must be readable and have a readable page count."
 msgstr ""
 
-#: admin/partials/overview.php:434
+#: admin/partials/overview.php:455
 msgid "Known placeholder file names can never be published."
 msgstr ""
 
-#: admin/partials/overview.php:435
+#: admin/partials/overview.php:456
 msgid "Saving with an invalid PDF downgrades the record to draft."
 msgstr ""
 
-#: admin/partials/overview.php:440
+#: admin/partials/overview.php:461
 msgid "Keep a copy"
 msgstr ""
 
-#: admin/partials/overview.php:441
-#: admin/partials/settings.php:157
+#: admin/partials/overview.php:462
+#: admin/partials/settings.php:158
 msgid "Export records"
 msgstr ""
 
-#: admin/partials/overview.php:443
+#: admin/partials/overview.php:464
 msgid "Download every record as JSON before bulk changes or removing the plugin."
 msgstr ""
 
-#: admin/partials/overview.php:446
+#: admin/partials/overview.php:467
 msgid "Open export"
 msgstr ""
 
-#: admin/partials/overview.php:454
+#: admin/partials/overview.php:475
 msgid "Jump to publishing rules"
 msgstr ""
 
@@ -660,35 +680,35 @@ msgstr ""
 msgid "Data removal on uninstall"
 msgstr ""
 
-#: admin/partials/settings.php:147
+#: admin/partials/settings.php:148
 msgid "Known placeholder files"
 msgstr ""
 
-#: admin/partials/settings.php:151
+#: admin/partials/settings.php:152
 msgid "One file name per line. A policy record can never be published while its PDF matches one of these names. ceafsn.pdf is always included and cannot be removed from this list."
 msgstr ""
 
-#: admin/partials/settings.php:159
+#: admin/partials/settings.php:160
 msgid "Download every policy record as JSON before making bulk changes or removing the plugin. The export contains record text and attachment IDs; it does not copy the PDF files themselves."
 msgstr ""
 
-#: admin/partials/settings.php:164
+#: admin/partials/settings.php:165
 msgid "Download export"
 msgstr ""
 
-#: admin/partials/settings.php:171
+#: admin/partials/settings.php:172
 msgid "Deactivating the plugin never deletes anything. Tick the box below only if you intend to delete the plugin and permanently remove the policy table."
 msgstr ""
 
-#: admin/partials/settings.php:179
+#: admin/partials/settings.php:180
 msgid "Delete all policy records and plugin options when the plugin is deleted"
 msgstr ""
 
-#: admin/partials/settings.php:182
+#: admin/partials/settings.php:183
 msgid "Files in the Media Library are never removed — other pages may still link to them."
 msgstr ""
 
-#: admin/partials/settings.php:192
+#: admin/partials/settings.php:193
 msgid "Save settings"
 msgstr ""
 

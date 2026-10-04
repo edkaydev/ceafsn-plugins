@@ -231,33 +231,60 @@ class CEAFSN_PP_Admin {
 	}
 
 	/**
+	 * Write the settings owned by the tab that posted the form.
+	 *
+	 * Each settings tab posts its own form and declares which options it owns
+	 * with a `ceafsn_projects_settings_scope` hidden field. Only those options are
+	 * written, so saving one tab cannot reset a checkbox that lives on another.
+	 *
+	 * @param array<string,mixed> $post Unslashed POST data.
+	 * @return void
+	 */
+	private function persist_settings( array $post ): void {
+		$scope = isset( $post['ceafsn_pp_settings_scope'] ) && is_string( $post['ceafsn_pp_settings_scope'] )
+			? sanitize_key( $post['ceafsn_pp_settings_scope'] )
+			: '';
+
+		if ( 'placeholders' === $scope ) {
+			$raw = isset( $post['ceafsn_pp_placeholder_files'] )
+				? sanitize_textarea_field( $post['ceafsn_pp_placeholder_files'] )
+				: '';
+
+			$files = array_values( array_filter( array_map( 'sanitize_file_name', preg_split( '/[\r\n,]+/', $raw ) ?: array() ) ) );
+			$files = array_values( array_unique( $files ) );
+
+			update_option( CEAFSN_PP_Validator::PLACEHOLDER_OPTION, $files );
+		}
+
+		// Legacy redirect: on unless the box is explicitly unticked.
+		if ( 'routes' === $scope ) {
+			update_option(
+				CEAFSN_PP_Activator::REDIRECT_OPTION,
+				isset( $post['ceafsn_pp_legacy_redirect'] )
+			);
+		}
+
+		// Uninstall delete-data flag — explicit checkbox only.
+		if ( 'uninstall' === $scope ) {
+			update_option( 'ceafsn_pp_uninstall_delete_data', isset( $post['ceafsn_pp_uninstall_delete_data'] ) );
+		}
+
+	}
+
+	/**
 	 * Handle settings save.
+	 *
+	 * @return void
 	 */
 	public function handle_save_settings(): void {
 		$this->require_manage_options();
 		check_admin_referer( 'ceafsn_pp_settings_nonce', 'ceafsn_pp_nonce' );
 
-		$raw = isset( $_POST['ceafsn_pp_placeholder_files'] )
-			? sanitize_textarea_field( wp_unslash( $_POST['ceafsn_pp_placeholder_files'] ) )
-			: '';
-
-		$files = array_values( array_filter( array_map( 'sanitize_file_name', preg_split( '/[\r\n,]+/', $raw ) ?: array() ) ) );
-		$files = array_values( array_unique( $files ) );
-
-		update_option( CEAFSN_PP_Validator::PLACEHOLDER_OPTION, $files );
-
-		// Legacy redirect: on unless the box is explicitly unticked.
-		update_option(
-			CEAFSN_PP_Activator::REDIRECT_OPTION,
-			isset( $_POST['ceafsn_pp_legacy_redirect'] )
-		);
-
-		// Uninstall delete-data flag — explicit checkbox only.
-		update_option( 'ceafsn_pp_uninstall_delete_data', isset( $_POST['ceafsn_pp_uninstall_delete_data'] ) );
+		$this->persist_settings( wp_unslash( $_POST ) );
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'ceafsn-pp-settings', 'saved' => '1' ),
+				array( 'page' => self::SETTINGS_SLUG, 'saved' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);

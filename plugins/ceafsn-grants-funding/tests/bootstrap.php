@@ -865,6 +865,23 @@ if ( ! function_exists( 'esc_attr' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_kses_post' ) ) {
+	/**
+	 * Filter a translated string down to what is allowed inside post content.
+	 *
+	 * The stub is deliberately permissive but still neutralises tags and
+	 * attributes, so a test cannot pass merely because a string escaped the
+	 * markup it was supposed to be escaped from.
+	 *
+	 * @param string $text Raw text.
+	 * @return string Filtered text.
+	 */
+	function wp_kses_post( string $text ): string {
+		$allowed = '<a><strong><em><b><i><br><code><span><p><ul><ol><li>';
+		return strip_tags( $text, $allowed );
+	}
+}
+
 if ( ! function_exists( 'esc_textarea' ) ) {
 	/**
 	 * Escape for a textarea.

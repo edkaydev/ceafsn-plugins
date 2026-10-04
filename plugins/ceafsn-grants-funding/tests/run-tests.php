@@ -1052,6 +1052,327 @@ has_substring( 'wp_ceafsn_gf_grants', implode( ' ', $report['queries'] ), 'the c
 ok( ! array_key_exists( 'ceafsn_gf_db_version', $report['options'] ), 'the schema version option is cleared too' );
 
 // -----------------------------------------------------------------------------
+section( 'Admin: branded layout' );
+
+global $plugin_dir;
+
+$gf_grants_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/grants.php' );
+$gf_admin_css      = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-gf-admin.css' );
+
+test( 'every admin partial is scoped to the plugin wrapper' );
+has_substring( 'class="wrap ceafsn-gf-wrap"', $gf_grants_partial, 'the grants screen uses the scoped wrapper' );
+
+test( 'the shared design system is scoped so it cannot leak into other plugins' );
+ok(
+	! preg_match( '/(^|\})\s*(body|html|p|h1|h2|h3|table|ul|ol|label|input)\s*\{/m', $gf_admin_css ),
+	'no bare element selectors in the admin stylesheet'
+);
+has_substring( '.ceafsn-gf-wrap', $gf_admin_css, 'admin styles are scoped to the wrapper' );
+ok(
+	substr_count( $gf_admin_css, '{' ) === substr_count( $gf_admin_css, '}' ),
+	'the admin stylesheet braces are balanced'
+);
+
+test( 'the list screen uses the shared summary and table components' );
+foreach (
+	array(
+		'ceafsn-hero',
+		'ceafsn-app',
+		'ceafsn-app__main',
+		'ceafsn-app__rail',
+		'ceafsn-kpi',
+		'ceafsn-stepper',
+		'ceafsn-card',
+		'ceafsn-card__head',
+		'ceafsn-card__body',
+		'ceafsn-table',
+		'ceafsn-cta',
+		'ceafsn-ticks',
+		'ceafsn-empty',
+	) as $gf_component
+) {
+	has_substring( $gf_component, $gf_grants_partial, "the list uses {$gf_component}" );
+	has_substring( $gf_component, $gf_admin_css, "the stylesheet defines {$gf_component}" );
+}
+
+test( 'the grant vocabulary has its own badge modifiers' );
+foreach ( array( 'grant-open', 'grant-upcoming', 'grant-closed', 'grant-archived' ) as $gf_modifier ) {
+	has_substring( 'ceafsn-badge--' . $gf_modifier, $gf_admin_css, "the stylesheet styles {$gf_modifier}" );
+}
+foreach ( array( 'state-draft', 'state-published', 'state-archived' ) as $gf_modifier ) {
+	has_substring( 'ceafsn-badge--' . $gf_modifier, $gf_admin_css, "the stylesheet styles {$gf_modifier}" );
+}
+has_substring( 'ceafsn-badge--grant-<?php echo esc_attr', $gf_grants_partial, 'the opportunity badge is chosen from the record' );
+has_substring( 'ceafsn-badge--state-<?php echo esc_attr', $gf_grants_partial, 'the record-state badge is chosen from the record' );
+
+test( 'the empty state does not invent records' );
+has_substring( 'No grant records yet', $gf_grants_partial, 'the empty list explains itself' );
+has_substring( 'Add the first grant', $gf_grants_partial, 'the empty state offers the next action' );
+
+test( 'the list reports what is on screen instead of counting blindly' );
+has_substring( 'number_format_i18n( $gf_total )', $gf_grants_partial, 'counts are formatted for the locale' );
+has_substring( 'ceafsn-gf-flag', $gf_grants_partial, 'an Open grant past its deadline is flagged rather than hidden' );
+has_substring( 'ceafsn-gf-shared-list', $gf_grants_partial, 'records sharing a document are listed by name' );
+has_substring( 'ceafsn-gf-shared-list', $gf_admin_css, 'the shared-document list is styled' );
+
+test( 'one form wraps every card on the add and edit screen' );
+ok(
+	substr_count( $gf_grants_partial, '<form' ) === substr_count( $gf_grants_partial, '</form>' ),
+	'the form tags balance'
+);
+is_same( 1, substr_count( $gf_grants_partial, '<form' ), 'the record form is a single form' );
+has_substring( 'ceafsn-form__spaced', $gf_grants_partial, 'the form uses the shared spacing modifier' );
+has_substring( 'ceafsn-form__actions', $gf_grants_partial, 'the save controls are inside the form' );
+
+test( 'every field the save handler reads is on the form' );
+foreach (
+	array(
+		'title',
+		'award_range',
+		'funding_institution',
+		'deadline',
+		'target_beneficiaries',
+		'eligibility',
+		'call_pdf_id',
+		'application_url',
+		'contact',
+		'show_contact',
+		'duplicate_ok',
+		'duplicate_note',
+		'grant_status',
+		'status',
+	) as $gf_field
+) {
+	has_substring( 'name="' . $gf_field . '"', $gf_grants_partial, "the form posts {$gf_field}" );
+}
+
+test( 'the media picker keeps the IDs the script relies on' );
+foreach (
+	array(
+		'ceafsn-gf-pdf-id',
+		'ceafsn-gf-pdf-field',
+		'ceafsn-gf-media-button',
+		'ceafsn-gf-media-clear',
+	) as $gf_element
+) {
+	has_substring( $gf_element, $gf_grants_partial, "the markup provides {$gf_element}" );
+
+	$gf_script = (string) file_get_contents( $plugin_dir . '/assets/js/ceafsn-gf-admin.js' );
+	has_substring( $gf_element, $gf_script, "the script addresses {$gf_element}" );
+}
+
+test( 'the picker no longer depends on a table cell being an ancestor' );
+$gf_script = (string) file_get_contents( $plugin_dir . '/assets/js/ceafsn-gf-admin.js' );
+lacks_substring( "closest( 'td' )", $gf_script, 'the media script does not walk up to a table cell' );
+lacks_substring( 'closest( "td" )', $gf_script, 'the media script does not walk up to a table cell' );
+
+test( 'deleting a record asks first' );
+has_substring( 'ceafsn-gf-delete-link', $gf_grants_partial, 'the delete action is marked' );
+has_substring( 'ceafsn-gf-delete-link', $gf_script, 'the script handles the delete action' );
+has_substring( 'window.confirm(', $gf_script, 'deletion is confirmed before it happens' );
+
+// -----------------------------------------------------------------------------
+section( 'Admin: settings scopes and tabs' );
+
+$gf_set_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+
+test( 'the settings screen shows the administrator which shortcode to use' );
+has_substring( '[ceafsn_grants]', $gf_set_partial, 'the exact shortcode is shown' );
+foreach ( array( 'per_page', 'funding_institution', 'status', 'view' ) as $gf_attribute ) {
+	has_substring( '<code>' . $gf_attribute . '</code>', $gf_set_partial, "the shortcode card documents {$gf_attribute}" );
+}
+foreach ( array( 'ceafsn-embed__code', 'ceafsn-embed__table', 'ceafsn-embed__caption' ) as $gf_class ) {
+	has_substring( $gf_class, $gf_set_partial, "the shortcode card uses {$gf_class}" );
+}
+ok( str_contains( $gf_set_partial, "'display' === \$gf_active_tab" ), 'the shortcode has its own read-only tab' );
+has_substring( 'ceafsn-embed', $gf_admin_css, 'the stylesheet carries the shared embed component' );
+
+test( 'every settings tab is reachable' );
+foreach ( array( 'display', 'general', 'export', 'uninstall' ) as $gf_tab ) {
+	ok(
+		1 === preg_match( "/'" . preg_quote( $gf_tab, '/' ) . "'\\s*=>/", $gf_set_partial ),
+		"the tab nav offers {$gf_tab}"
+	);
+}
+has_substring( 'ceafsn-tabs__tab--active', $gf_set_partial, 'the open tab is marked' );
+has_substring( 'aria-current="page"', $gf_set_partial, 'the open tab announces itself' );
+
+/**
+ * Call GF's private settings writer with a given POST body.
+ *
+ * @param ReflectionClass $class Admin class.
+ * @param array           $post  POST body to save.
+ * @return void
+ */
+function save_gf_settings( ReflectionClass $class, array $post ): void {
+	$method = $class->getMethod( 'persist_settings' );
+	$method->setAccessible( true );
+	$method->invoke( $class->newInstanceWithoutConstructor(), $post );
+}
+
+test( 'saving the General tab leaves the uninstall opt-in untouched' );
+CEAFSN_GF_Test_State::$options = array(
+	CEAFSN_GF_Activator::SHOW_CLOSED_OPTION  => true,
+	'ceafsn_gf_uninstall_delete_data'         => true,
+);
+save_gf_settings( $admin_ref, array( 'ceafsn_gf_settings_scope' => 'general' ) );
+is_same( false, get_option( CEAFSN_GF_Activator::SHOW_CLOSED_OPTION ), 'an unticked display box is saved as false' );
+is_same( true, get_option( 'ceafsn_gf_uninstall_delete_data' ), 'the uninstall opt-in on another tab survives' );
+
+test( 'saving the Uninstall tab leaves the display default untouched' );
+CEAFSN_GF_Test_State::$options = array(
+	CEAFSN_GF_Activator::SHOW_CLOSED_OPTION  => true,
+	'ceafsn_gf_uninstall_delete_data'         => false,
+);
+save_gf_settings( $admin_ref, array( 'ceafsn_gf_settings_scope' => 'uninstall', 'ceafsn_gf_uninstall_delete_data' => '1' ) );
+is_same( true, get_option( 'ceafsn_gf_uninstall_delete_data' ), 'the opt-in saves as true' );
+is_same( true, get_option( CEAFSN_GF_Activator::SHOW_CLOSED_OPTION ), 'the display default is not reset' );
+
+test( 'a missing or unknown scope writes nothing' );
+CEAFSN_GF_Test_State::$options = array(
+	CEAFSN_GF_Activator::SHOW_CLOSED_OPTION  => true,
+	'ceafsn_gf_uninstall_delete_data'         => false,
+);
+save_gf_settings( $admin_ref, array( 'ceafsn_gf_show_closed' => '1', 'ceafsn_gf_uninstall_delete_data' => '1' ) );
+is_same( true, get_option( CEAFSN_GF_Activator::SHOW_CLOSED_OPTION ), 'no scope changes nothing' );
+is_same( false, get_option( 'ceafsn_gf_uninstall_delete_data' ), 'the opt-in is not silently enabled' );
+save_gf_settings( $admin_ref, array( 'ceafsn_gf_settings_scope' => 'bogus', 'ceafsn_gf_uninstall_delete_data' => '1' ) );
+is_same( false, get_option( 'ceafsn_gf_uninstall_delete_data' ), 'an unknown scope changes nothing' );
+
+test( 'the editable settings forms declare the scope they own' );
+has_substring( 'name="ceafsn_gf_settings_scope"', $gf_set_partial, 'the scope field is posted' );
+has_substring( "esc_attr( \$gf_is_general ? 'general' : 'uninstall' )", $gf_set_partial, 'the scope follows the open tab' );
+
+// -----------------------------------------------------------------------------
+section( 'Admin: partials render' );
+
+/**
+ * Render an admin partial the way the admin class does, and hand back the HTML.
+ *
+ * Reading a partial as a string proves nothing about whether it runs. Every
+ * screen is rendered here instead, because an undefined stub or a misspelled
+ * variable is invisible to a substring check and fatal on a real page.
+ *
+ * @param string               $file Partial path.
+ * @param array<string,mixed>  $vars Variables the admin class puts in scope.
+ * @return string
+ */
+function render_gf_partial( string $file, array $vars = array() ): string {
+	// The partials read $_GET directly, the way WordPress hands it over.
+	$before_get = $_GET;
+
+	extract( $vars );
+	ob_start();
+
+	try {
+		require $file;
+	} finally {
+		$html = (string) ob_get_clean();
+		$_GET = $before_get;
+	}
+
+	return $html;
+}
+
+test( 'the grants screen renders in every mode' );
+$gf_partial = $plugin_dir . '/admin/partials/grants.php';
+
+$modes = array(
+	'an empty list'    => array(
+		'action'          => 'list',
+		'row'             => null,
+		'items'           => array(),
+		'validation'      => null,
+		'duplicate_count' => 0,
+		'shared_with'     => array(),
+	),
+	'a populated list' => array(
+		'action'          => 'list',
+		'row'             => null,
+		'items'           => array(
+			grant_row( array( 'grant_id' => 1 ) ),
+			grant_row( array( 'grant_id' => 2, 'grant_status' => 'upcoming', 'status' => 'draft', 'call_pdf_id' => 0 ) ),
+			grant_row( array( 'grant_id' => 3, 'deadline' => '2001-01-01 00:00:00' ) ),
+		),
+		'validation'      => null,
+		'duplicate_count' => 0,
+		'shared_with'     => array(),
+	),
+	'add'              => array(
+		'action'          => 'add',
+		'row'             => null,
+		'items'           => array(),
+		'validation'      => null,
+		'duplicate_count' => 0,
+		'shared_with'     => array(),
+	),
+	'edit'             => array(
+		'action'          => 'edit',
+		'row'             => grant_row( array( 'duplicate_ok' => 1 ) ),
+		'items'           => array( grant_row() ),
+		'validation'      => array( 'valid' => true, 'pages' => 4, 'errors' => array() ),
+		'duplicate_count' => 1,
+		'shared_with'     => array( grant_row( array( 'grant_id' => 9, 'title' => 'Other record' ) ) ),
+	),
+);
+
+foreach ( $modes as $label => $vars ) {
+	ok( strlen( render_gf_partial( $gf_partial, $vars ) ) > 500, "the {$label} screen renders" );
+}
+
+test( 'the summary counts only the records on screen' );
+$html = render_gf_partial( $gf_partial, $modes['a populated list'] );
+has_substring( '<span class="ceafsn-kpi__value">3</span>', $html, 'three records are counted' );
+has_substring( 'ceafsn-kpi--alert', $html, 'a passed deadline raises the alert tile' );
+is_same( 1, substr_count( $html, 'ceafsn-gf-flag' ), 'only the overdue record is flagged' );
+
+test( 'a missing call document is called out rather than hidden' );
+has_substring( 'ceafsn-badge--warn', $html, 'the record with no PDF is marked missing' );
+has_substring( 'ceafsn-dot--danger', $html, 'and it carries the danger dot' );
+
+test( 'the edit screen reports a shared document by name' );
+$html = render_gf_partial( $gf_partial, $modes['edit'] );
+has_substring( 'ceafsn-gf-shared-list', $html, 'the shared-document warning lists the other records' );
+has_substring( 'Other record', $html, 'the other record is named' );
+has_substring( 'Call PDF verified', $html, 'a valid attachment is reported' );
+
+test( 'the record form posts every field in one form' );
+$html = render_gf_partial( $gf_partial, $modes['edit'] );
+is_same( 1, substr_count( $html, '<form' ), 'one form is rendered' );
+is_same( 1, substr_count( $html, '</form>' ), 'and it is closed' );
+foreach ( array( 'ceafsn-gf-pdf-id', 'ceafsn-gf-pdf-field', 'ceafsn-gf-media-button', 'ceafsn-gf-media-clear' ) as $id ) {
+	has_substring( 'id="' . $id . '"', $html, "the rendered form carries {$id}" );
+}
+has_substring( 'value="11"', $html, 'the saved attachment ID is carried into the form' );
+
+test( 'every settings tab renders' );
+$gf_set_file = $plugin_dir . '/admin/partials/settings.php';
+
+foreach ( array( 'display', 'general', 'export', 'uninstall' ) as $tab ) {
+	$_GET['tab'] = $tab;
+	ok( strlen( render_gf_partial( $gf_set_file ) ) > 400, "the {$tab} tab renders" );
+}
+
+test( 'an unknown settings tab falls back to Display' );
+$_GET['tab'] = 'bogus';
+$html = render_gf_partial( $gf_set_file );
+has_substring( '[ceafsn_grants]', $html, 'the fallback tab is the shortcode card' );
+
+test( 'the General tab posts its own scope' );
+$_GET['tab'] = 'general';
+$html = render_gf_partial( $gf_set_file );
+has_substring( 'value="general"', $html, 'the General tab declares its scope' );
+lacks_substring( 'ceafsn_gf_uninstall_delete_data', $html, 'the General tab does not carry the uninstall opt-in' );
+
+test( 'the Uninstall tab posts its own scope' );
+$_GET['tab'] = 'uninstall';
+$html = render_gf_partial( $gf_set_file );
+has_substring( 'value="uninstall"', $html, 'the Uninstall tab declares its scope' );
+lacks_substring( 'ceafsn_gf_show_closed', $html, 'the Uninstall tab does not carry the display default' );
+
+$_GET = array();
+
+// -----------------------------------------------------------------------------
 // Summary
 // -----------------------------------------------------------------------------
 

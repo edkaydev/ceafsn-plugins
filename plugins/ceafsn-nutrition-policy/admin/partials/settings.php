@@ -140,6 +140,7 @@ $np_is_general = 'general' === $active_tab;
 			<form class="ceafsn-form" method="post" action="<?php echo esc_url( $form_url ); ?>">
 				<?php wp_nonce_field( 'ceafsn_np_settings_nonce', 'ceafsn_np_nonce' ); ?>
 				<input type="hidden" name="action" value="ceafsn_np_save_settings" />
+				<input type="hidden" name="ceafsn_np_settings_scope" value="<?php echo esc_attr( $np_is_general ? 'general' : 'uninstall' ); ?>" />
 
 				<?php if ( $np_is_general ) : ?>
 

@@ -1,7 +1,7 @@
 # CE-AFSN Plugin Suite — Implementation Checklist
 
 > Last verified against the working tree: all six plugin suites build clean
-> (`php -l`) and pass their full assertion set — **1638 assertions, 0 failures** —
+> (`php -l`) and pass their full assertion set — **1804 assertions, 0 failures** —
 > both in place and again from each extracted release ZIP. Items below are only
 > checked when the evidence exists in this repository. Anything requiring the live
 > WordPress install at `ceafsn.duckdns.org` stays unchecked until it is run against
@@ -44,8 +44,9 @@
       export callout, circular help badge; every rule scoped to
       `.ceafsn-med-wrap`
 - [x] Settings screen shows the exact `[ceafsn_me_dashboard]` shortcode on a
-      read-only Display tab, and states plainly that it takes no attributes
-- [x] Tests — 191 assertions (`php plugins/ceafsn-me-dashboard/tests/run-tests.php`)
+      read-only Display tab, and states plainly that it takes no attributes;
+      also shown on the main Overview page
+- [x] Tests — 203 assertions (`php plugins/ceafsn-me-dashboard/tests/run-tests.php`)
 
 ### Plugin 2: ceafsn-nutrition-policy
 - [x] Plugin header and bootstrap file
@@ -62,18 +63,35 @@
       promotional callouts, circular help badge; every rule scoped to
       `.ceafsn-np-wrap`
 - [x] Settings screen shows the exact `[ceafsn_policy_table]` shortcode with
-      its `per_page` and `topic` attributes on a read-only Display tab
-- [x] Tests — 256 assertions (`php plugins/ceafsn-nutrition-policy/tests/run-tests.php`)
+      its `per_page` and `topic` attributes on a read-only Display tab, and
+      on the main Overview page so the shortcode is visible without opening
+      settings
+- [x] Tests — 275 assertions (`php plugins/ceafsn-nutrition-policy/tests/run-tests.php`)
 
 > **Design direction (2026-10-04).** The first pass was deliberately flat —
 > no shadows, square badges — after feedback that the gradient/shadow/pill
 > styling looked machine-generated. That was then reversed: the target design
 > is the raised-card, rounded, dot-and-pill layout above, with shadows and
 > rounded corners. `ceafsn-nutrition-policy` is the reference implementation;
-> `ceafsn-me-dashboard`, `ceafsn-open-datasets`, and
-> `ceafsn-projects-publications` have had the same pass. The remaining plugins
-> (`ceafsn-research-fellowships`, `ceafsn-grants-funding`) still carry the
-> earlier flat styling and need the same treatment.
+> `ceafsn-me-dashboard`, `ceafsn-open-datasets`,
+> `ceafsn-projects-publications`, and `ceafsn-research-fellowships` have had
+> the same pass. The remaining plugin (`ceafsn-grants-funding`) still carries
+> the earlier flat styling and needs the same treatment.
+
+### Cross-plugin: settings saved per tab
+
+- [x] Settings screens with one tab per editable option each post their own
+      form, and each form declares which options it owns with a hidden
+      `ceafsn_<slug>_settings_scope` field. The shared `handle_save_settings()`
+      used to rewrite *every* option with `isset()`, so saving the Placeholders
+      tab silently unticked "delete data on uninstall"
+- [x] The option writing was extracted into a private `persist_settings( array
+      $post )` in each of the five plugins, which makes the behaviour testable
+      without triggering the redirect and `exit` in the handler
+- [x] Regression tests in all five suites: saving one tab leaves the other
+      tabs' options untouched, and a missing or unknown scope writes nothing
+- [x] `ceafsn-research-fellowships` gained the same tabbed settings screen,
+      which is what exposed the bug in the other four
 
 ### Plugin 3: ceafsn-open-datasets
 - [x] Plugin header and bootstrap file
@@ -94,8 +112,8 @@
       and checkbox pattern; every rule scoped to `.ceafsn-od-wrap`
 - [x] Settings screen shows the exact `[ceafsn_open_datasets]` shortcode with
       its `per_page`, `category`, and `file_type` attributes on a read-only
-      Display tab
-- [x] Tests — 424 assertions (`php plugins/ceafsn-open-datasets/tests/run-tests.php`)
+      Display tab, and on the main Datasets page
+- [x] Tests — 440 assertions (`php plugins/ceafsn-open-datasets/tests/run-tests.php`)
 
 ### Plugin 4: ceafsn-projects-publications
 - [x] Plugin header and bootstrap file
@@ -120,8 +138,9 @@
       rule scoped to `.ceafsn-pp-wrap`
 - [x] Settings screen shows the exact `[ceafsn_projects_pubs]` shortcode with
       its `per_page`, `content_type`, and `view` attributes, so the paste-in
-      step is documented in the admin rather than only in `readme.txt`
-- [x] Tests — 398 assertions (`php plugins/ceafsn-projects-publications/tests/run-tests.php`)
+      step is documented in the admin rather than only in `readme.txt`; the
+      shortcode is also on the main All records page
+- [x] Tests — 421 assertions (`php plugins/ceafsn-projects-publications/tests/run-tests.php`)
 
 ### Plugin 5: ceafsn-research-fellowships
 - [x] Plugin header and bootstrap file
@@ -130,7 +149,21 @@
 - [x] Cards/table with date-driven status (`includes/class-ceafsn-rf-status.php`)
 - [x] Apply button validation — `is_valid_application_url()` enforced on save
       and re-checked at render, which blanks an invalid link
-- [x] Tests — 212 assertions (`php plugins/ceafsn-research-fellowships/tests/run-tests.php`)
+- [x] Admin view redesigned to the raised-card target — hero, split main/rail
+      layout, workflow stepper, KPI row, alerts, empty state, table, and split
+      record-form cards; every rule scoped to `.ceafsn-rf-wrap`
+- [x] Media picker kept inside a single `<td>` and covered by a rendered-HTML
+      test, because `assets/js/ceafsn-rf-admin.js` resolves the filename box and
+      the clear button with `.closest( 'td' )`
+- [x] Settings screen shows the exact `[ceafsn_fellowships]` shortcode with
+      `per_page`, `track_domain`, `status`, and `view` on a Display tab, and on
+      the main opportunities page so the shortcode is visible without opening
+      settings
+- [x] Export nonce bug fixed — the link put the nonce in `_wpnonce` while the
+      handler read the `ceafsn_rf_nonce` field, so Export always died on a nonce
+      failure; a static check now pairs every `wp_nonce_url()` link with the
+      field its handler checks
+- [x] Tests — 308 assertions (`php plugins/ceafsn-research-fellowships/tests/run-tests.php`)
 
 ### Plugin 6: ceafsn-grants-funding
 - [x] Plugin header and bootstrap file

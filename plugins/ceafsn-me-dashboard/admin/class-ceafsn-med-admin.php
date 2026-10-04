@@ -432,19 +432,44 @@ class CEAFSN_MED_Admin {
 	// ---------------------------------------------------------------------------
 
 	/**
-	 * Handle settings save (preview mode + uninstall opt-in).
+	 * Write the settings owned by the tab that posted the form.
+	 *
+	 * Each settings tab posts its own form and declares which options it owns
+	 * with a `ceafsn_me_settings_scope` hidden field. Only those options are
+	 * written, so saving one tab cannot reset a checkbox that lives on another.
+	 *
+	 * @param array<string,mixed> $post Unslashed POST data.
+	 * @return void
+	 */
+	private function persist_settings( array $post ): void {
+		$scope = isset( $post['ceafsn_med_settings_scope'] ) && is_string( $post['ceafsn_med_settings_scope'] )
+			? sanitize_key( $post['ceafsn_med_settings_scope'] )
+			: '';
+
+		if ( 'settings' === $scope ) {
+			// Preview mode toggle.
+			$preview_mode = isset( $post['ceafsn_med_preview_mode'] ) ? '1' : '0';
+			update_option( 'ceafsn_med_preview_mode', $preview_mode );
+		}
+
+		// Uninstall delete-data flag — require explicit checkbox + confirmation text.
+		if ( 'uninstall' === $scope ) {
+			$uninstall = isset( $post['ceafsn_med_uninstall_delete_data'] ) ? true : false;
+			update_option( 'ceafsn_med_uninstall_delete_data', $uninstall );
+		}
+
+	}
+
+	/**
+	 * Handle settings save.
+	 *
+	 * @return void
 	 */
 	public function handle_save_settings(): void {
 		$this->require_manage_options();
 		check_admin_referer( 'ceafsn_med_settings_nonce', 'ceafsn_med_nonce' );
 
-		// Preview mode toggle.
-		$preview_mode = isset( $_POST['ceafsn_med_preview_mode'] ) ? '1' : '0';
-		update_option( 'ceafsn_med_preview_mode', $preview_mode );
-
-		// Uninstall delete-data flag — require explicit checkbox + confirmation text.
-		$uninstall = isset( $_POST['ceafsn_med_uninstall_delete_data'] ) ? true : false;
-		update_option( 'ceafsn_med_uninstall_delete_data', $uninstall );
+		$this->persist_settings( wp_unslash( $_POST ) );
 
 		wp_safe_redirect(
 			add_query_arg(

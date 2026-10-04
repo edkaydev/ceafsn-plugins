@@ -102,6 +102,7 @@ $med_tabs = array(
 			<div class="ceafsn-card__body">
 				<form class="ceafsn-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="ceafsn_med_save_settings">
+					<input type="hidden" name="ceafsn_med_settings_scope" value="settings">
 					<?php wp_nonce_field( 'ceafsn_med_settings_nonce', 'ceafsn_med_nonce' ); ?>
 
 					<div class="ceafsn-check">
@@ -160,6 +161,7 @@ $med_tabs = array(
 
 				<form class="ceafsn-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="ceafsn_med_save_settings">
+					<input type="hidden" name="ceafsn_med_settings_scope" value="uninstall">
 					<?php wp_nonce_field( 'ceafsn_med_settings_nonce', 'ceafsn_med_nonce' ); ?>
 
 					<div class="ceafsn-check">

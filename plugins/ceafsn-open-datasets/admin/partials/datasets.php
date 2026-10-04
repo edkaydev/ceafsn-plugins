@@ -220,6 +220,27 @@ $add_url    = add_query_arg( array( 'action' => 'add' ), $base_url );
 					</p>
 				</section>
 
+				<section class="ceafsn-card">
+					<div class="ceafsn-card__head">
+						<div>
+							<h2 class="ceafsn-card__title"><?php esc_html_e( 'Display on a page', 'ceafsn-od' ); ?></h2>
+							<p class="ceafsn-card__hint"><?php esc_html_e( 'Nothing is visible to visitors until this shortcode is on a page.', 'ceafsn-od' ); ?></p>
+						</div>
+						<a class="ceafsn-btn ceafsn-btn--quiet" href="<?php echo esc_url( admin_url( 'admin.php?page=' . CEAFSN_OD_Admin::SETTINGS_SLUG . '&tab=display' ) ); ?>">
+							<?php esc_html_e( 'Attributes', 'ceafsn-od' ); ?>
+						</a>
+					</div>
+					<div class="ceafsn-card__body">
+						<div class="ceafsn-embed">
+							<p class="ceafsn-embed__label"><?php esc_html_e( 'Paste into the page that should list datasets', 'ceafsn-od' ); ?></p>
+							<code class="ceafsn-embed__code">[ceafsn_open_datasets]</code>
+						</div>
+						<p class="ceafsn-card__hint">
+							<?php esc_html_e( 'It takes optional per_page, category, and file_type attributes — open Display in settings for the full list.', 'ceafsn-od' ); ?>
+						</p>
+					</div>
+				</section>
+
 				<?php if ( $od_total > 0 ) : ?>
 
 					<section class="ceafsn-card">

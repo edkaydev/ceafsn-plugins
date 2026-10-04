@@ -865,6 +865,24 @@ if ( ! function_exists( 'esc_attr' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_kses_post' ) ) {
+	/**
+	 * Reduce a string to the markup a post may contain.
+	 *
+	 * A real allowlist is not reproduced here. What matters for these tests is
+	 * that formatting tags survive and that everything else is dropped, so a
+	 * partial that interpolates raw markup into a translated format string
+	 * still fails a test that asserts on the escaped output.
+	 *
+	 * @param string $text Input markup.
+	 * @return string
+	 */
+	function wp_kses_post( string $text ): string {
+		$allowed = '<strong><em><b><i><code><br><span><p><a><ul><ol><li>';
+		return strip_tags( $text, $allowed );
+	}
+}
+
 if ( ! function_exists( 'esc_textarea' ) ) {
 	/**
 	 * Escape for a textarea.

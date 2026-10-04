@@ -235,29 +235,44 @@ class CEAFSN_OD_Admin {
 	}
 
 	/**
-	 * Handle settings save (contact visibility + uninstall opt-in).
+	 * Write the settings owned by the tab that posted the form.
+	 *
+	 * Each settings tab posts its own form and declares which options it owns
+	 * with a `ceafsn_open_settings_scope` hidden field. Only those options are
+	 * written, so saving one tab cannot reset a checkbox that lives on another.
+	 *
+	 * @param array<string,mixed> $post Unslashed POST data.
+	 * @return void
+	 */
+	private function persist_settings( array $post ): void {
+		$scope = isset( $post['ceafsn_od_settings_scope'] ) && is_string( $post['ceafsn_od_settings_scope'] )
+			? sanitize_key( $post['ceafsn_od_settings_scope'] )
+			: '';
+
+		if ( 'display' === $scope ) {
+			// Contact visibility is an explicit checkbox only.
+			update_option( 'ceafsn_od_show_contact', isset( $post['ceafsn_od_show_contact'] ) ? 1 : 0 );
+
+			// Allow "Other" file types in the media picker.
+			update_option( 'ceafsn_od_allow_other_files', isset( $post['ceafsn_od_allow_other_files'] ) ? 1 : 0 );
+		}
+
+		// Uninstall delete-data flag — explicit checkbox only.
+		if ( 'uninstall' === $scope ) {
+			update_option( CEAFSN_OD_DB::UNINSTALL_OPTION, isset( $post['ceafsn_od_uninstall_delete_data'] ) );
+		}
+	}
+
+	/**
+	 * Handle settings save.
+	 *
+	 * @return void
 	 */
 	public function handle_save_settings(): void {
 		$this->require_manage_options();
 		check_admin_referer( 'ceafsn_od_settings_nonce', 'ceafsn_od_nonce' );
 
-		// Contact visibility is an explicit checkbox only.
-		update_option(
-			'ceafsn_od_show_contact',
-			CEAFSN_OD_Request::has( 'ceafsn_od_show_contact', 'POST' ) ? 1 : 0
-		);
-
-		// Allow "Other" file types in the media picker.
-		update_option(
-			'ceafsn_od_allow_other_files',
-			CEAFSN_OD_Request::has( 'ceafsn_od_allow_other_files', 'POST' ) ? 1 : 0
-		);
-
-		// Uninstall delete-data flag — explicit checkbox only.
-		update_option(
-			CEAFSN_OD_DB::UNINSTALL_OPTION,
-			CEAFSN_OD_Request::has( 'ceafsn_od_uninstall_delete_data', 'POST' )
-		);
+		$this->persist_settings( wp_unslash( $_POST ) );
 
 		wp_safe_redirect(
 			add_query_arg(

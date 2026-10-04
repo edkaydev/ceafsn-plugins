@@ -1167,6 +1167,239 @@ has_substring( 'wp_ceafsn_rf_fellowships', implode( ' ', $report['queries'] ), '
 ok( ! array_key_exists( 'ceafsn_rf_db_version', $report['options'] ), 'the schema version option is cleared too' );
 
 // -----------------------------------------------------------------------------
+section( 'Admin: settings scopes' );
+
+/**
+ * Call the private settings writer with a given POST body.
+ *
+ * @param ReflectionClass $class Admin class.
+ * @param array           $post  POST body to save.
+ * @return void
+ */
+function save_settings( ReflectionClass $class, array $post ): void {
+	$method = $class->getMethod( 'persist_settings' );
+	$method->setAccessible( true );
+	$method->invoke( $class->newInstanceWithoutConstructor(), $post );
+}
+
+test( 'saving the Display tab leaves the uninstall opt-in untouched' );
+CEAFSN_RF_Test_State::$options = array(
+	CEAFSN_RF_Activator::SHOW_CLOSED_OPTION => true,
+	'ceafsn_rf_uninstall_delete_data'        => true,
+);
+save_settings( $admin_ref, array( 'ceafsn_rf_settings_scope' => 'display' ) );
+is_same( false, CEAFSN_RF_Public::show_closed_by_default(), 'an unticked display box is saved as false' );
+is_same( true, get_option( 'ceafsn_rf_uninstall_delete_data' ), 'the uninstall opt-in on another tab survives' );
+
+test( 'saving the Uninstall tab leaves the display option untouched' );
+CEAFSN_RF_Test_State::$options = array(
+	CEAFSN_RF_Activator::SHOW_CLOSED_OPTION => true,
+	'ceafsn_rf_uninstall_delete_data'        => true,
+);
+save_settings( $admin_ref, array( 'ceafsn_rf_uninstall_delete_data' => '1' ) );
+is_same( true, CEAFSN_RF_Public::show_closed_by_default(), 'the display option is not reset by the uninstall tab' );
+is_same( true, get_option( 'ceafsn_rf_uninstall_delete_data' ), 'the tick box saves as true' );
+
+test( 'an unknown or missing scope writes nothing at all' );
+CEAFSN_RF_Test_State::$options = array(
+	CEAFSN_RF_Activator::SHOW_CLOSED_OPTION => true,
+	'ceafsn_rf_uninstall_delete_data'        => true,
+);
+save_settings( $admin_ref, array( 'ceafsn_rf_show_closed' => '1', 'ceafsn_rf_uninstall_delete_data' => '1' ) );
+is_same( true, CEAFSN_RF_Public::show_closed_by_default(), 'a missing scope changes nothing' );
+is_same( true, get_option( 'ceafsn_rf_uninstall_delete_data' ), 'the uninstall flag is not silently enabled' );
+save_settings( $admin_ref, array( 'ceafsn_rf_settings_scope' => 'bogus', 'ceafsn_rf_show_closed' => '1' ) );
+is_same( true, CEAFSN_RF_Public::show_closed_by_default(), 'an unknown scope changes nothing' );
+
+test( 'every editable settings form declares the scope it owns' );
+$settings_partial = (string) file_get_contents( CEAFSN_RF_PLUGIN_DIR . 'admin/partials/settings.php' );
+is_same( 2, substr_count( $settings_partial, '<input type="hidden" name="ceafsn_rf_settings_scope"' ), 'the Display and Uninstall forms each declare a scope' );
+foreach ( array( 'display', 'uninstall' ) as $scope ) {
+	has_substring(
+		'value="' . $scope . '"',
+		$settings_partial,
+		'the ' . $scope . ' scope is posted by its own form'
+	);
+}
+
+test( 'the export link sends the field name the handler checks' );
+$handler = (string) file_get_contents( CEAFSN_RF_PLUGIN_DIR . 'admin/class-ceafsn-rf-admin.php' );
+has_substring(
+	"check_admin_referer( 'ceafsn_rf_export_nonce', 'ceafsn_rf_nonce' )",
+	$handler,
+	'the handler reads the ceafsn_rf_nonce field'
+);
+has_substring(
+	"wp_nonce_url( admin_url( 'admin-post.php?action=ceafsn_rf_export' ), 'ceafsn_rf_export_nonce', 'ceafsn_rf_nonce' )",
+	$settings_partial,
+	'the export link puts the nonce in that same field'
+);
+
+// -----------------------------------------------------------------------------
+section( 'Admin: branded layout and JavaScript contracts' );
+
+global $plugin_dir;
+
+/**
+ * Render the RF admin view the way page_fellowships() does.
+ *
+ * @param string $action 'list' | 'add' | 'edit'.
+ * @param array  $rows   Rows to put in the list.
+ * @param object|null $row Row being edited.
+ * @return string Rendered HTML.
+ */
+function render_rf_admin( string $action, array $rows = array(), ?object $row = null ): string {
+	$id         = $row ? (int) $row->fellowship_id : 0;
+	$items      = $rows;
+	$derived    = $row ? CEAFSN_RF_Status::derive( $row, '2025-06-01' ) : null;
+	$validation = null;
+
+	ob_start();
+	include CEAFSN_RF_PLUGIN_DIR . 'admin/partials/fellowships.php';
+	return (string) ob_get_clean();
+}
+
+/**
+ * Render the RF settings view.
+ *
+ * @param string $tab Active tab.
+ * @return string Rendered HTML.
+ */
+function render_rf_settings( string $tab ): string {
+	$_GET['tab'] = $tab;
+
+	ob_start();
+	include CEAFSN_RF_PLUGIN_DIR . 'admin/partials/settings.php';
+	$html = (string) ob_get_clean();
+
+	unset( $_GET['tab'] );
+	return $html;
+}
+
+$rf_pub_partial = (string) file_get_contents( CEAFSN_RF_PLUGIN_DIR . 'admin/partials/fellowships.php' );
+$rf_set_partial = (string) file_get_contents( CEAFSN_RF_PLUGIN_DIR . 'admin/partials/settings.php' );
+
+test( 'the admin markup keeps the media picker inside one table cell' );
+$rf_form_html = render_rf_admin( 'edit', array(), fellowship_row() );
+foreach ( array( 'ceafsn-rf-pdf-id', 'ceafsn-rf-pdf-field', 'ceafsn-rf-pdf-button', 'ceafsn-rf-pdf-clear' ) as $element_id ) {
+	has_substring( 'id="' . $element_id . '"', $rf_form_html, "the media picker keeps #{$element_id}" );
+}
+has_substring( 'data-target="ceafsn-rf-pdf-id"', $rf_form_html, 'the select button still points at the hidden input' );
+has_substring( 'class="ceafsn-btn ceafsn-btn--quiet ceafsn-rf-media-button"', $rf_form_html, 'the select button keeps the media button class' );
+has_substring( 'class="ceafsn-rf-media-clear"', $rf_form_html, 'the clear button keeps the media clear class' );
+has_substring( 'name="call_pdf_id"', $rf_form_html, 'the picker still posts call_pdf_id' );
+
+// The script reads the hidden input with $( '#' + data-target ) and then looks
+// for the filename box and the clear button with .closest( 'td' ). If any of
+// the three leaves that cell the picker silently does nothing, so the rendered
+// cell is checked rather than only the file.
+$rf_media_td = '';
+if ( preg_match( '#<td[^>]*>(?:(?!</td>).)*data-target="ceafsn-rf-pdf-id"(?:(?!</td>).)*</td>#s', $rf_form_html, $found ) ) {
+	$rf_media_td = $found[0];
+}
+ok( '' !== $rf_media_td, 'the picker sits inside a table cell' );
+foreach ( array( 'ceafsn-rf-pdf-id', 'ceafsn-rf-pdf-field', 'ceafsn-rf-pdf-clear' ) as $element_id ) {
+	has_substring( 'id="' . $element_id . '"', $rf_media_td, "#{$element_id} shares the cell with the button" );
+}
+
+test( 'the record form keeps its nonce, action, and delete contracts' );
+foreach ( array( 'ceafsn_rf_save_fellowship', 'ceafsn_rf_fellowship_nonce', 'ceafsn_rf_nonce', 'ceafsn_rf_delete_fellowship', 'admin-post.php', 'wp_nonce_field' ) as $contract ) {
+	has_substring( $contract, $rf_pub_partial, "the record view keeps {$contract}" );
+}
+has_substring( 'ceafsn-rf-delete-link', $rf_pub_partial, 'the delete link keeps its class' );
+ok( ! preg_match( '/\bonclick=/i', $rf_pub_partial ), 'no inline handlers, so the delete link stays a plain link' );
+lacks_substring( 'wp-list-table', $rf_pub_partial, 'the legacy WordPress list table is gone' );
+
+test( 'the admin partials use the branded app layout' );
+foreach ( array( 'ceafsn-app__main', 'ceafsn-app__rail', 'ceafsn-hero', 'ceafsn-stepper', 'ceafsn-kpi-row', 'ceafsn-ticks', 'ceafsn-cta', 'ceafsn-empty', 'ceafsn-sr', 'ceafsn-embed' ) as $component ) {
+	has_substring( $component, $rf_pub_partial, "the fellowships view uses {$component}" );
+}
+foreach ( array( 'ceafsn-hero', 'ceafsn-tabs', 'ceafsn-check', 'ceafsn-danger', 'ceafsn-embed' ) as $component ) {
+	has_substring( $component, $rf_set_partial, "the settings view uses {$component}" );
+}
+lacks_substring( 'nav-tab', $rf_set_partial, 'the legacy nav-tab markup is gone' );
+
+test( 'both views tell the administrator which shortcode to use' );
+has_substring( '[ceafsn_fellowships]', $rf_pub_partial, 'the list view shows the exact shortcode' );
+has_substring( '[ceafsn_fellowships]', $rf_set_partial, 'the settings view shows the exact shortcode' );
+foreach ( array( 'per_page', 'track_domain', 'status', 'view' ) as $attribute ) {
+	has_substring( '<code>' . $attribute . '</code>', $rf_set_partial, "the shortcode card documents {$attribute}" );
+}
+
+test( 'the list view counts real rows and shows derived statuses' );
+CEAFSN_RF_Test_State::reset();
+attach( 11, $valid_pdf );
+$rf_rows = array(
+	fellowship_row( array( 'fellowship_id' => 1, 'closing_date' => '2099-01-01', 'status' => 'published' ) ),
+	fellowship_row( array( 'fellowship_id' => 2, 'opening_date' => '2099-01-01', 'closing_date' => '2099-12-01', 'status' => 'published' ) ),
+	fellowship_row( array( 'fellowship_id' => 3, 'closing_date' => '2020-01-01', 'status' => 'draft' ) ),
+	fellowship_row( array( 'fellowship_id' => 4, 'closing_date' => '', 'status' => 'published' ) ),
+	fellowship_row( array( 'fellowship_id' => 5, 'closing_date' => '2099-01-01', 'status' => 'published', 'call_pdf_id' => 0 ) ),
+);
+$rf_list_html = render_rf_admin( 'list', $rf_rows );
+has_substring( 'ceafsn-badge--status-open', $rf_list_html, 'an open record shows the Open pill' );
+has_substring( 'ceafsn-badge--status-upcoming', $rf_list_html, 'a future record shows the Upcoming pill' );
+has_substring( 'ceafsn-badge--status-closed', $rf_list_html, 'a past record shows the Closed pill' );
+has_substring( 'ceafsn-badge--status-unconfirmed', $rf_list_html, 'a record with no closing date shows the Unconfirmed pill' );
+is_same( 5, substr_count( $rf_list_html, 'ceafsn-rf-delete-link' ), 'every row gets a delete link' );
+
+test( 'the list view shows an empty state and an add form instead of a table' );
+CEAFSN_RF_Test_State::reset();
+$rf_empty_html = render_rf_admin( 'list', array() );
+has_substring( 'ceafsn-empty', $rf_empty_html, 'an empty list shows the empty state' );
+lacks_substring( 'ceafsn-table-wrap', $rf_empty_html, 'no table is rendered when there is nothing to list' );
+has_substring( 'No opportunities yet', $rf_empty_html, 'the empty state says why the page is empty' );
+
+test( 'the add form renders without an existing record' );
+CEAFSN_RF_Test_State::reset();
+$rf_add_html = render_rf_admin( 'add' );
+has_substring( 'ceafsn_rf_save_fellowship', $rf_add_html, 'the add form posts the save action' );
+has_substring( 'name="fellowship_id" value="0"', $rf_add_html, 'a new record sends a zero ID' );
+has_substring( 'name="title" required', $rf_add_html, 'the title is required' );
+has_substring( 'name="eligibility"', $rf_add_html, 'eligibility is part of the form' );
+
+test( 'the settings view offers Display, Export, and Uninstall' );
+CEAFSN_RF_Test_State::reset();
+foreach ( array( 'display', 'export', 'uninstall' ) as $rf_tab ) {
+	has_substring( "add_query_arg( 'tab', '" . $rf_tab . "'", $rf_set_partial, "the {$rf_tab} tab is linked" );
+}
+has_substring( 'ceafsn-tabs__tab--active', $rf_set_partial, 'the open tab is marked for assistive tech' );
+$rf_display_html = render_rf_settings( 'display' );
+has_substring( 'ceafsn-rf-show-closed', $rf_display_html, 'the Display tab owns the closed opportunities box' );
+has_substring( '[ceafsn_fellowships]', $rf_display_html, 'the Display tab documents the shortcode' );
+lacks_substring( 'ceafsn-rf-uninstall-delete', $rf_display_html, 'the Display tab does not carry the uninstall box' );
+
+$rf_export_html = render_rf_settings( 'export' );
+has_substring( 'ceafsn_rf_export', $rf_export_html, 'the Export tab offers the download' );
+lacks_substring( 'ceafsn-rf-uninstall-delete', $rf_export_html, 'the Export tab is not an editable form' );
+
+$rf_uninstall_html = render_rf_settings( 'uninstall' );
+has_substring( 'ceafsn-rf-uninstall-delete', $rf_uninstall_html, 'the Uninstall tab owns the delete flag' );
+lacks_substring( 'ceafsn-rf-show-closed', $rf_uninstall_html, 'the Uninstall tab does not carry the display box' );
+
+test( 'the settings URL uses the declared slug constant' );
+$rf_admin_class = (string) file_get_contents( CEAFSN_RF_PLUGIN_DIR . 'admin/class-ceafsn-rf-admin.php' );
+has_substring( "const SETTINGS_SLUG = 'ceafsn-rf-settings'", $rf_admin_class, 'the settings page slug is a constant' );
+foreach ( array( $rf_pub_partial, $rf_set_partial ) as $partial ) {
+	has_substring( 'CEAFSN_RF_Admin::SETTINGS_SLUG', $partial, 'the partials link with the constant' );
+}
+
+test( 'the admin stylesheet is scoped, balanced, and free of undefined tokens' );
+$rf_admin_css = (string) file_get_contents( CEAFSN_RF_PLUGIN_DIR . '/assets/css/ceafsn-rf-admin.css' );
+has_substring( '.ceafsn-rf-wrap', $rf_admin_css, 'admin styles are scoped to the wrapper' );
+ok( substr_count( $rf_admin_css, '{' ) === substr_count( $rf_admin_css, '}' ), 'admin CSS braces are balanced' );
+foreach ( array( 'ceafsn-np-', 'ceafsn-med-', 'ceafsn-od-', 'ceafsn-pp-' ) as $other ) {
+	lacks_substring( $other, $rf_admin_css, "no styles leaked in from {$other}" );
+}
+foreach ( array( 'ceafsn-app__rail', 'ceafsn-hero', 'ceafsn-stepper', 'ceafsn-kpi-row', 'ceafsn-embed', 'ceafsn-alert--ok', 'box-shadow', 'ceafsn-rf-media' ) as $component ) {
+	has_substring( $component, $rf_admin_css, "the admin stylesheet carries {$component}" );
+}
+$rf_css_bare = (string) preg_replace( '#/\*.*?\*/#s', '', $rf_admin_css );
+$rf_used     = array_unique( (array) preg_match_all( '/var\((--ceafsn-[a-z0-9-]+)\)/', $rf_css_bare, $rf_used_matches ) ? $rf_used_matches[1] : array() );
+$rf_declared = array_unique( (array) preg_match_all( '/(--ceafsn-[a-z0-9-]+):/', $rf_css_bare, $rf_declared_matches ) ? $rf_declared_matches[1] : array() );
+is_same( array(), array_values( array_diff( $rf_used, $rf_declared ) ), 'every custom property the stylesheet uses is declared' );
+
+// -----------------------------------------------------------------------------
 // Summary
 // -----------------------------------------------------------------------------
 
