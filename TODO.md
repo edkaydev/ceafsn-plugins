@@ -51,7 +51,10 @@
 - [x] Empty state
 - [x] Scoped PDF-only upload restriction, registered per request
 - [x] `topic` shortcode attribute honoured as the default filter
-- [x] Tests — 241 assertions (`php plugins/ceafsn-nutrition-policy/tests/run-tests.php`)
+- [x] Branded admin UI — Overview landing page, KPI tiles, "needs a document"
+      attention list, flat card-and-table records, restyled media picker and
+      settings tabs; every rule scoped to `.ceafsn-np-wrap`
+- [x] Tests — 247 assertions (`php plugins/ceafsn-nutrition-policy/tests/run-tests.php`)
 
 ### Plugin 3: ceafsn-open-datasets
 - [x] Plugin header and bootstrap file

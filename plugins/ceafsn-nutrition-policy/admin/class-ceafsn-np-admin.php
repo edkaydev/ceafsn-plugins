@@ -12,8 +12,14 @@ defined( 'ABSPATH' ) || exit;
  */
 class CEAFSN_NP_Admin {
 
-	/** @var string Admin page parent slug. */
+	/** @var string Admin page parent slug. Lands on the Overview dashboard. */
 	const MENU_SLUG = 'ceafsn-np';
+
+	/** @var string Policies list/add/edit page slug. */
+	const PAGE_POLICIES = 'ceafsn-np-policies';
+
+	/** @var string Settings page slug. */
+	const PAGE_SETTINGS = 'ceafsn-np-settings';
 
 	/**
 	 * Register WordPress hooks.
@@ -40,9 +46,19 @@ class CEAFSN_NP_Admin {
 			__( 'Nutrition Policy', 'ceafsn-np' ),
 			'manage_options',
 			self::MENU_SLUG,
-			array( $this, 'page_policies' ),
+			array( $this, 'page_overview' ),
 			'dashicons-media-document',
 			31
+		);
+
+		// Overview — same slug as the parent so the sidebar item lands here.
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Overview', 'ceafsn-np' ),
+			__( 'Overview', 'ceafsn-np' ),
+			'manage_options',
+			self::MENU_SLUG,
+			array( $this, 'page_overview' )
 		);
 
 		add_submenu_page(
@@ -50,7 +66,7 @@ class CEAFSN_NP_Admin {
 			__( 'Policies', 'ceafsn-np' ),
 			__( 'Policies', 'ceafsn-np' ),
 			'manage_options',
-			self::MENU_SLUG,
+			self::PAGE_POLICIES,
 			array( $this, 'page_policies' )
 		);
 
@@ -59,7 +75,7 @@ class CEAFSN_NP_Admin {
 			__( 'Settings', 'ceafsn-np' ),
 			__( 'Settings', 'ceafsn-np' ),
 			'manage_options',
-			'ceafsn-np-settings',
+			self::PAGE_SETTINGS,
 			array( $this, 'page_settings' )
 		);
 	}
@@ -76,7 +92,8 @@ class CEAFSN_NP_Admin {
 	public function enqueue_assets( string $hook_suffix ): void {
 		$plugin_pages = array(
 			'toplevel_page_' . self::MENU_SLUG,
-			'nutrition-policy_page_ceafsn-np-settings',
+			'nutrition-policy_page_' . self::PAGE_POLICIES,
+			'nutrition-policy_page_' . self::PAGE_SETTINGS,
 		);
 
 		if ( ! in_array( $hook_suffix, $plugin_pages, true ) ) {
@@ -104,6 +121,57 @@ class CEAFSN_NP_Admin {
 	// ---------------------------------------------------------------------------
 	// Page renderers (delegate to partials)
 	// ---------------------------------------------------------------------------
+
+	/**
+	 * Overview dashboard — the page the sidebar item lands on.
+	 *
+	 * Every figure is counted from stored rows. Duplicate PDF detection is done
+	 * in PHP by grouping the attachment IDs already fetched, rather than issuing
+	 * one `attachment_usage_count()` query per row.
+	 */
+	public function page_overview(): void {
+		$this->require_manage_options();
+
+		$result = CEAFSN_NP_DB::get_policies( array( 'per_page' => 200 ) );
+		$items  = $result['items'];
+
+		$published = 0;
+		$missing_pdf = array();
+		$by_attachment = array();
+
+		foreach ( $items as $item ) {
+			if ( 'published' === (string) $item->status ) {
+				++$published;
+			}
+
+			$attachment_id = (int) $item->pdf_attachment_id;
+			if ( $attachment_id < 1 ) {
+				$missing_pdf[] = $item;
+				continue;
+			}
+
+			if ( ! isset( $by_attachment[ $attachment_id ] ) ) {
+				$by_attachment[ $attachment_id ] = array();
+			}
+			$by_attachment[ $attachment_id ][] = $item;
+		}
+
+		// Only attachments shared by more than one record are a problem.
+		$shared_documents = array();
+		foreach ( $by_attachment as $attachment_id => $group ) {
+			if ( count( $group ) > 1 ) {
+				$shared_documents[] = array(
+					'attachment_id' => (int) $attachment_id,
+					'filename'       => (string) ( $group[0]->pdf_filename ?? '' ),
+					'records'        => $group,
+				);
+			}
+		}
+
+		$topics = CEAFSN_NP_DB::get_topics();
+
+		require CEAFSN_NP_PLUGIN_DIR . 'admin/partials/overview.php';
+	}
 
 	/**
 	 * Policies list / add / edit page.
@@ -195,7 +263,7 @@ class CEAFSN_NP_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => self::MENU_SLUG, 'saved' => '1' ),
+				array( 'page' => self::PAGE_POLICIES, 'saved' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -216,7 +284,7 @@ class CEAFSN_NP_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => self::MENU_SLUG, 'deleted' => '1' ),
+				array( 'page' => self::PAGE_POLICIES, 'deleted' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -245,7 +313,7 @@ class CEAFSN_NP_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'ceafsn-np-settings', 'saved' => '1' ),
+				array( 'page' => self::PAGE_SETTINGS, 'saved' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);

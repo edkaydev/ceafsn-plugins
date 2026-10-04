@@ -9,395 +9,616 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-04T11:45:52+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-np\n"
 
-#: admin/class-ceafsn-np-admin.php
+#. Plugin Name of the plugin
+#: ceafsn-nutrition-policy.php
+msgid "CE-AFSN Nutrition Policy"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: ceafsn-nutrition-policy.php
+msgid "https://ceafsn.duckdns.org/nutrition-policy-modeling/"
+msgstr ""
+
+#. Description of the plugin
+#: ceafsn-nutrition-policy.php
+msgid "Admin-managed library of nutrition and food security policy documents. Every published record requires a validated, readable PDF. Shortcode: [ceafsn_policy_table]"
+msgstr ""
+
+#. Author of the plugin
+#: ceafsn-nutrition-policy.php
+#: admin/partials/overview.php:63
+#: admin/partials/policies.php:50
+#: admin/partials/settings.php:36
+msgid "CE-AFSN"
+msgstr ""
+
+#. Author URI of the plugin
+#: ceafsn-nutrition-policy.php
+msgid "https://ceafsn.duckdns.org/"
+msgstr ""
+
+#: admin/class-ceafsn-np-admin.php:45
+#: admin/class-ceafsn-np-admin.php:46
+#: admin/partials/overview.php:64
+#: admin/partials/policies.php:155
 msgid "Nutrition Policy"
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:57
+#: admin/class-ceafsn-np-admin.php:58
+msgid "Overview"
+msgstr ""
+
+#: admin/class-ceafsn-np-admin.php:66
+#: admin/class-ceafsn-np-admin.php:67
 msgid "Policies"
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:75
+#: admin/class-ceafsn-np-admin.php:76
+#: admin/partials/settings.php:37
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:252
 msgid "The record was saved as a draft instead."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:391
 msgid "Title is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:394
 msgid "Description is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:397
 msgid "Topic is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:400
 msgid "Authoring institution is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:403
 msgid "A PDF attachment is required."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:408
 msgid "Publication date must be a valid date (YYYY-MM-DD)."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:412
 msgid "Invalid status value."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:416
 msgid "Source URL is not a valid URL."
 msgstr ""
 
-#: admin/class-ceafsn-np-admin.php
+#: admin/class-ceafsn-np-admin.php:431
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Policy record saved."
+#: admin/partials/overview.php:60
+msgid "Skip to dashboard content"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Policy record deleted."
+#: admin/partials/overview.php:66
+msgid "A record stays invisible on the public page until its PDF passes validation. Nothing is listed here without a real, readable document."
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Nutrition Policy Records"
+#: admin/partials/overview.php:70
+#: admin/partials/policies.php:57
+msgid "+ Add policy record"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Add New Policy"
+#: admin/partials/overview.php:73
+#: admin/partials/overview.php:155
+msgid "All records"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "No policy records yet. Add the first one using \"Add New Policy\"."
+#: admin/partials/overview.php:85
+#: admin/partials/policies.php:81
+msgid "No policy records yet"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Records stay invisible on the public page until they are published with a validated PDF."
+#: admin/partials/overview.php:87
+msgid "This repository is empty on purpose. Add a record with its own PDF and it will appear on the public page once you publish it."
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Title"
+#: admin/partials/overview.php:91
+#: admin/partials/policies.php:87
+msgid "Add the first record"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Topic"
+#: admin/partials/overview.php:101
+msgid "Records"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Institution"
+#. translators: 1: published count, 2: draft count.
+#: admin/partials/overview.php:107
+#, php-format
+msgid "%1$s published · %2$s draft"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/overview.php:116
+#: admin/partials/policies.php:100
+#: public/partials/policies.php:29
+#: public/partials/policies.php:124
 msgid "Published"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "PDF"
+#: admin/partials/overview.php:118
+msgid "Visible on the public page"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Status"
+#: admin/partials/overview.php:122
+msgid "Topics covered"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Actions"
+#: admin/partials/overview.php:124
+msgid "Distinct domains in use"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Attached"
+#: admin/partials/overview.php:128
+msgid "Needs a document"
 msgstr ""
 
-#: admin/partials/policies.php
+#. translators: 1: records with no PDF, 2: records sharing a PDF.
+#: admin/partials/overview.php:134
+#, php-format
+msgid "%1$s without a PDF · %2$s sharing a document"
+msgstr ""
+
+#: admin/partials/overview.php:149
+msgid "Needs your attention"
+msgstr ""
+
+#: admin/partials/overview.php:151
+msgid "Records with no PDF, or sharing a document with another record."
+msgstr ""
+
+#: admin/partials/overview.php:162
+msgid "Every record has its own document"
+msgstr ""
+
+#: admin/partials/overview.php:164
+msgid "No record is missing a PDF or sharing one with another record."
+msgstr ""
+
+#: admin/partials/overview.php:176
+msgid "No PDF attached — this record cannot be published."
+msgstr ""
+
+#. translators: %s: shared PDF file name.
+#: admin/partials/overview.php:180
+#, php-format
+msgid "Shares the PDF \"%s\" with another record."
+msgstr ""
+
+#: admin/partials/overview.php:181
+msgid "unnamed"
+msgstr ""
+
+#: admin/partials/overview.php:189
+#: admin/partials/policies.php:123
 msgid "No PDF"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/overview.php:191
+msgid "Shared PDF"
+msgstr ""
+
+#: admin/partials/overview.php:194
+msgid "Review"
+msgstr ""
+
+#. translators: %s: number of remaining records.
+#: admin/partials/overview.php:206
+#, php-format
+msgid "and %s more — open All records to review the rest."
+msgstr ""
+
+#: admin/partials/overview.php:220
+msgid "Topics in use"
+msgstr ""
+
+#: admin/partials/overview.php:224
+msgid "No topic recorded yet."
+msgstr ""
+
+#: admin/partials/overview.php:241
+msgid "Before you publish"
+msgstr ""
+
+#: admin/partials/overview.php:248
+msgid "A record is saved as a draft automatically if its PDF fails validation. Publish only once the document is verified."
+msgstr ""
+
+#: admin/partials/overview.php:255
+msgid "Give each policy its own PDF. The same file attached to several records is flagged above."
+msgstr ""
+
+#: admin/partials/overview.php:262
+msgid "Review all records"
+msgstr ""
+
+#: admin/partials/policies.php:31
+msgid "Policy record saved."
+msgstr ""
+
+#: admin/partials/policies.php:35
+msgid "Policy record deleted."
+msgstr ""
+
+#: admin/partials/policies.php:51
+msgid "Policy records"
+msgstr ""
+
+#: admin/partials/policies.php:53
+msgid "Each record needs its own PDF. A record only reaches the public page once the document is readable, is not a known placeholder, and has a readable page count."
+msgstr ""
+
+#. translators: %s: number of policy records.
+#: admin/partials/policies.php:69
+#, php-format
+msgid "All records (%s)"
+msgstr ""
+
+#: admin/partials/policies.php:74
+msgid "Drafts stay hidden from visitors until published."
+msgstr ""
+
+#: admin/partials/policies.php:83
+msgid "Nothing has been recorded. Records stay invisible on the public page until they are published with a validated PDF."
+msgstr ""
+
+#: admin/partials/policies.php:94
+msgid "Policy records list"
+msgstr ""
+
+#: admin/partials/policies.php:97
+msgid "Title"
+msgstr ""
+
+#: admin/partials/policies.php:98
+#: public/partials/policies.php:30
+#: public/partials/policies.php:129
+msgid "Topic"
+msgstr ""
+
+#: admin/partials/policies.php:99
+#: public/partials/policies.php:31
+#: public/partials/policies.php:130
+msgid "Institution"
+msgstr ""
+
+#: admin/partials/policies.php:101
+msgid "PDF"
+msgstr ""
+
+#: admin/partials/policies.php:102
+#: admin/partials/policies.php:283
+msgid "Status"
+msgstr ""
+
+#: admin/partials/policies.php:103
+msgid "Actions"
+msgstr ""
+
+#: admin/partials/policies.php:120
+msgid "Attached"
+msgstr ""
+
+#: admin/partials/policies.php:133
 msgid "Edit"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:137
 msgid "Delete"
 msgstr ""
 
-#: admin/partials/policies.php
-msgid "Edit Policy"
+#: admin/partials/policies.php:151
+msgid "Back to records"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:160
+msgid "Edit policy record"
+msgstr ""
+
+#: admin/partials/policies.php:161
+msgid "Add policy record"
+msgstr ""
+
+#: admin/partials/policies.php:166
+msgid "A title, description, topic, institution, date, and PDF are all required. Publishing is blocked until the PDF validates."
+msgstr ""
+
+#: admin/partials/policies.php:172
 msgid "This published record no longer passes PDF validation:"
 msgstr ""
 
 #. translators: %d: number of other records.
-#: admin/partials/policies.php
+#: admin/partials/policies.php:187
+#, php-format
 msgid "The same PDF is attached to %d other record(s). Each policy should have its own document."
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:204
 msgid "Policy title"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:213
 msgid "Description"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:217
 msgid "A plain-language summary of what the policy covers."
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:222
 msgid "Publication date"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:231
 msgid "Topic / domain"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:245
 msgid "Authoring institution"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:254
 msgid "PDF attachment"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:261
+#: assets/js/ceafsn-np-admin.js:22
 msgid "No file selected"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:264
 msgid "Select PDF"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:267
 msgid "Clear"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:271
 msgid "The file name is read from the attachment itself. A record can only be published when this PDF is readable, is not a known placeholder, and has a readable page count."
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:276
 msgid "Source / citation URL"
 msgstr ""
 
+#: admin/partials/policies.php:294
+msgid "Choosing Published is only honoured when the PDF passes validation."
+msgstr ""
+
 #. translators: %d: page count.
-#: admin/partials/policies.php
+#: admin/partials/policies.php:303
+#, php-format
 msgid "PDF verified: readable, %d page(s)."
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:315
 msgid "Save policy"
 msgstr ""
 
-#: admin/partials/policies.php
+#: admin/partials/policies.php:318
 msgid "Cancel"
 msgstr ""
 
-#: admin/partials/settings.php
+#: admin/partials/settings.php:26
 msgid "Settings saved."
 msgstr ""
 
-#: admin/partials/settings.php
-msgid "Nutrition Policy — Settings"
+#: admin/partials/settings.php:39
+msgid "Controls which files count as placeholders, how records leave the site, and what happens when the plugin is removed."
 msgstr ""
 
-#: admin/partials/settings.php
+#: admin/partials/settings.php:43
 msgid "Settings sections"
 msgstr ""
 
-#: admin/partials/settings.php
+#: admin/partials/settings.php:47
 msgid "General"
 msgstr ""
 
-#: admin/partials/settings.php
+#: admin/partials/settings.php:52
 msgid "Export"
 msgstr ""
 
-#: admin/partials/settings.php
+#: admin/partials/settings.php:57
 msgid "Uninstall"
 msgstr ""
 
-#: admin/partials/settings.php
-msgid "Known placeholder files"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "One file name per line. A policy record can never be published while its PDF matches one of these names."
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "ceafsn.pdf is always included and cannot be removed from this list."
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Export records"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Download every policy record as JSON before making bulk changes or uninstalling the plugin."
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Download export"
-msgstr ""
-
-#: admin/partials/settings.php
+#: admin/partials/settings.php:64
 msgid "Data removal on uninstall"
 msgstr ""
 
-#: admin/partials/settings.php
+#: admin/partials/settings.php:76
+msgid "Known placeholder files"
+msgstr ""
+
+#: admin/partials/settings.php:80
+msgid "One file name per line. A policy record can never be published while its PDF matches one of these names. ceafsn.pdf is always included and cannot be removed from this list."
+msgstr ""
+
+#: admin/partials/settings.php:86
+msgid "Export records"
+msgstr ""
+
+#: admin/partials/settings.php:88
+msgid "Download every policy record as JSON before making bulk changes or removing the plugin. The export contains record text and attachment IDs; it does not copy the PDF files themselves."
+msgstr ""
+
+#: admin/partials/settings.php:93
+msgid "Download export"
+msgstr ""
+
+#: admin/partials/settings.php:100
 msgid "Deactivating the plugin never deletes anything. Tick the box below only if you intend to delete the plugin and permanently remove the policy table."
 msgstr ""
 
-#: admin/partials/settings.php
+#: admin/partials/settings.php:108
 msgid "Delete all policy records and plugin options when the plugin is deleted"
 msgstr ""
 
-#: admin/partials/settings.php
+#: admin/partials/settings.php:111
 msgid "Files in the Media Library are never removed — other pages may still link to them."
 msgstr ""
 
-#: admin/partials/settings.php
+#: admin/partials/settings.php:121
 msgid "Save settings"
 msgstr ""
 
-#: includes/class-ceafsn-np-validator.php
+#: includes/class-ceafsn-np-validator.php:42
 msgid "The attached file is empty or could not be read."
 msgstr ""
 
-#: includes/class-ceafsn-np-validator.php
+#: includes/class-ceafsn-np-validator.php:47
 msgid "The attached file is not a PDF."
 msgstr ""
 
-#: includes/class-ceafsn-np-validator.php
+#: includes/class-ceafsn-np-validator.php:52
 msgid "The PDF appears to be truncated or corrupt."
 msgstr ""
 
-#: includes/class-ceafsn-np-validator.php
+#: includes/class-ceafsn-np-validator.php:57
 msgid "The PDF page count could not be read. The file may be damaged."
 msgstr ""
 
-#: includes/class-ceafsn-np-validator.php
+#: includes/class-ceafsn-np-validator.php:139
 msgid "No PDF is attached to this record."
 msgstr ""
 
-#: includes/class-ceafsn-np-validator.php
+#: includes/class-ceafsn-np-validator.php:144
 msgid "The attached PDF is missing from the media library."
 msgstr ""
 
-#: includes/class-ceafsn-np-validator.php
+#: includes/class-ceafsn-np-validator.php:149
 msgid "The attached file is not a PDF. Allowed type: application/pdf."
 msgstr ""
 
 #. translators: %s: placeholder file name.
-#: includes/class-ceafsn-np-validator.php
+#: includes/class-ceafsn-np-validator.php:156
+#, php-format
 msgid "\"%s\" is a known placeholder file. Attach the real policy document."
 msgstr ""
 
-#: includes/class-ceafsn-np-validator.php
+#: includes/class-ceafsn-np-validator.php:164
 msgid "The attached PDF is zero bytes."
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:28
 msgid "Policy"
 msgstr ""
 
-#: public/partials/policies.php
-msgid "Published"
-msgstr ""
-
-#: public/partials/policies.php
-msgid "Topic"
-msgstr ""
-
-#: public/partials/policies.php
-msgid "Institution"
-msgstr ""
-
-#: public/partials/policies.php
+#: public/partials/policies.php:43
 msgid "Search policies"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:45
 msgid "Title, description, or institution"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:49
 msgid "Filter by topic"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:51
 msgid "All topics"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:61
 msgid "Apply filters"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:65
 msgid "Clear filters"
 msgstr ""
 
-#: public/partials/policies.php
+#. translators: %d: number of policy records.
+#: public/partials/policies.php:77
+#, php-format
 msgid "%d policy record"
 msgid_plural "%d policy records"
 msgstr[0] ""
 msgstr[1] ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:86
 msgid "No policies have been published yet."
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:96
 msgid "Published nutrition and food security policy documents"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:113
 msgid "Document"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:136
 msgid "Read Policy"
 msgstr ""
 
 #. translators: %s: policy title.
-#: public/partials/policies.php
+#: public/partials/policies.php:141
+#, php-format
 msgid "(opens %s in a new tab)"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:151
 msgid "Source"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:156
 msgid "Document currently unavailable. Please contact the institution."
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:170
 msgid "Policy record pages"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:175
 msgid "Previous"
 msgstr ""
 
 #. translators: 1: current page, 2: total pages.
-#: public/partials/policies.php
+#: public/partials/policies.php:183
+#, php-format
 msgid "Page %1$d of %2$d"
 msgstr ""
 
-#: public/partials/policies.php
+#: public/partials/policies.php:194
 msgid "Next"
+msgstr ""
+
+#: assets/js/ceafsn-np-admin.js:24
+msgid "That file is not a PDF. Choose a PDF document."
+msgstr ""
+
+#: assets/js/ceafsn-np-admin.js:42
+msgid "The media library is unavailable."
+msgstr ""
+
+#: assets/js/ceafsn-np-admin.js:48
+msgid "Select the policy PDF"
+msgstr ""
+
+#: assets/js/ceafsn-np-admin.js:49
+msgid "Use this PDF"
+msgstr ""
+
+#: assets/js/ceafsn-np-admin.js:86
+msgid "Delete this policy record? The PDF stays in the media library."
 msgstr ""
