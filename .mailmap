@@ -1,0 +1,28 @@
+# Map every identity that might author a commit in this repository onto the
+# repository owner, so GitHub's contributor graph lists a single person.
+#
+# Format: Proper Name <proper@email> <commit name/email>
+# Note: git matches name-only entries inconsistently, so both the name and the
+# known addresses are listed explicitly for each identity.
+
+# Repository owner
+Kayiira Edward <edwardbrin1@gmail.com> Kayiira Edward <edwardbrin1@gmail.com>
+
+# Claude / Anthropic identities
+Kayiira Edward <edwardbrin1@gmail.com> Claude <noreply@anthropic.com>
+Kayiira Edward <edwardbrin1@gmail.com> Claude <claude@anthropic.com>
+Kayiira Edward <edwardbrin1@gmail.com> Claude <noreply@claude.ai>
+Kayiira Edward <edwardbrin1@gmail.com> Claude <claude@users.noreply.github.com>
+Kayiira Edward <edwardbrin1@gmail.com> Claude <81847+claude@users.noreply.github.com>
+Kayiira Edward <edwardbrin1@gmail.com> <noreply@anthropic.com>
+Kayiira Edward <edwardbrin1@gmail.com> <claude@anthropic.com>
+Kayiira Edward <edwardbrin1@gmail.com> <noreply@claude.ai>
+Kayiira Edward <edwardbrin1@gmail.com> <claude@users.noreply.github.com>
+Kayiira Edward <edwardbrin1@gmail.com> <81847+claude@users.noreply.github.com>
+
+# Other common AI agents
+Kayiira Edward <edwardbrin1@gmail.com> Cursor <cursor@cursor.sh>
+Kayiira Edward <edwardbrin1@gmail.com> Copilot <copilot@github.com>
+Kayiira Edward <edwardbrin1@gmail.com> <copilot@github.com>
+Kayiira Edward <edwardbrin1@gmail.com> <198982749+Copilot@users.noreply.github.com>
+Kayiira Edward <edwardbrin1@gmail.com> <49699333+github-actions[bot]@users.noreply.github.com>
