@@ -13,6 +13,14 @@
 
 declare( strict_types=1 );
 
+// This file is a CLI test harness: it must never execute over HTTP. Release
+// ZIPs exclude tests/, and this guard makes the file inert if it is ever
+// deployed by mistake.
+if ( 'cli' !== PHP_SAPI ) {
+	http_response_code( 403 );
+	exit( 1 );
+}
+
 // WordPress is not installed here, so point ABSPATH at a temporary directory
 // that contains just enough of wp-admin for the activator to load.
 $fake_wp_admin = sys_get_temp_dir() . '/ceafsn-gf-fake-wp/wp-admin/includes';

@@ -1,21 +1,28 @@
 # CE-AFSN Plugin Suite — Implementation Checklist
 
 > Last verified against the working tree: all six plugin suites build clean
-> (`php -l`) and pass their full assertion set — **1804 assertions, 0 failures** —
-> both in place and again from each extracted release ZIP. Items below are only
-> checked when the evidence exists in this repository. Anything requiring the live
-> WordPress install at `ceafsn.duckdns.org` stays unchecked until it is run against
-> that site.
+> (`php -l` across 84 tracked files) and pass their full assertion set —
+> **1933 assertions, 0 failures**. Items below are only checked when the
+> evidence exists in this repository or in `qa/`. Anything requiring the live
+> WordPress install at `ceafsn.duckdns.org` stays unchecked until it is run
+> against that site.
 
 ## Phase 0 — Inspect Before Modifying
-- [ ] Identify active theme, WP version, PHP version, active plugins
-- [ ] Crawl and snapshot all target routes
-- [ ] Inventory internal links, PDFs, CSVs, images, forms, iframes
-- [ ] Save `qa/baseline-crawl.json`, `qa/baseline-links.csv`, `qa/baseline-content.md`
-- [ ] Report any conflicts before overwriting functionality
+- [x] Identify active theme, WP version, PHP version, active plugins — WordPress
+      7.1.2, Blocksy, Yoast, Autoptimize, GTranslate. Plugin list is inferred
+      from asset URLs and `ceafsn-me-dashboard` markup, **not** from wp-admin, so
+      it is incomplete
+- [x] Crawl and snapshot all target routes — `qa/crawl-baseline.php`, 18 routes
+      plus sitemap/robots/feed
+- [x] Inventory internal links, PDFs, CSVs, images, forms, iframes — 1817 rows in
+      `qa/baseline-links.csv`; zero PDF/CSV/download links found site-wide
+- [x] Save `qa/baseline-crawl.json`, `qa/baseline-links.csv`, `qa/baseline-content.md`
+- [x] Report any conflicts before overwriting functionality — nine confirmed
+      defects listed in `qa/final-report.md`
 
-> Not started. None of the `qa/baseline-*` artifacts exist yet. This phase is a
-> prerequisite for Phase 3, since Phase 3 overwrites live content.
+> PHP version could not be read from outside the site. Baseline captured
+> 2026-10-04; re-run `php qa/crawl-baseline.php` before acting on it, because
+> Phase 3 overwrites live content.
 
 ## Phase 1 — Project Structure
 - [x] Root `README.md`, `CHANGELOG.md`
@@ -72,11 +79,9 @@
 > no shadows, square badges — after feedback that the gradient/shadow/pill
 > styling looked machine-generated. That was then reversed: the target design
 > is the raised-card, rounded, dot-and-pill layout above, with shadows and
-> rounded corners. `ceafsn-nutrition-policy` is the reference implementation;
-> `ceafsn-me-dashboard`, `ceafsn-open-datasets`,
-> `ceafsn-projects-publications`, and `ceafsn-research-fellowships` have had
-> the same pass. The remaining plugin (`ceafsn-grants-funding`) still carries
-> the earlier flat styling and needs the same treatment.
+> rounded corners. `ceafsn-nutrition-policy` is the reference implementation,
+> and all six plugins now carry that treatment, `ceafsn-grants-funding`
+> included.
 
 ### Cross-plugin: settings saved per tab
 
@@ -173,15 +178,28 @@
 - [x] Deadline and timezone display — `deadline_timezone` column plus
       `normalize_deadline_to_utc()` so stored deadlines are timezone-correct
 - [x] Official Call PDF validation
-- [x] Tests — 157 assertions (`php plugins/ceafsn-grants-funding/tests/run-tests.php`)
+- [x] Branded admin UI — three-column app layout (WordPress admin menu, main
+      canvas, right rail), alert banners, hero module, publishing-workflow
+      stepper, KPI tiles, dot-and-pill status rows, check-marked guidance, export
+      callout, circular help badge; the opportunity status and record state render
+      as separate badges rather than one ambiguous column; every rule scoped to
+      `.ceafsn-gf-wrap`
+- [x] Counts on the summary tiles are computed from the records actually on
+      screen, so a tile cannot claim something the table below contradicts
+- [x] Tests — 286 assertions (`php plugins/ceafsn-grants-funding/tests/run-tests.php`)
 
 ## Phase 3 — Migration and Cleanup
 
-> Not started. All items require the live site. Two of them are already
-> *implemented in code* and only need activation plus verification:
+> Baseline captured 2026-10-04 (`qa/baseline-content.md`). Every item below is
+> confirmed still open on the live site: `/appy` returns 404, `/privacy-policy-2/`
+> answers 200 instead of redirecting, `/publications/` returns 404, Lorem ipsum is
+> live on `/contact/` and `/volunteer/`, four Latin demo posts are indexable, and
+> `A WordPress Commenter` is visible on `/hello-world/`. Two of the items are
+> already *implemented in code* and only need the plugin activated:
 > the `/privacy-policy-2/` → `/publications/` 301 redirect and the configurable
 > `/appy` destination both ship in `ceafsn-projects-publications`
-> (`tests/redirect-cases.php` covers the redirect logic).
+> (`tests/redirect-cases.php` covers the redirect logic). That plugin is not
+> currently active on the site.
 
 - [ ] Create `/publications/` page
 - [ ] 301 redirect `/privacy-policy-2/` → `/publications/` — code ready, needs activation
@@ -197,36 +215,52 @@
 
 ## Phase 4 — QA
 
-> Not started. The `qa/` files exist but are **unpopulated placeholders**:
-> `qa/final-report.md` is headed "Status: NOT YET RUN", every `actual_status` in
-> `qa/routes.csv` is `PENDING`, and the one row in `qa/assets.csv` is `PENDING`
-> with the known shared-placeholder PDF still flagged.
+> Partially run. `qa/final-report.md` now holds measured evidence, and
+> `qa/routes.csv` / `qa/assets.csv` carry real results instead of `PENDING`. The
+> outstanding sections are the ones that need a browser or an authenticated
+> session, and the ones blocked by content that does not exist yet.
 
-- [ ] HTTP route tests
-- [ ] Publication file uniqueness and readability tests
-- [ ] Content cleanliness tests (Lorem ipsum, demo slugs, placeholder strings)
-- [ ] Dynamic module tests (dashboard, datasets)
-- [ ] Accessibility tests (keyboard, focus, labels, headings, contrast)
-- [ ] Security tests (nonces, capabilities, sanitization, escaping)
-- [ ] Responsive tests (320px, 768px, 1280px)
+- [x] HTTP route tests — 18 routes measured 2026-10-04; 9 PASS, 3 FAIL
+      (`/appy`, `/privacy-policy-2/`, `/publications/`), 6 UNVERIFIED pending an
+      owner decision
+- [ ] Publication file uniqueness and readability tests — blocked: zero PDFs are
+      linked from any crawled page, so there is nothing public to test
+- [x] Content cleanliness tests (Lorem ipsum, demo slugs, placeholder strings) —
+      pattern scan across all 18 pages; Lorem ipsum found on `/contact/` and
+      `/volunteer/`, four indexable Latin demo posts found
+- [ ] Dynamic module tests (dashboard, datasets) — only `ceafsn-me-dashboard` is
+      installed on the live site, and it is serving demo records
+- [ ] Accessibility tests (keyboard, focus, labels, headings, contrast) — needs a
+      real browser
+- [x] Security tests (nonces, capabilities, sanitization, escaping) — covered by
+      the six suites in code; no live HTTP security probing was performed
+- [ ] Responsive tests (320px, 768px, 1280px) — no viewport testing was performed
 
 ## Phase 5 — Documentation and Packaging
 - [x] `docs/data-model.md`
 - [x] `docs/content-migration.md`
 - [x] `docs/admin-runbook.md`
 - [x] `docs/security-privacy.md`
-- [ ] `qa/final-report.md` — exists but still a placeholder
-- [ ] `qa/routes.csv` — exists but every result is `PENDING`
-- [ ] `qa/assets.csv` — exists but every result is `PENDING`
-- [x] ZIP packages for each plugin — all six built and committed alongside their
-      plugin folder as `plugins/ceafsn-<name>.zip` (**not** under `dist/`, which is
-      empty and unused)
+- [x] `qa/final-report.md` — written 2026-10-04 with measured evidence and the
+      nine confirmed live-site defects
+- [x] `qa/routes.csv` — 18 routes with measured status and a `verdict` column
+- [x] `qa/assets.csv` — measured rows for the logo, hero image, plugin and
+      minified assets; the shared-placeholder PDF row is marked unverifiable
+      rather than `PENDING`, because no PDF is linked from any crawled page
+- [x] ZIP packages for each plugin — all six built alongside their plugin folder
+      as `plugins/ceafsn-<name>.zip` (**not** under `dist/`, which is empty and
+      unused). They are tracked in git so a release can be downloaded straight
+      from the repository; the `plugins/*.zip` line in `.gitignore` only stops a
+      *new* archive path from being added, it does not untrack these six
 
-> Packaging note: all six ZIPs are now built the same way and contain no
-> `__MACOSX` resource-fork entries or `.DS_Store` files. Each archive was verified
-> to hold exactly its source tree (no dropped files), to pass `unzip -t`, and to
-> run its own test suite green from the extracted copy. Rebuild command:
-> `cd plugins && zip -r -X ceafsn-<name>.zip ceafsn-<name> -x "*.DS_Store" "*__MACOSX*" "*.git*"`
+> Packaging note: all six ZIPs are built the same way and contain no
+> `__MACOSX` resource-fork entries, no `.DS_Store`, and no `tests/` directory —
+> the test harness is not shipped, and each `tests/run-tests.php` additionally
+> refuses to run over HTTP. Each archive was verified to hold exactly its source
+> tree minus `tests/` (sha256 per file, nothing dropped or extra), to pass
+> `unzip -t`, and to lint clean from the extracted copy across all 65 shipped
+> PHP files. Rebuild command:
+> `cd plugins && zip -r -X ceafsn-<name>.zip ceafsn-<name> -x "*.DS_Store" "*__MACOSX*" "*.git*" "*/tests/*"`
 
 ## Definition of Done
 
@@ -243,14 +277,26 @@ Code-complete, awaiting live-site verification:
 - [ ] CSV and PDF links tested end to end
 - [x] Admin CRUD secured (capabilities, nonces, validation, escaping) — covered by
       the per-plugin suites
-- [ ] Accessibility, responsive, security, and regression tests passed
-- [ ] `qa/final-report.md` contains evidence
+- [ ] Accessibility, responsive, security, and regression tests passed — the
+      security and regression halves are covered by the suites; the accessibility
+      and responsive halves still need a browser
+- [x] `qa/final-report.md` contains evidence
 
 ## Remaining Work, In Order
 
-Phase 1 and Phase 2 are now complete, and all six plugins are packaged. What
-remains is entirely live-site work on `ceafsn.duckdns.org`:
+Phase 0, Phase 1 and Phase 2 are complete and all six plugins are packaged. What
+remains is live-site work on `ceafsn.duckdns.org`:
 
-1. Run Phase 0 baseline crawl, then Phase 3 site migration.
-2. Activate all six plugins, create the six target pages, add the shortcodes.
-3. Run Phase 4 QA for real and replace the `qa/` placeholders with evidence.
+1. Deploy and activate all six plugins. Only `ceafsn-me-dashboard` is installed
+   today, and the other five pages currently show hand-authored demo content.
+2. Create `/publications/`, move the existing "Policy Briefs & Publications"
+   page onto that slug, and switch on the coded 301 from `/privacy-policy-2/`.
+3. Set the application destination so `/appy` stops returning 404.
+4. Clear the demo records out of `/me-dashboard/` (`Students 200`, `Females`,
+   `Q1 2024`, `Test project`, `TEst project`).
+5. Decide on the four Latin demo posts, `/hello-world/`, and
+   `/author/edward_admin/`; close or moderate site-wide comments.
+6. Replace Lorem ipsum on `/contact/` and `/volunteer/`, and correct
+   "Alumin Network".
+7. Re-run `php qa/crawl-baseline.php` to prove the fixes, then finish the browser
+   QA sections that cannot be automated from the command line.

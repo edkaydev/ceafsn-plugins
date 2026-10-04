@@ -1,17 +1,19 @@
-url,expected_status,actual_status,final_url,title,notes
-/,200,PENDING,,Homepage,Not yet tested
-/appy,not_404,PENDING,,,Must resolve to configured application destination
-/privacy-policy-2/,301,PENDING,/publications/,,Must redirect permanently
-/publications/,200,PENDING,,Publications,
-/me-dashboard/,200,PENDING,,M&E Dashboard,
-/nutrition-policy-modeling/,200,PENDING,,Nutrition Policy,
-/open-datasets/,200,PENDING,,Open Datasets,
-/research-fellowships/,200,PENDING,,Research Fellowships,
-/scholarships-grants/,200,PENDING,,Grants and Funding,
-/contact/,200,PENDING,,,Check for placeholder contact data
-/volunteer/,200,PENDING,,,Check for Alumin Network title
-/our-team/,200,PENDING,,,Check for template staff names
-/hello-world/,PENDING,PENDING,,,Decision pending owner approval
-/lobortis-elementum-nibhtellus-molestie-adipiscing/,PENDING,PENDING,,,Should be noindexed or removed
-/duis-tristique-sollicitudin-nibh-sit-amet-commodo-nulla/,PENDING,PENDING,,,Should be noindexed or removed
-/author/edward_admin/,PENDING,PENDING,,,Should be noindexed unless approved
+url,expected_status,actual_status,redirects,final_url,title,verdict,notes
+/,200,200,0,https://ceafsn.duckdns.org/,Home - Centre for Nutrition & Agrifood Systems (CE-AFSN),PASS,Homepage | content flags: alumin_network
+/appy,not_404,404,0,https://ceafsn.duckdns.org/appy,Page not found - Centre for Nutrition & Agrifood Systems (CE-AFSN),FAIL,"Must resolve to configured application destination | content flags: alumin_network,wp_noindex"
+/privacy-policy-2/,301->/publications/,200,0,https://ceafsn.duckdns.org/privacy-policy-2/,Policy Briefs & Publications - Centre for Nutrition & Agrifood Systems (CE-AFSN),FAIL,"Must redirect permanently | content flags: alumin_network | page exists under the wrong slug and carries the ""Policy Briefs & Publications"" title"
+/publications/,200,404,0,https://ceafsn.duckdns.org/publications/,Page not found - Centre for Nutrition & Agrifood Systems (CE-AFSN),FAIL,"Publications | content flags: alumin_network,wp_noindex | target slug does not exist"
+/me-dashboard/,200,200,0,https://ceafsn.duckdns.org/me-dashboard/,M&E Dashboard - Centre for Nutrition & Agrifood Systems (CE-AFSN),PASS,"M&E Dashboard | content flags: alumin_network | renders ceafsn-me-dashboard shortcode output, with demo records loaded (Students 200 / Females / Test project)"
+/nutrition-policy-modeling/,200,200,0,https://ceafsn.duckdns.org/nutrition-policy-modeling/,Nutrition & Policy Modeling - Centre for Nutrition & Agrifood Systems (CE-AFSN),PASS,Nutrition Policy | content flags: alumin_network
+/open-datasets/,200,200,0,https://ceafsn.duckdns.org/open-datasets/,Open Datasets - Centre for Nutrition & Agrifood Systems (CE-AFSN),PASS,Open Datasets | content flags: alumin_network
+/research-fellowships/,200,200,0,https://ceafsn.duckdns.org/research-fellowships/,Research Fellowships - Centre for Nutrition & Agrifood Systems (CE-AFSN),PASS,Research Fellowships | content flags: alumin_network
+/scholarships-grants/,200,200,0,https://ceafsn.duckdns.org/scholarships-grants/,Scholarships & Grants - Centre for Nutrition & Agrifood Systems (CE-AFSN),PASS,Grants and Funding | content flags: alumin_network
+/contact/,200,200,0,https://ceafsn.duckdns.org/contact/,Contact Us - Centre for Nutrition & Agrifood Systems (CE-AFSN),PASS,"Check for placeholder contact data | content flags: lorem_ipsum,alumin_network"
+/volunteer/,200,200,0,https://ceafsn.duckdns.org/volunteer/,Alumin Network - Centre for Nutrition & Agrifood Systems (CE-AFSN),PASS,"Check for Alumin Network title | content flags: lorem_ipsum,alumin_network"
+/our-team/,200,200,0,https://ceafsn.duckdns.org/our-team/,Our Team - Centre for Nutrition & Agrifood Systems (CE-AFSN),PASS,Check for template staff names | content flags: alumin_network
+/hello-world/,owner_decision,200,0,https://ceafsn.duckdns.org/hello-world/,Institutional M&E Frameworks for Regional Agricultural Growth - Centre for Nutrition & Agrifood Systems (CE-AFSN),UNVERIFIED,"Decision pending owner approval | content flags: latin_demo_slug,alumin_network,wordpress_commenter"
+/lobortis-elementum-nibhtellus-molestie-adipiscing/,owner_decision,200,0,https://ceafsn.duckdns.org/lobortis-elementum-nibhtellus-molestie-adipiscing/,Lobortis Elementum Nibhtellus Molestie Adipiscing - Centre for Nutrition & Agrifood Systems (CE-AFSN),UNVERIFIED,"Should be noindexed or removed | content flags: lorem_ipsum,latin_demo_slug,alumin_network"
+/duis-tristique-sollicitudin-nibh-sit-amet-commodo-nulla/,owner_decision,200,0,https://ceafsn.duckdns.org/duis-tristique-sollicitudin-nibh-sit-amet-commodo-nulla/,Duis tristique sollicitudin nibh sit amet commodo nulla - Centre for Nutrition & Agrifood Systems (CE-AFSN),UNVERIFIED,"Should be noindexed or removed | content flags: latin_demo_slug,alumin_network"
+/aenean-tortor-atisus-viverra-adipiscing/,owner_decision,200,0,https://ceafsn.duckdns.org/aenean-tortor-atisus-viverra-adipiscing/,Agrifood Value Chain Dynamics: Garden to Plate - Centre for Nutrition & Agrifood Systems (CE-AFSN),UNVERIFIED,"Latin demo post; added from post-sitemap.xml | content flags: latin_demo_slug,alumin_network"
+/mauris-cursus-mattis-molestie-aaculis-oterat-pellentesque/,owner_decision,200,0,https://ceafsn.duckdns.org/mauris-cursus-mattis-molestie-aaculis-oterat-pellentesque/,Regional Food Security Assessment & Nutrition Policy Frameworks - Centre for Nutrition & Agrifood Systems (CE-AFSN),UNVERIFIED,"Latin demo post; added from post-sitemap.xml | content flags: latin_demo_slug,alumin_network"
+/author/edward_admin/,owner_decision,200,0,https://ceafsn.duckdns.org/author/edward_admin/,"edward_admin, Author at Centre for Nutrition & Agrifood Systems (CE-AFSN)",UNVERIFIED,"Should be noindexed unless approved | content flags: lorem_ipsum,latin_demo_slug,alumin_network"

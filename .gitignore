@@ -44,5 +44,6 @@ build/
 *.pem
 *.key
 
-# ZIP builds (re-generated from source; no need to track)
+# ZIP builds — re-generated from source. The six release archives are already
+# tracked, so this rule only prevents a differently-named archive being added.
 plugins/*.zip

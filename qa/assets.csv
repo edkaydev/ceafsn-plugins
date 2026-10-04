@@ -1,2 +1,12 @@
 asset_url,type,http_status,mime_type,size_bytes,readable,unique_or_shared,notes
-ceafsn.pdf,PDF,PENDING,PENDING,8951,PENDING,shared_across_12_records,Known placeholder — must be replaced per record
+ceafsn.pdf,PDF,NOT_REFERENCED,unknown,unknown,NOT_TESTED,unverified,"No PDF link appears on any of the 18 crawled pages, so this file cannot be measured or de-duplicated from outside the site. The known placeholder claim (8951 bytes, shared across 12 records) is unverified — check the Media Library in wp-admin."
+/wp-content/uploads/2026/06/cropped-ceafsn-circular-logo-premium.png,PNG,200,image/png,432861,yes,unique,Site logo, present on every page. Only the cropped variant resolves; the un-cropped /wp-content/uploads/ceafsn-circular-logo-premium.png returns 404.
+/wp-content/uploads/2026/06/cropped-ceafsn-circular-logo-premium-300x300.png,PNG,200,image/png,165077,yes,unique,Generated thumbnail of the logo.
+/wp-content/uploads/2020/07/Research-workspace-with-food-security-theme.png,PNG,200,image/png,2460699,yes,unique,Hero image on /me-dashboard/. 2.4 MB with no modern format offered — a performance cost, not an error.
+/wp-content/uploads/2020/07/Research-workspace-with-food-security-theme-300x225.png,PNG,200,image/png,100382,yes,unique,Generated thumbnail of the hero image.
+/wp-content/plugins/gtranslate/js/float.js,JS,200,text/javascript,21612,yes,unique,GTranslate translator widget. Only third-party plugin asset path seen on the homepage.
+/wp-content/cache/autoptimize/js/autoptimize_single_99bde2a1161e56a6d2d27afd3e6db9c3.js,JS,200,text/javascript,1741,yes,unique,Autoptimize bundle. Autoptimize rewrites CSS/JS URLs, so per-plugin asset links cannot be verified from raw HTML.
+/wp-content/cache/autoptimize/js/autoptimize_single_d8445ac32bac3f59025317e508e8a7f6.js,JS,200,text/javascript,unknown,yes,unique,Second Autoptimize bundle (jQuery, ver 2.1.57).
+NO_PDF_LINKS_FOUND,none,n/a,n/a,0,n/a,n/a,"Summary: across all 18 crawled pages the inventory contains 763 links, 746 assets, 299 external links, 9 forms and ZERO pdf, csv, zip, xlsx or other download links."
+NO_IFRAMES_FOUND,none,n/a,n/a,0,n/a,n/a,Summary: no third-party iframe is embedded on any crawled page.
+FORMS,n/a,n/a,n/a,n/a,n/a,n/a,"Summary: 9 forms — 3 GET (site search on / and /me-dashboard/, plus one more) and 6 POST (contact form and wp-comments-post.php). The comment form is live, which is how "A WordPress Commenter" reaches the public page."

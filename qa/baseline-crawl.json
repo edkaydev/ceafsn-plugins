@@ -1,0 +1,453 @@
+{
+    "base": "https://ceafsn.duckdns.org",
+    "crawled_at": "2026-10-04T20:54:13+00:00",
+    "user_agent": "CE-AFSN-QA-Baseline/1.0 (read-only audit)",
+    "tool": "qa/crawl-baseline.php",
+    "routes": {
+        "/": {
+            "label": "Homepage",
+            "requested": "https://ceafsn.duckdns.org/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/",
+            "redirect_count": 0,
+            "title": "Home - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 248673,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/appy": {
+            "label": "Must resolve to configured application destination",
+            "requested": "https://ceafsn.duckdns.org/appy",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/appy",
+                    "status": 404,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 404,
+            "final_url": "https://ceafsn.duckdns.org/appy",
+            "redirect_count": 0,
+            "title": "Page not found - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 112779,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present",
+                "wp_noindex": "present"
+            },
+            "error": ""
+        },
+        "/privacy-policy-2/": {
+            "label": "Must redirect permanently",
+            "requested": "https://ceafsn.duckdns.org/privacy-policy-2/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/privacy-policy-2/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/privacy-policy-2/",
+            "redirect_count": 0,
+            "title": "Policy Briefs & Publications - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 116355,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/publications/": {
+            "label": "Publications",
+            "requested": "https://ceafsn.duckdns.org/publications/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/publications/",
+                    "status": 404,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 404,
+            "final_url": "https://ceafsn.duckdns.org/publications/",
+            "redirect_count": 0,
+            "title": "Page not found - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 112778,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present",
+                "wp_noindex": "present"
+            },
+            "error": ""
+        },
+        "/me-dashboard/": {
+            "label": "M&E Dashboard",
+            "requested": "https://ceafsn.duckdns.org/me-dashboard/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/me-dashboard/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/me-dashboard/",
+            "redirect_count": 0,
+            "title": "M&E Dashboard - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 121022,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/nutrition-policy-modeling/": {
+            "label": "Nutrition Policy",
+            "requested": "https://ceafsn.duckdns.org/nutrition-policy-modeling/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/nutrition-policy-modeling/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/nutrition-policy-modeling/",
+            "redirect_count": 0,
+            "title": "Nutrition & Policy Modeling - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 135535,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/open-datasets/": {
+            "label": "Open Datasets",
+            "requested": "https://ceafsn.duckdns.org/open-datasets/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/open-datasets/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/open-datasets/",
+            "redirect_count": 0,
+            "title": "Open Datasets - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 134011,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/research-fellowships/": {
+            "label": "Research Fellowships",
+            "requested": "https://ceafsn.duckdns.org/research-fellowships/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/research-fellowships/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/research-fellowships/",
+            "redirect_count": 0,
+            "title": "Research Fellowships - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 122751,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/scholarships-grants/": {
+            "label": "Grants and Funding",
+            "requested": "https://ceafsn.duckdns.org/scholarships-grants/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/scholarships-grants/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/scholarships-grants/",
+            "redirect_count": 0,
+            "title": "Scholarships & Grants - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 123113,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/contact/": {
+            "label": "Check for placeholder contact data",
+            "requested": "https://ceafsn.duckdns.org/contact/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/contact/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/contact/",
+            "redirect_count": 0,
+            "title": "Contact Us - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 143175,
+            "generator": "7.1.2",
+            "content_flags": {
+                "lorem_ipsum": "present",
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/volunteer/": {
+            "label": "Check for Alumin Network title",
+            "requested": "https://ceafsn.duckdns.org/volunteer/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/volunteer/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/volunteer/",
+            "redirect_count": 0,
+            "title": "Alumin Network - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 154900,
+            "generator": "7.1.2",
+            "content_flags": {
+                "lorem_ipsum": "present",
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/our-team/": {
+            "label": "Check for template staff names",
+            "requested": "https://ceafsn.duckdns.org/our-team/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/our-team/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/our-team/",
+            "redirect_count": 0,
+            "title": "Our Team - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 147791,
+            "generator": "7.1.2",
+            "content_flags": {
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/hello-world/": {
+            "label": "Decision pending owner approval",
+            "requested": "https://ceafsn.duckdns.org/hello-world/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/hello-world/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/hello-world/",
+            "redirect_count": 0,
+            "title": "Institutional M&E Frameworks for Regional Agricultural Growth - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 141421,
+            "generator": "7.1.2",
+            "content_flags": {
+                "latin_demo_slug": "present",
+                "alumin_network": "present",
+                "wordpress_commenter": "present"
+            },
+            "error": ""
+        },
+        "/lobortis-elementum-nibhtellus-molestie-adipiscing/": {
+            "label": "Should be noindexed or removed",
+            "requested": "https://ceafsn.duckdns.org/lobortis-elementum-nibhtellus-molestie-adipiscing/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/lobortis-elementum-nibhtellus-molestie-adipiscing/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/lobortis-elementum-nibhtellus-molestie-adipiscing/",
+            "redirect_count": 0,
+            "title": "Lobortis Elementum Nibhtellus Molestie Adipiscing - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 132201,
+            "generator": "7.1.2",
+            "content_flags": {
+                "lorem_ipsum": "present",
+                "latin_demo_slug": "present",
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/duis-tristique-sollicitudin-nibh-sit-amet-commodo-nulla/": {
+            "label": "Should be noindexed or removed",
+            "requested": "https://ceafsn.duckdns.org/duis-tristique-sollicitudin-nibh-sit-amet-commodo-nulla/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/duis-tristique-sollicitudin-nibh-sit-amet-commodo-nulla/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/duis-tristique-sollicitudin-nibh-sit-amet-commodo-nulla/",
+            "redirect_count": 0,
+            "title": "Duis tristique sollicitudin nibh sit amet commodo nulla - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 131222,
+            "generator": "7.1.2",
+            "content_flags": {
+                "latin_demo_slug": "present",
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/aenean-tortor-atisus-viverra-adipiscing/": {
+            "label": "Latin demo post found in post-sitemap.xml",
+            "requested": "https://ceafsn.duckdns.org/aenean-tortor-atisus-viverra-adipiscing/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/aenean-tortor-atisus-viverra-adipiscing/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/aenean-tortor-atisus-viverra-adipiscing/",
+            "redirect_count": 0,
+            "title": "Agrifood Value Chain Dynamics: Garden to Plate - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 160630,
+            "generator": "7.1.2",
+            "content_flags": {
+                "latin_demo_slug": "present",
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/mauris-cursus-mattis-molestie-aaculis-oterat-pellentesque/": {
+            "label": "Latin demo post found in post-sitemap.xml",
+            "requested": "https://ceafsn.duckdns.org/mauris-cursus-mattis-molestie-aaculis-oterat-pellentesque/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/mauris-cursus-mattis-molestie-aaculis-oterat-pellentesque/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/mauris-cursus-mattis-molestie-aaculis-oterat-pellentesque/",
+            "redirect_count": 0,
+            "title": "Regional Food Security Assessment & Nutrition Policy Frameworks - Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 141016,
+            "generator": "7.1.2",
+            "content_flags": {
+                "latin_demo_slug": "present",
+                "alumin_network": "present"
+            },
+            "error": ""
+        },
+        "/author/edward_admin/": {
+            "label": "Should be noindexed unless approved",
+            "requested": "https://ceafsn.duckdns.org/author/edward_admin/",
+            "chain": [
+                {
+                    "url": "https://ceafsn.duckdns.org/author/edward_admin/",
+                    "status": 200,
+                    "location": "",
+                    "error": ""
+                }
+            ],
+            "final_status": 200,
+            "final_url": "https://ceafsn.duckdns.org/author/edward_admin/",
+            "redirect_count": 0,
+            "title": "edward_admin, Author at Centre for Nutrition & Agrifood Systems (CE-AFSN)",
+            "bytes": 129038,
+            "generator": "7.1.2",
+            "content_flags": {
+                "lorem_ipsum": "present",
+                "latin_demo_slug": "present",
+                "alumin_network": "present"
+            },
+            "error": ""
+        }
+    },
+    "extras": {
+        "/sitemap.xml": {
+            "status": 301,
+            "type": "text/html; charset=UTF-8",
+            "bytes": 0,
+            "error": ""
+        },
+        "/wp-sitemap.xml": {
+            "status": 301,
+            "type": "text/html; charset=UTF-8",
+            "bytes": 0,
+            "error": ""
+        },
+        "/robots.txt": {
+            "status": 200,
+            "type": "text/plain; charset=utf-8",
+            "bytes": 176,
+            "error": ""
+        },
+        "/feed/": {
+            "status": 200,
+            "type": "application/rss+xml; charset=UTF-8",
+            "bytes": 23850,
+            "error": ""
+        }
+    },
+    "environment": {
+        "generator": "7.1.2",
+        "plugin_asset_paths": [
+            "gtranslate"
+        ],
+        "theme_asset_paths": [
+            "blocksy"
+        ],
+        "note": "Active plugins are inferred from asset URLs on the homepage only. Confirm in wp-admin before changing anything."
+    }
+}

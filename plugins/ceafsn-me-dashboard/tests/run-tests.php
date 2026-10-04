@@ -13,6 +13,14 @@
 
 declare( strict_types=1 );
 
+// This file is a CLI test harness: it must never execute over HTTP. Release
+// ZIPs exclude tests/, and this guard makes the file inert if it is ever
+// deployed by mistake.
+if ( 'cli' !== PHP_SAPI ) {
+	http_response_code( 403 );
+	exit( 1 );
+}
+
 require_once __DIR__ . '/bootstrap.php';
 
 /**

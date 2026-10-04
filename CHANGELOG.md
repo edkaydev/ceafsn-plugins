@@ -5,21 +5,25 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
 ## [Unreleased]
 
 ### Added
+- `.mailmap` folding AI-assistant commit identities (Claude, Copilot, Cursor)
+  onto the repository owner, so GitHub's contributor graph lists one person
+- `qa/crawl-baseline.php` — read-only baseline crawler for the live site, writing
+  `qa/baseline-crawl.json`, `qa/baseline-links.csv`, and `qa/baseline-content.md`
 - Initial project structure and specification documents
 - Six plugin folder scaffolds
 - Shared library scaffold
 - `docs/`, `qa/`, `dist/` directories
 - `ceafsn-me-dashboard` v1.0.0 — metrics, demographics, and project registry with
-  accessible tabbed front end, CSV export, opt-in uninstall, and a 177-assertion
+  accessible tabbed front end, CSV export, opt-in uninstall, and a 203-assertion
   dependency-free test suite
 - `ceafsn-nutrition-policy` v1.0.0 — policy record library where PDF validation
   gates the Published status, with an accessible filterable/sortable table,
-  JSON export, and a 241-assertion test suite
+  JSON export, and a 275-assertion test suite
 - `ceafsn-open-datasets` v1.0.0 — dataset repository where a working download
   gates the Published status. CSV/ZIP/XLSX structural checks, external URL
   validation (HTTP 200, reported size, matching content type, http/https only),
   measured file sizes, a seven-column accessible table, contact privacy behind
-  an opt-in, scoped upload restrictions, JSON export, and a 381-assertion
+  an opt-in, scoped upload restrictions, JSON export, and a 440-assertion
   dependency-free test suite
 - `ceafsn-projects-publications` v1.0.0 — publication and project library where
   a record's own validated PDF gates the Published status. Per-record checks for
@@ -32,7 +36,7 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   with filters, sorting, and search; members-only records are excluded unless
   the visitor passes the `ceafsn_pp_can_view_members_only` filter. Ships with
   `readme.txt`, `languages/ceafsn-pp.pot`, JSON export, opt-in uninstall, and a
-  332-assertion dependency-free test suite
+  421-assertion dependency-free test suite
 - `ceafsn-research-fellowships` v1.0.0 — fellowship and opportunity listing
   where status is derived from the opening and closing dates on every request
   rather than stored as an opinion. An opportunity is never shown as Open
@@ -45,7 +49,7 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   contact email are stored freely but shown publicly only once approved per
   record. Cards and a sortable, accessible table from one query, with track,
   status, and free-text filtering. Ships with `readme.txt`,
-  `languages/ceafsn-rf.pot`, JSON export, opt-in uninstall, and a 212-assertion
+  `languages/ceafsn-rf.pot`, JSON export, opt-in uninstall, and a 308-assertion
   dependency-free test suite
 - `ceafsn-grants-funding` v1.0.0 — the sixth and final plugin, closing the
   suite. Grants and scholarships require a real deadline and their own
@@ -62,9 +66,17 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   Cards and a sortable, accessible table from one query, with institution,
   status, and free-text filtering. Ships with `readme.txt`,
   `languages/ceafsn-gf.pot`, JSON export, opt-in uninstall, and a
-  157-assertion dependency-free test suite
+  286-assertion dependency-free test suite
 
 ### Changed
+- All six release ZIPs are rebuilt without `tests/`, so the test harness is no
+  longer shipped to production; each archive is verified by sha256 parity with its
+  source tree, `unzip -t`, and a lint pass over the extracted copy
+- Every `tests/run-tests.php` refuses to execute over HTTP
+- `qa/final-report.md`, `qa/routes.csv`, and `qa/assets.csv` are populated with
+  measured results instead of placeholders; `qa/routes.csv` gained a `verdict`
+  column
+- `ce-afsn-mega-pro-kiro-prompt.md` removed from version control and ignored
 - `ceafsn-nutrition-policy`: the PDF-only upload restriction is now scoped to
   the plugin's own admin screen instead of replacing every upload type site-wide,
   and is registered on each admin request rather than only at activation.
@@ -84,6 +96,8 @@ All notable changes to the CE-AFSN plugin suite will be documented here.
   for an image MIME type and required alt text.
 
 ### Planned
-- Fix `/appy` 404
-- Demo content cleanup
-- Full QA suite and documentation
+- Deploy and activate all six plugins; only `ceafsn-me-dashboard` is installed
+- Fix `/appy` 404 and publish `/publications/`
+- Demo content cleanup, including the demo records currently serving on
+  `/me-dashboard/` and the four indexable Latin demo posts
+- Accessibility and responsive QA, which needs a real browser

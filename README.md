@@ -51,15 +51,27 @@ A suite of six lightweight, production-ready WordPress plugins for `https://ceaf
 
 ---
 
-## Known Issues Fixed by This Suite
+## Known Issues Addressed by This Suite
 
-See `TODO.md` for the full checklist. Key defects addressed:
+See `TODO.md` for the full checklist and `qa/final-report.md` for measured
+evidence. Every item below is **implemented and tested in code**, but a code fix
+is not a live fix — as of the 2026-10-04 baseline crawl, all of these are still
+open on `ceafsn.duckdns.org`:
 
-- `/appy` 404 → replaced with admin-configurable destination
-- `/privacy-policy-2/` → 301 redirect to `/publications/`
-- Placeholder PDFs shared across 12 publication cards → each record requires a unique, validated file
-- Lorem ipsum and demo content → removed or noindexed
-- Fake contact, team, and metric data → replaced with honest empty states pending real data from site owner
+- `/appy` 404 → replaced with admin-configurable destination — still 404 live
+- `/privacy-policy-2/` → 301 redirect to `/publications/` → still serves 200 live,
+  and `/publications/` itself does not exist yet
+- Placeholder PDFs shared across 12 publication cards → each record requires a
+  unique, validated file — no PDF is linked from any page yet, so nothing is
+  publicly exposed, but the records are unverified
+- Lorem ipsum and demo content → removed or noindexed — Lorem ipsum is still live
+  on `/contact/` and `/volunteer/`, and four Latin demo posts are still indexable
+- Fake contact, team, and metric data → replaced with honest empty states pending
+  real data from site owner — `/me-dashboard/` is still serving demo records
+  (`Students 200`, `Females`, `Test project`)
+
+Only `ceafsn-me-dashboard` is currently installed on the live site; the other five
+plugins need deploying and activating before any of the above can change.
 
 ---
 
