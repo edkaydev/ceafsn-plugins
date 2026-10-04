@@ -12,8 +12,20 @@ defined( 'ABSPATH' ) || exit;
  */
 class CEAFSN_MED_Admin {
 
-	/** @var string Admin page parent slug. */
+	/** @var string Admin page parent slug. Lands on the Overview dashboard. */
 	const MENU_SLUG = 'ceafsn-med';
+
+	/** @var string Metrics list/add/edit page slug. */
+	const PAGE_METRICS = 'ceafsn-med-metrics';
+
+	/** @var string Demographics list/add/edit page slug. */
+	const PAGE_DEMOGRAPHICS = 'ceafsn-med-demographics';
+
+	/** @var string Projects list/add/edit page slug. */
+	const PAGE_PROJECTS = 'ceafsn-med-projects';
+
+	/** @var string Settings page slug. */
+	const PAGE_SETTINGS = 'ceafsn-med-settings';
 
 	/**
 	 * Register WordPress hooks.
@@ -44,9 +56,19 @@ class CEAFSN_MED_Admin {
 			__( 'M&E Dashboard', 'ceafsn-med' ),
 			'manage_options',
 			self::MENU_SLUG,
-			array( $this, 'page_metrics' ),
+			array( $this, 'page_overview' ),
 			'dashicons-chart-bar',
 			30
+		);
+
+		// Overview — same slug as the parent so the sidebar item lands here.
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Overview', 'ceafsn-med' ),
+			__( 'Overview', 'ceafsn-med' ),
+			'manage_options',
+			self::MENU_SLUG,
+			array( $this, 'page_overview' )
 		);
 
 		add_submenu_page(
@@ -54,7 +76,7 @@ class CEAFSN_MED_Admin {
 			__( 'Metrics', 'ceafsn-med' ),
 			__( 'Metrics', 'ceafsn-med' ),
 			'manage_options',
-			self::MENU_SLUG,
+			self::PAGE_METRICS,
 			array( $this, 'page_metrics' )
 		);
 
@@ -63,7 +85,7 @@ class CEAFSN_MED_Admin {
 			__( 'Demographics', 'ceafsn-med' ),
 			__( 'Demographics', 'ceafsn-med' ),
 			'manage_options',
-			'ceafsn-med-demographics',
+			self::PAGE_DEMOGRAPHICS,
 			array( $this, 'page_demographics' )
 		);
 
@@ -72,7 +94,7 @@ class CEAFSN_MED_Admin {
 			__( 'Projects', 'ceafsn-med' ),
 			__( 'Projects', 'ceafsn-med' ),
 			'manage_options',
-			'ceafsn-med-projects',
+			self::PAGE_PROJECTS,
 			array( $this, 'page_projects' )
 		);
 
@@ -81,7 +103,7 @@ class CEAFSN_MED_Admin {
 			__( 'Settings', 'ceafsn-med' ),
 			__( 'Settings', 'ceafsn-med' ),
 			'manage_options',
-			'ceafsn-med-settings',
+			self::PAGE_SETTINGS,
 			array( $this, 'page_settings' )
 		);
 	}
@@ -97,10 +119,11 @@ class CEAFSN_MED_Admin {
 	 */
 	public function enqueue_assets( string $hook_suffix ): void {
 		$plugin_pages = array(
-			'toplevel_page_ceafsn-med',
-			'me-dashboard_page_ceafsn-med-demographics',
-			'me-dashboard_page_ceafsn-med-projects',
-			'me-dashboard_page_ceafsn-med-settings',
+			'toplevel_page_' . self::MENU_SLUG,
+			'me-dashboard_page_' . self::PAGE_METRICS,
+			'me-dashboard_page_' . self::PAGE_DEMOGRAPHICS,
+			'me-dashboard_page_' . self::PAGE_PROJECTS,
+			'me-dashboard_page_' . self::PAGE_SETTINGS,
 		);
 
 		if ( ! in_array( $hook_suffix, $plugin_pages, true ) ) {
@@ -126,6 +149,55 @@ class CEAFSN_MED_Admin {
 	// ---------------------------------------------------------------------------
 	// Page renderers (delegate to partials)
 	// ---------------------------------------------------------------------------
+
+	/**
+	 * Overview dashboard — the page the sidebar item lands on.
+	 *
+	 * Aggregates real record counts for the KPI tiles and lists the records
+	 * that still need a human decision. Counts are always derived from stored
+	 * data; nothing is estimated or invented.
+	 */
+	public function page_overview(): void {
+		$this->require_manage_options();
+
+		$metrics      = CEAFSN_MED_DB::get_metrics( false );
+		$demographics = CEAFSN_MED_DB::get_demographics( false );
+		$projects     = CEAFSN_MED_DB::get_projects( array( 'per_page' => 200 ) );
+		$project_rows = $projects['items'];
+
+		$public_metrics = 0;
+		$private_metrics = 0;
+		foreach ( $metrics as $metric ) {
+			if ( 'public' === $metric->visibility ) {
+				++$public_metrics;
+			} else {
+				++$private_metrics;
+			}
+		}
+
+		$active_projects = 0;
+		$needs_verification = array();
+		foreach ( $project_rows as $project ) {
+			if ( 'active' === $project->status ) {
+				++$active_projects;
+			}
+			if ( 'verified' !== $project->verification_status ) {
+				$needs_verification[] = $project;
+			}
+		}
+
+		// Periods present in the metric set, newest first, for the coverage list.
+		$periods = array();
+		foreach ( $metrics as $metric ) {
+			$period = trim( (string) $metric->reporting_period );
+			if ( '' !== $period ) {
+				$periods[ $period ] = isset( $periods[ $period ] ) ? $periods[ $period ] + 1 : 1;
+			}
+		}
+		arsort( $periods );
+
+		require CEAFSN_MED_PLUGIN_DIR . 'admin/partials/overview.php';
+	}
 
 	/**
 	 * Metrics list / add / edit page.
@@ -215,7 +287,7 @@ class CEAFSN_MED_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => self::MENU_SLUG, 'saved' => '1' ),
+				array( 'page' => self::PAGE_METRICS, 'saved' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -236,7 +308,7 @@ class CEAFSN_MED_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => self::MENU_SLUG, 'deleted' => '1' ),
+				array( 'page' => self::PAGE_METRICS, 'deleted' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -271,7 +343,7 @@ class CEAFSN_MED_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'ceafsn-med-demographics', 'saved' => '1' ),
+				array( 'page' => self::PAGE_DEMOGRAPHICS, 'saved' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -292,7 +364,7 @@ class CEAFSN_MED_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'ceafsn-med-demographics', 'deleted' => '1' ),
+				array( 'page' => self::PAGE_DEMOGRAPHICS, 'deleted' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -327,7 +399,7 @@ class CEAFSN_MED_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'ceafsn-med-projects', 'saved' => '1' ),
+				array( 'page' => self::PAGE_PROJECTS, 'saved' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -348,7 +420,7 @@ class CEAFSN_MED_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'ceafsn-med-projects', 'deleted' => '1' ),
+				array( 'page' => self::PAGE_PROJECTS, 'deleted' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -376,7 +448,7 @@ class CEAFSN_MED_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'ceafsn-med-settings', 'saved' => '1' ),
+				array( 'page' => self::PAGE_SETTINGS, 'saved' => '1' ),
 				admin_url( 'admin.php' )
 			)
 		);

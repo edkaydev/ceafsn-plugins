@@ -38,7 +38,9 @@
 - [x] Accessible tabs (Overview, Demographics, Project Registry)
 - [x] SVG/HTML charts with accessible data tables
 - [x] Empty state / Preview badge
-- [x] Tests — 177 assertions (`php plugins/ceafsn-me-dashboard/tests/run-tests.php`)
+- [x] Branded admin UI — Overview landing page, KPI tiles, card-and-table records,
+      restyled forms, honest empty states
+- [x] Tests — 183 assertions (`php plugins/ceafsn-me-dashboard/tests/run-tests.php`)
 
 ### Plugin 2: ceafsn-nutrition-policy
 - [x] Plugin header and bootstrap file

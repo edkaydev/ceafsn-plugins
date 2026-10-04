@@ -7,102 +7,139 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$preview_mode  = get_option( 'ceafsn_med_preview_mode', '0' );
-$delete_flag   = get_option( 'ceafsn_med_uninstall_delete_data', false );
-$active_tab    = sanitize_key( $_GET['tab'] ?? 'general' );
+$preview_mode = get_option( 'ceafsn_med_preview_mode', '0' );
+$delete_flag  = get_option( 'ceafsn_med_uninstall_delete_data', false );
+$active_tab   = sanitize_key( $_GET['tab'] ?? 'general' );
+
+$med_settings_url = static function ( string $tab ): string {
+	return admin_url( 'admin.php?page=' . CEAFSN_MED_Admin::PAGE_SETTINGS . '&tab=' . $tab );
+};
+
+$med_tabs = array(
+	'general'   => __( 'General', 'ceafsn-med' ),
+	'export'    => __( 'Export', 'ceafsn-med' ),
+	'uninstall' => __( 'Uninstall', 'ceafsn-med' ),
+);
 ?>
 
-<?php if ( ! empty( $_GET['saved'] ) ) : ?>
-<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'ceafsn-med' ); ?></p></div>
-<?php endif; ?>
-
 <div class="wrap ceafsn-med-wrap">
-	<h1><?php esc_html_e( 'M&E Dashboard — Settings', 'ceafsn-med' ); ?></h1>
 
-	<nav class="nav-tab-wrapper" aria-label="<?php esc_attr_e( 'Settings tabs', 'ceafsn-med' ); ?>">
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=ceafsn-med-settings&tab=general' ) ); ?>"
-			class="nav-tab <?php echo 'general' === $active_tab ? 'nav-tab-active' : ''; ?>"
-			aria-current="<?php echo 'general' === $active_tab ? 'page' : 'false'; ?>">
-			<?php esc_html_e( 'General', 'ceafsn-med' ); ?>
-		</a>
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=ceafsn-med-settings&tab=export' ) ); ?>"
-			class="nav-tab <?php echo 'export' === $active_tab ? 'nav-tab-active' : ''; ?>"
-			aria-current="<?php echo 'export' === $active_tab ? 'page' : 'false'; ?>">
-			<?php esc_html_e( 'Export', 'ceafsn-med' ); ?>
-		</a>
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=ceafsn-med-settings&tab=uninstall' ) ); ?>"
-			class="nav-tab <?php echo 'uninstall' === $active_tab ? 'nav-tab-active' : ''; ?>"
-			aria-current="<?php echo 'uninstall' === $active_tab ? 'page' : 'false'; ?>">
-			<?php esc_html_e( 'Uninstall', 'ceafsn-med' ); ?>
-		</a>
+	<?php if ( ! empty( $_GET['saved'] ) ) : ?>
+		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'ceafsn-med' ); ?></p></div>
+	<?php endif; ?>
+
+	<header class="ceafsn-header">
+		<p class="ceafsn-header__eyebrow"><?php esc_html_e( 'M&E Dashboard', 'ceafsn-med' ); ?></p>
+		<h1 class="ceafsn-header__title"><?php esc_html_e( 'Settings', 'ceafsn-med' ); ?></h1>
+		<p class="ceafsn-header__subtitle">
+			<?php esc_html_e( 'Preview mode, data export, and what happens to your records if the plugin is removed.', 'ceafsn-med' ); ?>
+		</p>
+	</header>
+
+	<nav class="ceafsn-tabs" aria-label="<?php esc_attr_e( 'Settings sections', 'ceafsn-med' ); ?>">
+		<?php foreach ( $med_tabs as $med_tab_key => $med_tab_label ) : ?>
+			<a class="ceafsn-tabs__tab<?php echo $med_tab_key === $active_tab ? ' ceafsn-tabs__tab--active' : ''; ?>"
+				href="<?php echo esc_url( $med_settings_url( $med_tab_key ) ); ?>"
+				<?php echo $med_tab_key === $active_tab ? 'aria-current="page"' : ''; ?>>
+				<?php echo esc_html( $med_tab_label ); ?>
+			</a>
+		<?php endforeach; ?>
 	</nav>
 
-	<!-- General tab -->
 	<?php if ( 'general' === $active_tab ) : ?>
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-		<input type="hidden" name="action" value="ceafsn_med_save_settings">
-		<?php wp_nonce_field( 'ceafsn_med_settings_nonce', 'ceafsn_med_nonce' ); ?>
 
-		<table class="form-table" role="presentation">
-			<tr>
-				<th scope="row"><?php esc_html_e( 'Preview Mode', 'ceafsn-med' ); ?></th>
-				<td>
-					<label>
-						<input type="checkbox" name="ceafsn_med_preview_mode" value="1"
-							<?php checked( '1', $preview_mode ); ?>>
-						<?php esc_html_e( 'Enable Preview Mode', 'ceafsn-med' ); ?>
-					</label>
-					<p class="description">
-						<?php esc_html_e( 'When enabled, a clearly visible "Preview" badge is shown on the public dashboard. Use this when the site is not yet showing live institutional data.', 'ceafsn-med' ); ?>
+		<section class="ceafsn-card">
+			<div class="ceafsn-card__head">
+				<div>
+					<h2 class="ceafsn-card__title"><?php esc_html_e( 'Public display', 'ceafsn-med' ); ?></h2>
+					<p class="ceafsn-card__hint"><?php esc_html_e( 'How the dashboard presents itself to visitors.', 'ceafsn-med' ); ?></p>
+				</div>
+			</div>
+			<div class="ceafsn-card__body">
+				<form class="ceafsn-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="ceafsn_med_save_settings">
+					<?php wp_nonce_field( 'ceafsn_med_settings_nonce', 'ceafsn_med_nonce' ); ?>
+
+					<div class="ceafsn-check">
+						<input type="checkbox" name="ceafsn_med_preview_mode" value="1" id="ceafsn-med-preview" <?php checked( '1', $preview_mode ); ?>>
+						<div class="ceafsn-check__body">
+							<label class="ceafsn-check__title" for="ceafsn-med-preview">
+								<?php esc_html_e( 'Enable Preview Mode', 'ceafsn-med' ); ?>
+							</label>
+							<span class="ceafsn-check__hint">
+								<?php esc_html_e( 'When enabled, a clearly visible "Preview" badge is shown on the public dashboard. Use this when the site is not yet showing live institutional data.', 'ceafsn-med' ); ?>
+							</span>
+						</div>
+					</div>
+
+					<div class="ceafsn-form__actions">
+						<button type="submit" class="ceafsn-btn ceafsn-btn--primary"><?php esc_html_e( 'Save settings', 'ceafsn-med' ); ?></button>
+					</div>
+				</form>
+			</div>
+		</section>
+
+	<?php elseif ( 'export' === $active_tab ) : ?>
+
+		<section class="ceafsn-card">
+			<div class="ceafsn-card__head">
+				<div>
+					<h2 class="ceafsn-card__title"><?php esc_html_e( 'Export data', 'ceafsn-med' ); ?></h2>
+					<p class="ceafsn-card__hint"><?php esc_html_e( 'A complete copy of everything this plugin stores.', 'ceafsn-med' ); ?></p>
+				</div>
+			</div>
+			<div class="ceafsn-card__body">
+				<p class="ceafsn-field__hint ceafsn-lead">
+					<?php esc_html_e( 'Download a full JSON export of all metrics, demographic groups, and projects. Save this before making bulk changes or before uninstalling the plugin.', 'ceafsn-med' ); ?>
+				</p>
+				<form class="ceafsn-form__spaced" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="ceafsn_med_export">
+					<?php wp_nonce_field( 'ceafsn_med_export_nonce', 'ceafsn_med_nonce' ); ?>
+					<button type="submit" class="ceafsn-btn ceafsn-btn--primary"><?php esc_html_e( 'Download JSON export', 'ceafsn-med' ); ?></button>
+				</form>
+			</div>
+		</section>
+
+	<?php else : ?>
+
+		<section class="ceafsn-card ceafsn-danger">
+			<div class="ceafsn-card__head">
+				<h2 class="ceafsn-card__title"><?php esc_html_e( 'Uninstall', 'ceafsn-med' ); ?></h2>
+			</div>
+			<div class="ceafsn-card__body">
+				<div class="notice notice-warning inline">
+					<p>
+						<strong><?php esc_html_e( 'Warning:', 'ceafsn-med' ); ?></strong>
+						<?php esc_html_e( 'Enabling the option below means that all plugin data (metrics, demographics, projects) will be permanently deleted when you delete this plugin via Plugins → Delete. This cannot be undone. Export your data first.', 'ceafsn-med' ); ?>
 					</p>
-				</td>
-			</tr>
-		</table>
+				</div>
 
-		<?php submit_button( __( 'Save Settings', 'ceafsn-med' ) ); ?>
-	</form>
-	<?php endif; ?>
+				<form class="ceafsn-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="ceafsn_med_save_settings">
+					<?php wp_nonce_field( 'ceafsn_med_settings_nonce', 'ceafsn_med_nonce' ); ?>
 
-	<!-- Export tab -->
-	<?php if ( 'export' === $active_tab ) : ?>
-	<h2><?php esc_html_e( 'Export Data', 'ceafsn-med' ); ?></h2>
-	<p><?php esc_html_e( 'Download a full JSON export of all metrics, demographic groups, and projects. Save this before making bulk changes or before uninstalling the plugin.', 'ceafsn-med' ); ?></p>
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-		<input type="hidden" name="action" value="ceafsn_med_export">
-		<?php wp_nonce_field( 'ceafsn_med_export_nonce', 'ceafsn_med_nonce' ); ?>
-		<?php submit_button( __( 'Download JSON Export', 'ceafsn-med' ), 'secondary' ); ?>
-	</form>
-	<?php endif; ?>
+					<div class="ceafsn-check">
+						<input type="checkbox" name="ceafsn_med_uninstall_delete_data" value="1" id="ceafsn-med-delete-data" <?php checked( true, (bool) $delete_flag ); ?>>
+						<div class="ceafsn-check__body">
+							<label class="ceafsn-check__title" for="ceafsn-med-delete-data">
+								<?php esc_html_e( 'Permanently delete all plugin data when this plugin is deleted', 'ceafsn-med' ); ?>
+							</label>
+							<span class="ceafsn-check__hint">
+								<?php esc_html_e( 'Leave this off to keep your records if the plugin is ever removed or reinstalled.', 'ceafsn-med' ); ?>
+							</span>
+						</div>
+					</div>
 
-	<!-- Uninstall tab -->
-	<?php if ( 'uninstall' === $active_tab ) : ?>
-	<h2><?php esc_html_e( 'Uninstall', 'ceafsn-med' ); ?></h2>
-	<div class="notice notice-warning inline">
-		<p>
-			<strong><?php esc_html_e( 'Warning:', 'ceafsn-med' ); ?></strong>
-			<?php esc_html_e( 'Enabling the option below means that all plugin data (metrics, demographics, projects) will be permanently deleted when you delete this plugin via Plugins → Delete. This cannot be undone. Export your data first.', 'ceafsn-med' ); ?>
-		</p>
-	</div>
+					<div class="ceafsn-form__actions">
+						<button type="submit" class="ceafsn-btn ceafsn-btn--danger"><?php esc_html_e( 'Save uninstall settings', 'ceafsn-med' ); ?></button>
+						<a class="ceafsn-btn ceafsn-btn--quiet" href="<?php echo esc_url( $med_settings_url( 'export' ) ); ?>">
+							<?php esc_html_e( 'Export first', 'ceafsn-med' ); ?>
+						</a>
+					</div>
+				</form>
+			</div>
+		</section>
 
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-		<input type="hidden" name="action" value="ceafsn_med_save_settings">
-		<?php wp_nonce_field( 'ceafsn_med_settings_nonce', 'ceafsn_med_nonce' ); ?>
-
-		<table class="form-table" role="presentation">
-			<tr>
-				<th scope="row"><?php esc_html_e( 'Delete Data on Uninstall', 'ceafsn-med' ); ?></th>
-				<td>
-					<label>
-						<input type="checkbox" name="ceafsn_med_uninstall_delete_data" value="1"
-							<?php checked( true, (bool) $delete_flag ); ?>>
-						<?php esc_html_e( 'Permanently delete all plugin data when this plugin is deleted', 'ceafsn-med' ); ?>
-					</label>
-				</td>
-			</tr>
-		</table>
-
-		<?php submit_button( __( 'Save Uninstall Settings', 'ceafsn-med' ), 'secondary' ); ?>
-	</form>
 	<?php endif; ?>
 
 </div><!-- .ceafsn-med-wrap -->
