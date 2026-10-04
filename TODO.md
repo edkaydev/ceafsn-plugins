@@ -51,10 +51,20 @@
 - [x] Empty state
 - [x] Scoped PDF-only upload restriction, registered per request
 - [x] `topic` shortcode attribute honoured as the default filter
-- [x] Branded admin UI — Overview landing page, KPI tiles, "needs a document"
-      attention list, flat card-and-table records, restyled media picker and
-      settings tabs; every rule scoped to `.ceafsn-np-wrap`
+- [x] Branded admin UI — three-column app layout (WordPress admin menu, main
+      canvas, right rail), alert banners, hero module, publishing-workflow
+      stepper, KPI tiles, dot-and-pill status rows, check-marked guidance,
+      promotional callouts, circular help badge; every rule scoped to
+      `.ceafsn-np-wrap`
 - [x] Tests — 247 assertions (`php plugins/ceafsn-nutrition-policy/tests/run-tests.php`)
+
+> **Design direction (2026-10-04).** The first pass was deliberately flat —
+> no shadows, square badges — after feedback that the gradient/shadow/pill
+> styling looked machine-generated. That was then reversed: the target design
+> is the raised-card, rounded, dot-and-pill layout above, with shadows and
+> rounded corners. `ceafsn-nutrition-policy` is the reference implementation;
+> `ceafsn-me-dashboard` and the remaining plugins still carry the earlier flat
+> styling and need the same pass.
 
 ### Plugin 3: ceafsn-open-datasets
 - [x] Plugin header and bootstrap file

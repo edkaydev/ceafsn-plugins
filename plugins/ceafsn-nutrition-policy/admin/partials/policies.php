@@ -46,18 +46,33 @@ $np_is_list  = 'list' === $action;
 
 	<?php if ( $np_is_list ) : ?>
 
-		<header class="ceafsn-header">
-			<p class="ceafsn-header__eyebrow"><?php esc_html_e( 'CE-AFSN', 'ceafsn-np' ); ?></p>
-			<h1 class="ceafsn-header__title"><?php esc_html_e( 'Policy records', 'ceafsn-np' ); ?></h1>
-			<p class="ceafsn-header__subtitle">
+		<section class="ceafsn-hero">
+			<p class="ceafsn-hero__eyebrow"><?php esc_html_e( 'CE-AFSN · Nutrition Policy', 'ceafsn-np' ); ?></p>
+			<h1 class="ceafsn-hero__title"><?php esc_html_e( 'Policy records', 'ceafsn-np' ); ?></h1>
+			<p class="ceafsn-hero__text">
 				<?php esc_html_e( 'Each record needs its own PDF. A record only reaches the public page once the document is readable, is not a known placeholder, and has a readable page count.', 'ceafsn-np' ); ?>
 			</p>
-			<div class="ceafsn-header__actions">
+			<div class="ceafsn-hero__actions">
 				<a class="ceafsn-btn ceafsn-btn--gold" href="<?php echo esc_url( add_query_arg( 'action', 'add', $np_base_url ) ); ?>">
 					<?php esc_html_e( '+ Add policy record', 'ceafsn-np' ); ?>
 				</a>
+				<a class="ceafsn-btn ceafsn-btn--ghost" href="<?php echo esc_url( admin_url( 'admin.php?page=' . CEAFSN_NP_Admin::MENU_SLUG ) ); ?>">
+					<?php esc_html_e( 'Back to overview', 'ceafsn-np' ); ?>
+				</a>
 			</div>
-		</header>
+			<p class="ceafsn-hero__meta">
+				<span>
+					<?php
+					printf(
+						/* translators: %s: total record count. */
+						esc_html__( '<strong>%s</strong> records', 'ceafsn-np' ),
+						esc_html( number_format_i18n( count( $items ) ) )
+					);
+					?>
+				</span>
+				<span><?php esc_html_e( 'Drafts stay hidden from visitors until published', 'ceafsn-np' ); ?></span>
+			</p>
+		</section>
 
 		<section class="ceafsn-card">
 			<div class="ceafsn-card__head">
@@ -94,10 +109,9 @@ $np_is_list  = 'list' === $action;
 						<caption class="ceafsn-sr"><?php esc_html_e( 'Policy records list', 'ceafsn-np' ); ?></caption>
 						<thead>
 							<tr>
-								<th scope="col"><?php esc_html_e( 'Title', 'ceafsn-np' ); ?></th>
+								<th scope="col"><?php esc_html_e( 'Title & date', 'ceafsn-np' ); ?></th>
 								<th scope="col"><?php esc_html_e( 'Topic', 'ceafsn-np' ); ?></th>
 								<th scope="col"><?php esc_html_e( 'Institution', 'ceafsn-np' ); ?></th>
-								<th scope="col"><?php esc_html_e( 'Published', 'ceafsn-np' ); ?></th>
 								<th scope="col"><?php esc_html_e( 'PDF', 'ceafsn-np' ); ?></th>
 								<th scope="col"><?php esc_html_e( 'Status', 'ceafsn-np' ); ?></th>
 								<th scope="col" class="ceafsn-table__actions"><?php esc_html_e( 'Actions', 'ceafsn-np' ); ?></th>
@@ -110,10 +124,15 @@ $np_is_list  = 'list' === $action;
 								$np_item_pdf    = (int) $item->pdf_attachment_id;
 								?>
 								<tr>
-									<td><strong><?php echo esc_html( (string) $item->title ); ?></strong></td>
+									<td>
+										<span class="ceafsn-table__title">
+											<span class="ceafsn-dot <?php echo $np_item_pdf > 0 ? 'ceafsn-dot--green' : 'ceafsn-dot--danger'; ?>" aria-hidden="true"></span>
+											<?php echo esc_html( (string) $item->title ); ?>
+											<span class="ceafsn-table__meta"><?php echo esc_html( (string) $item->publication_date ); ?></span>
+										</span>
+									</td>
 									<td><?php echo esc_html( (string) $item->topic ); ?></td>
 									<td><?php echo esc_html( (string) $item->authoring_institution ); ?></td>
-									<td><?php echo esc_html( (string) $item->publication_date ); ?></td>
 									<td>
 										<?php if ( $np_item_pdf > 0 ) : ?>
 											<span class="ceafsn-badge ceafsn-badge--verified">
@@ -151,9 +170,9 @@ $np_is_list  = 'list' === $action;
 			&larr; <?php esc_html_e( 'Back to records', 'ceafsn-np' ); ?>
 		</a>
 
-		<header class="ceafsn-header">
-			<p class="ceafsn-header__eyebrow"><?php esc_html_e( 'Nutrition Policy', 'ceafsn-np' ); ?></p>
-			<h1 class="ceafsn-header__title">
+		<section class="ceafsn-hero">
+			<p class="ceafsn-hero__eyebrow"><?php esc_html_e( 'CE-AFSN · Nutrition Policy', 'ceafsn-np' ); ?></p>
+			<h1 class="ceafsn-hero__title">
 				<?php
 				echo esc_html(
 					$row
@@ -162,10 +181,10 @@ $np_is_list  = 'list' === $action;
 				);
 				?>
 			</h1>
-			<p class="ceafsn-header__subtitle">
+			<p class="ceafsn-hero__text">
 				<?php esc_html_e( 'A title, description, topic, institution, date, and PDF are all required. Publishing is blocked until the PDF validates.', 'ceafsn-np' ); ?>
 			</p>
-		</header>
+		</section>
 
 		<?php if ( $row && $validation && ! $validation['valid'] && 'published' === $row->status ) : ?>
 			<div class="notice notice-error">

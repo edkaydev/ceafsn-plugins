@@ -32,13 +32,13 @@ $np_is_general = 'general' === $active_tab;
 		</div>
 	<?php endif; ?>
 
-	<header class="ceafsn-header">
-		<p class="ceafsn-header__eyebrow"><?php esc_html_e( 'CE-AFSN', 'ceafsn-np' ); ?></p>
-		<h1 class="ceafsn-header__title"><?php esc_html_e( 'Settings', 'ceafsn-np' ); ?></h1>
-		<p class="ceafsn-header__subtitle">
+	<section class="ceafsn-hero">
+		<p class="ceafsn-hero__eyebrow"><?php esc_html_e( 'CE-AFSN · Nutrition Policy', 'ceafsn-np' ); ?></p>
+		<h1 class="ceafsn-hero__title"><?php esc_html_e( 'Settings', 'ceafsn-np' ); ?></h1>
+		<p class="ceafsn-hero__text">
 			<?php esc_html_e( 'Controls which files count as placeholders, how records leave the site, and what happens when the plugin is removed.', 'ceafsn-np' ); ?>
 		</p>
-	</header>
+	</section>
 
 	<nav class="ceafsn-tabs" aria-label="<?php esc_attr_e( 'Settings sections', 'ceafsn-np' ); ?>">
 		<a class="ceafsn-tabs__tab <?php echo $np_is_general ? 'ceafsn-tabs__tab--active' : ''; ?>"
