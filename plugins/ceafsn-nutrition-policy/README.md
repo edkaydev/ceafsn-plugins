@@ -169,3 +169,10 @@ Deactivation does not delete data. Full removal only on explicit admin confirmat
 | Table shows empty state | No published records | Add and publish policy records in admin |
 | Cannot publish record | PDF fails validation | Attach a valid, readable PDF |
 | "Read Policy" broken | Attachment deleted from media library | Re-upload and reassign PDF |
+
+---
+
+## Credits
+
+Built by [edkaydev](https://www.linkedin.com/in/edkaydev).
+CE-AFSN plugin suite — GPLv2 or later.

@@ -119,3 +119,10 @@ Deactivation does not delete data. Full removal only on explicit admin confirmat
 | Status shows Closed incorrectly | Closing date passed | Update closing date or manually set status |
 | Apply button disabled | No application URL set | Add a valid application URL in admin |
 | Status shown as Open without dates | Manual override active | Review override note in admin |
+
+---
+
+## Credits
+
+Built by [edkaydev](https://www.linkedin.com/in/edkaydev).
+CE-AFSN plugin suite — GPLv2 or later.

@@ -110,3 +110,10 @@ Deactivation does not delete data. Full removal only on explicit admin confirmat
 | Table empty | No published datasets | Add and publish dataset records in admin |
 | Download link broken | File deleted or URL changed | Re-upload file or update URL in admin |
 | File fails validation | Wrong MIME type or empty file | Replace with a valid, non-empty CSV or ZIP |
+
+---
+
+## Credits
+
+Built by [edkaydev](https://www.linkedin.com/in/edkaydev).
+CE-AFSN plugin suite — GPLv2 or later.

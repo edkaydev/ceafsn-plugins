@@ -1,5 +1,7 @@
 === CE-AFSN Open Datasets ===
 Contributors: ceafsn
+Author: edkaydev
+Author URI: https://www.linkedin.com/in/edkaydev
 Tags: open data, datasets, csv, food security, ceafsn
 Requires at least: 6.0
 Tested up to: 6.7

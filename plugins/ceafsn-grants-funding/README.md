@@ -114,3 +114,10 @@ Deactivation does not delete data. Full removal only on explicit admin confirmat
 | Deadline shows wrong timezone | Site timezone not set | Set timezone in WP Settings → General |
 | PDF fails validation | Invalid file or wrong MIME | Replace with a valid, readable PDF |
 | Apply button inactive | No application URL | Add a valid URL in admin |
+
+---
+
+## Credits
+
+Built by [edkaydev](https://www.linkedin.com/in/edkaydev).
+CE-AFSN plugin suite — GPLv2 or later.

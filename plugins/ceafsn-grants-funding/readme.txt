@@ -1,5 +1,7 @@
 === CE-AFSN Grants & Funding ===
 Contributors: ceafsn
+Author: edkaydev
+Author URI: https://www.linkedin.com/in/edkaydev
 Tags: grants, scholarships, funding, opportunities, ceafsn
 Requires at least: 6.0
 Tested up to: 6.7

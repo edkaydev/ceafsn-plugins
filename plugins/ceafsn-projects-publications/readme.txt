@@ -1,5 +1,7 @@
 === CE-AFSN Projects & Publications ===
 Contributors: ceafsn
+Author: edkaydev
+Author URI: https://www.linkedin.com/in/edkaydev
 Tags: publications, reports, library, documents, ceafsn
 Requires at least: 6.0
 Tested up to: 6.7

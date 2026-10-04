@@ -159,3 +159,10 @@ Deactivation does **not** delete data. Full data removal only occurs when the ad
 | Dashboard shows empty state | No published metrics | Add and publish records in admin |
 | Shortcode outputs nothing | Plugin not active | Activate plugin and flush permalinks |
 | Chart missing accessible table | Bug | File an issue with the shortcode output |
+
+---
+
+## Credits
+
+Built by [edkaydev](https://www.linkedin.com/in/edkaydev).
+CE-AFSN plugin suite — GPLv2 or later.

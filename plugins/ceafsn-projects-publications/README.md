@@ -129,3 +129,10 @@ Deactivation does not delete data. Full removal only on explicit admin confirmat
 | `/privacy-policy-2/` not redirecting | Redirect rule not registered | Activate plugin and flush permalinks |
 | Record cannot be published | PDF fails validation | Attach a valid, readable, unique PDF |
 | Page count mismatch | Wrong value entered in admin | Correct the page count field |
+
+---
+
+## Credits
+
+Built by [edkaydev](https://www.linkedin.com/in/edkaydev).
+CE-AFSN plugin suite — GPLv2 or later.

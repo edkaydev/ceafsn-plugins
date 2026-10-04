@@ -1,5 +1,7 @@
 === CE-AFSN M&E Dashboard ===
 Contributors: ceafsn
+Author: edkaydev
+Author URI: https://www.linkedin.com/in/edkaydev
 Tags: dashboard, monitoring, evaluation, metrics, ceafsn
 Requires at least: 6.0
 Tested up to: 6.7

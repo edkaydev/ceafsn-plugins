@@ -44,3 +44,10 @@ ceafsn-shared/
 ```
 
 Full class structure to be defined during Phase 2 build.
+
+---
+
+## Credits
+
+Built by [edkaydev](https://www.linkedin.com/in/edkaydev).
+CE-AFSN plugin suite — GPLv2 or later.

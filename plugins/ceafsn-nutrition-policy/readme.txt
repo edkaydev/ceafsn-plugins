@@ -1,5 +1,7 @@
 === CE-AFSN Nutrition Policy ===
 Contributors: ceafsn
+Author: edkaydev
+Author URI: https://www.linkedin.com/in/edkaydev
 Tags: policy, nutrition, food security, documents, ceafsn
 Requires at least: 6.0
 Tested up to: 6.7
