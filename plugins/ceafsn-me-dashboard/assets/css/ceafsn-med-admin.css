@@ -1,28 +1,32 @@
 /**
  * CE-AFSN M&E Dashboard — Admin Styles
  *
- * Branded admin UI. Scoped to .ceafsn-med-wrap on every rule so nothing here
+ * Branded admin UI. Every rule is scoped to .ceafsn-med-wrap so nothing here
  * can leak into the rest of wp-admin or a front-end theme.
  *
  * Palette is taken from the live CE-AFSN site (Blocksy theme customisations):
- *   gold   #d4af37  — accent: borders, rules, active states
- *   green  #1e4d2b  — primary: header band, headings, primary buttons
+ *   gold   #d4af37  — accent: rules, active states, step highlights
+ *   green  #1e4d2b  — primary: hero band, headings, primary buttons
  *   sage   #365951  — secondary text and links
  *   cream  #fbf6ed  — subtle surface tint
  *
- * Design intent: FLAT. Solid colour fills, 1px borders for separation, no
- * gradients, no drop shadows, no glass or glow effects. Depth comes from
- * borders and spacing only. Badges are square-cornered rather than pills.
+ * Layout is a two-column app grid inside the WordPress admin: a main canvas
+ * plus a narrower right rail for calls to action and guidance. The WordPress
+ * admin menu already provides the left navigation, so the three columns of
+ * the design (nav / canvas / rail) are all present.
+ *
+ * Surfaces are white cards on the pale wp-admin canvas, separated by 1px
+ * borders and a faint shadow. Rounded corners throughout; status pills and
+ * indicator dots are fully rounded.
  *
  * Contrast notes (WCAG 2.1 AA):
- *   white on #1e4d2b ....... 9.1:1  (header band, safe for all text)
+ *   white on #1e4d2b ....... 9.1:1  (hero band, safe for all text)
  *   #d4af37 on #1e4d2b .... 4.7:1  (accent text on dark, safe)
  *   #1e4d2b on white ....... 9.1:1  (headings, emphasis)
  *   #5c6770 on white ....... 5.4:1  (muted text — never #86919a, which is
  *                               only 3.0:1 and fails AA at small sizes)
- *   #d4af37 on white ....... 2.1:1  — DECORATIVE ONLY. Never used for text on
- *                               a light background; always paired with a dark
- *                               border or used as a solid fill behind dark text.
+ * Gold is never used for small text on white; it is a fill or a large accent
+ * paired with dark ink.
  */
 
 /* --------------------------------------------------------------------------
@@ -46,18 +50,86 @@
 	--ceafsn-danger: #8a1c1c;
 	--ceafsn-danger-line: #d9a5a5;
 	--ceafsn-danger-tint: #fdf3f3;
-	--ceafsn-radius: 4px;
+	--ceafsn-warn-tint: #fdf8ec;
+	--ceafsn-success-tint: #f1f7f2;
+
+	--ceafsn-radius: 6px;
+	--ceafsn-radius-lg: 10px;
+	--ceafsn-radius-pill: 999px;
+
+	/* Faint separation shadows. Two layers: a tight contact shadow plus a
+	   softer lift. Kept deliberately faint so cards read as raised paper
+	   rather than as glossy panels. */
+	--ceafsn-shadow-sm: 0 1px 2px rgba(17, 21, 24, .06);
+	--ceafsn-shadow: 0 1px 2px rgba(17, 21, 24, .05), 0 4px 12px rgba(17, 21, 24, .06);
+	--ceafsn-shadow-lg: 0 2px 4px rgba(17, 21, 24, .06), 0 12px 28px rgba(17, 21, 24, .1);
+	--ceafsn-ring: 0 0 0 3px rgba(30, 77, 43, .28);
 
 	max-width: 1240px;
 	margin-right: 24px;
-	padding-bottom: 48px;
-
 	color: var(--ceafsn-body);
 	font-size: 14px;
-	line-height: 1.6;
+	line-height: 1.5;
 }
 
-/* Screen-reader text, also used for table captions. */
+.ceafsn-med-wrap *,
+.ceafsn-med-wrap *::before,
+.ceafsn-med-wrap *::after {
+	box-sizing: border-box;
+}
+
+.ceafsn-med-wrap h1,
+.ceafsn-med-wrap h2,
+.ceafsn-med-wrap h3,
+.ceafsn-med-wrap h4,
+.ceafsn-med-wrap p {
+	margin: 0 0 12px;
+}
+
+.ceafsn-med-wrap h1,
+.ceafsn-med-wrap h2,
+.ceafsn-med-wrap h3,
+.ceafsn-med-wrap h4 {
+	color: var(--ceafsn-ink);
+	line-height: 1.25;
+}
+
+.ceafsn-med-wrap h1 {
+	font-size: 26px;
+	font-weight: 700;
+}
+
+.ceafsn-med-wrap h2 {
+	font-size: 17px;
+	font-weight: 700;
+}
+
+.ceafsn-med-wrap h3 {
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.ceafsn-med-wrap a {
+	color: var(--ceafsn-sage);
+}
+
+.ceafsn-med-wrap a:hover,
+.ceafsn-med-wrap a:focus {
+	color: var(--ceafsn-green);
+}
+
+/* Visible, solid focus on every interactive element. */
+.ceafsn-med-wrap a:focus,
+.ceafsn-med-wrap button:focus,
+.ceafsn-med-wrap input:focus,
+.ceafsn-med-wrap select:focus,
+.ceafsn-med-wrap textarea:focus {
+	outline: 2px solid var(--ceafsn-green);
+	outline-offset: 1px;
+	box-shadow: none;
+}
+
+/* Screen-reader-only text. */
 .ceafsn-med-wrap .ceafsn-sr {
 	position: absolute !important;
 	width: 1px;
@@ -65,542 +137,915 @@
 	padding: 0;
 	margin: -1px;
 	overflow: hidden;
-	clip: rect(0 0 0 0);
+	clip: rect(0, 0, 0, 0);
 	white-space: nowrap;
 	border: 0;
 }
 
 /* --------------------------------------------------------------------------
- * Branded header band — solid fill, solid gold rule beneath
+ * App grid — main canvas plus right rail
  * -------------------------------------------------------------------------- */
 
-.ceafsn-header {
-	position: relative;
-	margin: 20px 0 24px;
-	padding: 26px 28px 28px;
-	border: 1px solid var(--ceafsn-green-dark);
-	border-bottom: 4px solid var(--ceafsn-gold);
-	border-radius: var(--ceafsn-radius);
-	background: var(--ceafsn-green);
-	color: var(--ceafsn-white);
-}
-
-.ceafsn-header__eyebrow {
-	margin: 0 0 6px;
-	font-size: 11px;
-	font-weight: 700;
-	letter-spacing: .12em;
-	text-transform: uppercase;
-	/* 4.7:1 on the green band. */
-	color: var(--ceafsn-gold);
-}
-
-.ceafsn-header__title {
-	margin: 0;
-	padding: 0;
-	font-size: 27px;
-	font-weight: 700;
-	line-height: 1.2;
-	color: var(--ceafsn-white);
-}
-
-.ceafsn-header__subtitle {
-	margin: 8px 0 0;
-	max-width: 62ch;
-	font-size: 14px;
-	color: #dbe6df;
-}
-
-.ceafsn-header__actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 8px;
+.ceafsn-med-wrap .ceafsn-app {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 300px;
+	gap: 20px;
+	align-items: start;
 	margin-top: 20px;
 }
 
+.ceafsn-med-wrap .ceafsn-app__main {
+	min-width: 0;
+}
+
+.ceafsn-med-wrap .ceafsn-app__rail {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	position: sticky;
+	top: 46px;
+}
+
 /* --------------------------------------------------------------------------
- * Buttons — solid fills, hard borders
+ * Alert banners
+ *
+ * Full-width strips above the canvas: icon, message, optional text action,
+ * and a close control in the top-right corner.
  * -------------------------------------------------------------------------- */
 
-.ceafsn-btn {
+.ceafsn-med-wrap .ceafsn-alerts {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin: 0 0 4px;
+}
+
+.ceafsn-med-wrap .ceafsn-alert {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 13px 14px;
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius);
+	background: var(--ceafsn-white);
+	box-shadow: var(--ceafsn-shadow-sm);
+	font-size: 13px;
+}
+
+.ceafsn-med-wrap .ceafsn-alert__icon {
+	flex: 0 0 auto;
 	display: inline-flex;
 	align-items: center;
-	gap: 7px;
-	padding: 9px 16px;
-	border: 1px solid transparent;
-	border-radius: var(--ceafsn-radius);
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-surface);
+	color: var(--ceafsn-ink);
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.ceafsn-med-wrap .ceafsn-alert__body {
+	flex: 1 1 auto;
+	min-width: 0;
+	color: var(--ceafsn-body);
+}
+
+.ceafsn-med-wrap .ceafsn-alert__title {
+	font-weight: 700;
+	color: var(--ceafsn-ink);
+}
+
+.ceafsn-med-wrap .ceafsn-alert__text {
+	margin: 2px 0 0;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-med-wrap .ceafsn-alert__action {
+	margin-left: 6px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.ceafsn-med-wrap .ceafsn-alert--warn {
+	border-color: #e6d3a3;
+	background: var(--ceafsn-warn-tint);
+}
+
+.ceafsn-med-wrap .ceafsn-alert--warn .ceafsn-alert__icon {
+	background: var(--ceafsn-gold);
+	color: #3d2f05;
+}
+
+.ceafsn-med-wrap .ceafsn-alert--danger {
+	border-color: var(--ceafsn-danger-line);
+	background: var(--ceafsn-danger-tint);
+}
+
+.ceafsn-med-wrap .ceafsn-alert--danger .ceafsn-alert__icon {
+	background: var(--ceafsn-danger);
+	color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+ * Hero — broad welcome module
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-med-wrap .ceafsn-hero {
+	position: relative;
+	overflow: hidden;
+	padding: 30px 32px 32px;
+	border-radius: var(--ceafsn-radius-lg);
+	background: var(--ceafsn-green);
+	box-shadow: var(--ceafsn-shadow-lg);
+	color: #fff;
+}
+
+.ceafsn-med-wrap .ceafsn-hero__eyebrow {
+	margin: 0 0 6px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: var(--ceafsn-gold);
+}
+
+.ceafsn-med-wrap .ceafsn-hero__title {
+	margin: 0 0 10px;
+	font-size: 30px;
+	font-weight: 700;
+	color: #fff;
+}
+
+.ceafsn-med-wrap .ceafsn-hero__text {
+	max-width: 62ch;
+	margin: 0 0 20px;
+	font-size: 15px;
+	color: #e8efe9;
+}
+
+.ceafsn-med-wrap .ceafsn-hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+}
+
+.ceafsn-med-wrap .ceafsn-hero__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 18px;
+	margin-top: 22px;
+	padding-top: 18px;
+	border-top: 1px solid rgba(255, 255, 255, .22);
 	font-size: 13px;
+	color: #dfe8e1;
+}
+
+.ceafsn-med-wrap .ceafsn-hero__meta strong {
+	color: #fff;
+	font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+ * Buttons
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-med-wrap .ceafsn-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 9px 18px;
+	border: 1px solid transparent;
+	border-radius: var(--ceafsn-radius-pill);
+	font-size: 14px;
 	font-weight: 600;
 	line-height: 1.4;
 	text-decoration: none;
 	cursor: pointer;
+	box-shadow: var(--ceafsn-shadow-sm);
 }
 
-.ceafsn-btn:focus-visible {
-	outline: 2px solid var(--ceafsn-green);
-	outline-offset: 1px;
-}
-
-.ceafsn-btn--primary {
+.ceafsn-med-wrap .ceafsn-btn--primary {
 	background: var(--ceafsn-green);
 	border-color: var(--ceafsn-green);
-	color: var(--ceafsn-white);
+	color: #fff;
 }
 
-.ceafsn-btn--primary:hover,
-.ceafsn-btn--primary:focus {
+.ceafsn-med-wrap .ceafsn-btn--primary:hover,
+.ceafsn-med-wrap .ceafsn-btn--primary:focus {
 	background: var(--ceafsn-green-dark);
 	border-color: var(--ceafsn-green-dark);
-	color: var(--ceafsn-white);
+	color: #fff;
 }
 
-/* Gold fill with dark text: gold is far too light to carry white text. */
-.ceafsn-btn--gold {
+.ceafsn-med-wrap .ceafsn-btn--gold {
 	background: var(--ceafsn-gold);
 	border-color: var(--ceafsn-gold);
-	color: #1a1206;
+	color: #2b2205;
 }
 
-.ceafsn-btn--gold:hover,
-.ceafsn-btn--gold:focus {
+.ceafsn-med-wrap .ceafsn-btn--gold:hover,
+.ceafsn-med-wrap .ceafsn-btn--gold:focus {
 	background: var(--ceafsn-gold-dark);
 	border-color: var(--ceafsn-gold-dark);
-	color: #1a1206;
+	color: #fff;
 }
 
-.ceafsn-btn--ghost {
-	background: transparent;
-	border-color: #6d8a76;
-	color: var(--ceafsn-white);
-}
-
-.ceafsn-btn--ghost:hover,
-.ceafsn-btn--ghost:focus {
-	background: #2b6239;
-	border-color: var(--ceafsn-gold);
-	color: var(--ceafsn-white);
-}
-
-/* Buttons that sit on a white card rather than the dark band. */
-.ceafsn-btn--quiet {
+.ceafsn-med-wrap .ceafsn-btn--ghost {
 	background: var(--ceafsn-white);
 	border-color: var(--ceafsn-line);
-	color: var(--ceafsn-body);
+	color: var(--ceafsn-ink);
 }
 
-.ceafsn-btn--quiet:hover,
-.ceafsn-btn--quiet:focus {
-	background: var(--ceafsn-gold-tint);
-	border-color: var(--ceafsn-gold);
+.ceafsn-med-wrap .ceafsn-btn--ghost:hover,
+.ceafsn-med-wrap .ceafsn-btn--ghost:focus {
+	border-color: var(--ceafsn-sage);
 	color: var(--ceafsn-green);
 }
 
-.ceafsn-btn--danger {
-	background: var(--ceafsn-white);
-	border-color: var(--ceafsn-danger-line);
-	color: var(--ceafsn-danger);
+.ceafsn-med-wrap .ceafsn-btn--quiet {
+	padding: 6px 13px;
+	background: none;
+	border-color: transparent;
+	box-shadow: none;
+	color: var(--ceafsn-sage);
 }
 
-.ceafsn-btn--danger:hover,
-.ceafsn-btn--danger:focus {
-	background: var(--ceafsn-danger-tint);
-	border-color: var(--ceafsn-danger);
-	color: var(--ceafsn-danger);
+.ceafsn-med-wrap .ceafsn-btn--quiet:hover,
+.ceafsn-med-wrap .ceafsn-btn--quiet:focus {
+	background: var(--ceafsn-surface);
+	color: var(--ceafsn-green);
 }
 
-/* Drop the native focus ring in favour of the one defined per control. */
-.ceafsn-med-wrap a:focus,
-.ceafsn-med-wrap button:focus,
-.ceafsn-med-wrap input:focus,
-.ceafsn-med-wrap select:focus,
-.ceafsn-med-wrap textarea:focus {
-	outline: none;
+.ceafsn-med-wrap .ceafsn-btn--block {
+	display: flex;
+	width: 100%;
 }
 
 /* --------------------------------------------------------------------------
- * Cards and section headings
+ * Cards
  * -------------------------------------------------------------------------- */
 
-.ceafsn-card {
+.ceafsn-med-wrap .ceafsn-card {
 	margin: 0 0 20px;
-	padding: 0;
 	border: 1px solid var(--ceafsn-line);
-	border-radius: var(--ceafsn-radius);
+	border-radius: var(--ceafsn-radius-lg);
 	background: var(--ceafsn-white);
+	box-shadow: var(--ceafsn-shadow);
 }
 
-.ceafsn-card__head {
+.ceafsn-med-wrap .ceafsn-card:last-child {
+	margin-bottom: 0;
+}
+
+.ceafsn-med-wrap .ceafsn-card__head {
 	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: space-between;
-	gap: 12px;
-	padding: 14px 18px;
-	border-bottom: 1px solid var(--ceafsn-line);
-	background: var(--ceafsn-surface);
+	gap: 16px;
+	padding: 16px 20px;
+	border-bottom: 1px solid var(--ceafsn-line-soft);
+	background: var(--ceafsn-white);
+	border-radius: var(--ceafsn-radius-lg) var(--ceafsn-radius-lg) 0 0;
 }
 
-.ceafsn-card__title {
+.ceafsn-med-wrap .ceafsn-card__head > div {
+	min-width: 0;
+}
+
+.ceafsn-med-wrap .ceafsn-card__title {
 	margin: 0;
-	padding: 0;
-	font-size: 15px;
+	font-size: 16px;
 	font-weight: 700;
-	color: var(--ceafsn-green);
 }
 
-.ceafsn-card__hint {
-	margin: 2px 0 0;
-	font-size: 12px;
+.ceafsn-med-wrap .ceafsn-card__hint {
+	margin: 4px 0 0;
+	font-size: 13px;
 	color: var(--ceafsn-muted);
 }
 
-.ceafsn-card__body {
+.ceafsn-med-wrap .ceafsn-card__body {
 	padding: 20px;
 }
 
-/* Nested body inside another body — trims the double padding. */
-.ceafsn-card__body--tight {
-	padding: 16px 0 0;
+.ceafsn-med-wrap .ceafsn-card__body > :last-child {
+	margin-bottom: 0;
+}
+
+.ceafsn-med-wrap .ceafsn-card__body--tight {
+	padding: 0 20px 20px;
+}
+
+/* --------------------------------------------------------------------------
+ * Progress stepper
+ *
+ * A horizontal workflow joined by thin connector lines.
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-med-wrap .ceafsn-stepper {
+	display: flex;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: ceafsn-step;
+}
+
+.ceafsn-med-wrap .ceafsn-step {
+	position: relative;
+	flex: 1 1 0;
+	min-width: 0;
+	padding: 0 14px 0 0;
+	text-align: center;
+}
+
+/* Connector line to the next step. */
+.ceafsn-med-wrap .ceafsn-step::after {
+	content: "";
+	position: absolute;
+	top: 15px;
+	left: calc(50% + 20px);
+	right: -14px;
+	height: 2px;
+	background: var(--ceafsn-line);
+}
+
+.ceafsn-med-wrap .ceafsn-step:last-child {
+	padding-right: 0;
+}
+
+.ceafsn-med-wrap .ceafsn-step:last-child::after {
+	display: none;
+}
+
+.ceafsn-med-wrap .ceafsn-step__dot {
+	position: relative;
+	z-index: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: var(--ceafsn-radius-pill);
+	border: 2px solid var(--ceafsn-line);
+	background: var(--ceafsn-white);
+	color: var(--ceafsn-muted);
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.ceafsn-med-wrap .ceafsn-step__label {
+	display: block;
+	margin-top: 9px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--ceafsn-ink);
+}
+
+.ceafsn-med-wrap .ceafsn-step__meta {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
+	color: var(--ceafsn-muted);
+}
+
+/* Completed step. */
+.ceafsn-med-wrap .ceafsn-step.is-done .ceafsn-step__dot {
+	border-color: var(--ceafsn-green);
+	background: var(--ceafsn-green);
+	color: #fff;
+}
+
+.ceafsn-med-wrap .ceafsn-step.is-done::after {
+	background: var(--ceafsn-green);
+}
+
+/* Current step. */
+.ceafsn-med-wrap .ceafsn-step.is-current .ceafsn-step__dot {
+	border-color: var(--ceafsn-gold);
+	background: var(--ceafsn-gold);
+	color: #2b2205;
+	box-shadow: 0 0 0 4px var(--ceafsn-gold-tint);
+}
+
+.ceafsn-med-wrap .ceafsn-step.is-current .ceafsn-step__label {
+	color: var(--ceafsn-green);
 }
 
 /* --------------------------------------------------------------------------
  * KPI tiles
  * -------------------------------------------------------------------------- */
 
-.ceafsn-kpi-row {
+.ceafsn-med-wrap .ceafsn-kpi-row {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
-	gap: 14px;
-	margin: 0 0 22px;
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+	gap: 16px;
+	margin: 0 0 20px;
 }
 
-.ceafsn-kpi {
-	padding: 16px 18px 14px;
+.ceafsn-med-wrap .ceafsn-kpi {
+	position: relative;
+	padding: 17px 18px;
 	border: 1px solid var(--ceafsn-line);
-	border-top: 3px solid var(--ceafsn-green);
-	border-radius: var(--ceafsn-radius);
+	border-radius: var(--ceafsn-radius-lg);
 	background: var(--ceafsn-white);
+	box-shadow: var(--ceafsn-shadow-sm);
 }
 
-.ceafsn-kpi__label {
-	display: block;
-	margin: 0 0 6px;
-	font-size: 11px;
-	font-weight: 700;
-	letter-spacing: .07em;
-	text-transform: uppercase;
+.ceafsn-med-wrap .ceafsn-kpi__label {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: .02em;
 	color: var(--ceafsn-muted);
 }
 
-.ceafsn-kpi__value {
+.ceafsn-med-wrap .ceafsn-kpi__value {
 	display: block;
-	margin: 0;
+	margin: 8px 0 4px;
 	font-size: 30px;
 	font-weight: 700;
-	line-height: 1.05;
-	color: var(--ceafsn-green);
-}
-
-.ceafsn-kpi__meta {
-	display: block;
-	margin: 6px 0 0;
-	font-size: 12px;
-	color: var(--ceafsn-muted);
-}
-
-.ceafsn-kpi--accent {
-	border-color: var(--ceafsn-line);
-	border-top-color: var(--ceafsn-gold);
-	background: var(--ceafsn-gold-tint);
-}
-
-.ceafsn-kpi--alert {
-	border-top-color: var(--ceafsn-danger);
-}
-
-.ceafsn-kpi--alert .ceafsn-kpi__value {
-	color: var(--ceafsn-danger);
-}
-
-/* --------------------------------------------------------------------------
- * Two-column layout
- * -------------------------------------------------------------------------- */
-
-.ceafsn-split {
-	display: grid;
-	grid-template-columns: 1.55fr 1fr;
-	gap: 18px;
-	align-items: start;
-}
-
-@media screen and (max-width: 960px) {
-	.ceafsn-split {
-		grid-template-columns: 1fr;
-	}
-}
-
-/* --------------------------------------------------------------------------
- * Attention list
- * -------------------------------------------------------------------------- */
-
-.ceafsn-list {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-.ceafsn-list__item {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	gap: 16px;
-	padding: 13px 18px;
-	border-bottom: 1px solid var(--ceafsn-line-soft);
-}
-
-.ceafsn-list__item:last-child {
-	border-bottom: 0;
-}
-
-.ceafsn-list__main {
-	min-width: 0;
-}
-
-.ceafsn-list__title {
-	margin: 0 0 3px;
-	font-size: 14px;
-	font-weight: 600;
+	line-height: 1.1;
 	color: var(--ceafsn-ink);
 }
 
-.ceafsn-list__meta {
-	margin: 0;
+.ceafsn-med-wrap .ceafsn-kpi__meta {
+	display: block;
 	font-size: 12px;
 	color: var(--ceafsn-muted);
 }
 
-.ceafsn-list__actions {
+.ceafsn-med-wrap .ceafsn-kpi--accent {
+	border-color: var(--ceafsn-green);
+	background: var(--ceafsn-green);
+}
+
+.ceafsn-med-wrap .ceafsn-kpi--accent .ceafsn-kpi__label,
+.ceafsn-med-wrap .ceafsn-kpi--accent .ceafsn-kpi__meta {
+	color: #d8e5dc;
+}
+
+.ceafsn-med-wrap .ceafsn-kpi--accent .ceafsn-kpi__value {
+	color: #fff;
+}
+
+.ceafsn-med-wrap .ceafsn-kpi--alert {
+	border-color: #e6d3a3;
+	background: var(--ceafsn-warn-tint);
+}
+
+.ceafsn-med-wrap .ceafsn-kpi--alert .ceafsn-kpi__value {
+	color: #6b4f04;
+}
+
+/* --------------------------------------------------------------------------
+ * Status dots, pills, badges
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-med-wrap .ceafsn-dot {
+	display: inline-block;
+	width: 9px;
+	height: 9px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-line);
 	flex: 0 0 auto;
-	display: flex;
+}
+
+.ceafsn-med-wrap .ceafsn-dot--green { background: var(--ceafsn-green); }
+.ceafsn-med-wrap .ceafsn-dot--gold { background: var(--ceafsn-gold); }
+.ceafsn-med-wrap .ceafsn-dot--danger { background: var(--ceafsn-danger); }
+.ceafsn-med-wrap .ceafsn-dot--grey { background: #9aa3a9; }
+
+.ceafsn-med-wrap .ceafsn-pill {
+	display: inline-flex;
 	align-items: center;
-	gap: 10px;
+	justify-content: center;
+	min-width: 22px;
+	padding: 1px 8px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-surface);
+	border: 1px solid var(--ceafsn-line);
+	color: var(--ceafsn-ink);
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.6;
+}
+
+.ceafsn-med-wrap .ceafsn-pill--green {
+	background: var(--ceafsn-success-tint);
+	border-color: #b9d0be;
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-med-wrap .ceafsn-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 2px 10px;
+	border: 1px solid transparent;
+	border-radius: var(--ceafsn-radius-pill);
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.7;
+	white-space: nowrap;
+}
+
+.ceafsn-med-wrap .ceafsn-badge--status-published,
+.ceafsn-med-wrap .ceafsn-badge--verified {
+	background: var(--ceafsn-success-tint);
+	border-color: #b9d0be;
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-med-wrap .ceafsn-badge--status-draft,
+.ceafsn-med-wrap .ceafsn-badge--status-archived {
+	background: var(--ceafsn-surface);
+	border-color: var(--ceafsn-line);
+	color: #41484e;
+}
+
+.ceafsn-med-wrap .ceafsn-badge--unverified {
+	background: var(--ceafsn-danger-tint);
+	border-color: var(--ceafsn-danger-line);
+	color: var(--ceafsn-danger);
+}
+
+.ceafsn-med-wrap .ceafsn-badge--public {
+	background: var(--ceafsn-success-tint);
+	border-color: #b9d0be;
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-med-wrap .ceafsn-badge--private,
+.ceafsn-med-wrap .ceafsn-badge--status-completed {
+	background: var(--ceafsn-surface);
+	border-color: var(--ceafsn-line);
+	color: #41484e;
+}
+
+.ceafsn-med-wrap .ceafsn-badge--status-active {
+	background: var(--ceafsn-success-tint);
+	border-color: #b9d0be;
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-med-wrap .ceafsn-badge--status-suspended,
+.ceafsn-med-wrap .ceafsn-badge--unverified {
+	background: var(--ceafsn-danger-tint);
+	border-color: var(--ceafsn-danger-line);
+	color: var(--ceafsn-danger);
+}
+
+.ceafsn-med-wrap .ceafsn-badge--pending {
+	background: var(--ceafsn-gold-tint);
+	border-color: var(--ceafsn-gold);
+	color: #6b4f04;
 }
 
 /* --------------------------------------------------------------------------
  * Tables
  * -------------------------------------------------------------------------- */
 
-.ceafsn-table-wrap {
+.ceafsn-med-wrap .ceafsn-table-wrap {
 	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
 }
 
-.ceafsn-table {
+.ceafsn-med-wrap .ceafsn-table {
 	width: 100%;
 	border-collapse: collapse;
-	border: 0;
 	font-size: 13px;
 }
 
-.ceafsn-table caption {
-	padding: 14px 18px;
-	text-align: left;
-	font-size: 12px;
-	color: var(--ceafsn-muted);
-}
-
-.ceafsn-table th,
-.ceafsn-table td {
+.ceafsn-med-wrap .ceafsn-table th,
+.ceafsn-med-wrap .ceafsn-table td {
 	padding: 11px 14px;
 	text-align: left;
 	vertical-align: middle;
 	border-bottom: 1px solid var(--ceafsn-line-soft);
 }
 
-.ceafsn-table thead th {
-	background: var(--ceafsn-surface);
-	border-top: 1px solid var(--ceafsn-line);
-	border-bottom: 2px solid var(--ceafsn-gold);
+.ceafsn-med-wrap .ceafsn-table th {
 	font-size: 11px;
 	font-weight: 700;
-	letter-spacing: .06em;
+	letter-spacing: .05em;
 	text-transform: uppercase;
-	color: var(--ceafsn-green);
+	color: var(--ceafsn-muted);
+	background: var(--ceafsn-surface);
 	white-space: nowrap;
 }
 
-.ceafsn-table tbody tr:nth-child(even) {
+.ceafsn-med-wrap .ceafsn-table tbody tr:nth-child(even) {
 	background: #fafbfb;
 }
 
-.ceafsn-table tbody tr:hover {
+.ceafsn-med-wrap .ceafsn-table tbody tr:hover {
 	background: var(--ceafsn-gold-tint);
 }
 
-.ceafsn-table tbody tr:last-child td {
+.ceafsn-med-wrap .ceafsn-table tbody tr:last-child td {
 	border-bottom: 0;
 }
 
-.ceafsn-table__num {
-	font-variant-numeric: tabular-nums;
-	font-weight: 600;
-	color: var(--ceafsn-green);
+.ceafsn-med-wrap .ceafsn-table__title {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	font-weight: 700;
+	color: var(--ceafsn-ink);
 }
 
-.ceafsn-table__actions {
-	white-space: nowrap;
+.ceafsn-med-wrap .ceafsn-table__meta {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
+	font-weight: 400;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-med-wrap .ceafsn-table__actions {
 	text-align: right;
+	white-space: nowrap;
 }
 
-.ceafsn-table__actions a {
-	margin-left: 10px;
-	font-size: 12px;
+.ceafsn-med-wrap .ceafsn-table__actions a {
+	margin-left: 12px;
 	font-weight: 600;
 	text-decoration: none;
-	color: var(--ceafsn-sage);
 }
 
-.ceafsn-table__actions a:hover,
-.ceafsn-table__actions a:focus {
-	color: var(--ceafsn-green);
+.ceafsn-med-wrap .ceafsn-table__actions a:hover,
+.ceafsn-med-wrap .ceafsn-table__actions a:focus {
 	text-decoration: underline;
 }
 
-.ceafsn-table__actions .ceafsn-delete-link {
+.ceafsn-med-wrap .ceafsn-table__actions .ceafsn-delete-link {
 	color: var(--ceafsn-danger);
 }
 
-.ceafsn-table__actions .ceafsn-delete-link:hover,
-.ceafsn-table__actions .ceafsn-delete-link:focus {
+.ceafsn-med-wrap .ceafsn-table__actions .ceafsn-delete-link:hover,
+.ceafsn-med-wrap .ceafsn-table__actions .ceafsn-delete-link:focus {
 	color: #6d1414;
 }
 
 /* --------------------------------------------------------------------------
- * Badges — square corners, solid fills
+ * Lists
  * -------------------------------------------------------------------------- */
 
-.ceafsn-badge {
-	display: inline-block;
-	padding: 2px 8px;
-	border: 1px solid transparent;
-	border-radius: 3px;
-	font-size: 11px;
-	font-weight: 700;
-	line-height: 1.6;
-	letter-spacing: .02em;
-	white-space: nowrap;
+/* --------------------------------------------------------------------------
+ * Check-marked guidance list (rail)
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-med-wrap .ceafsn-ticks {
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
-.ceafsn-badge--public,
-.ceafsn-badge--status-active,
-.ceafsn-badge--verified {
+.ceafsn-med-wrap .ceafsn-ticks li {
+	position: relative;
+	padding: 0 0 12px 26px;
+	font-size: 13px;
+	color: var(--ceafsn-body);
+}
+
+.ceafsn-med-wrap .ceafsn-ticks li:last-child {
+	padding-bottom: 0;
+}
+
+.ceafsn-med-wrap .ceafsn-ticks li::before {
+	content: "\2713";
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 17px;
+	height: 17px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-success-tint);
+	border: 1px solid #b9d0be;
+	color: var(--ceafsn-green);
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+ * Promotional callout (rail)
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-med-wrap .ceafsn-cta {
+	position: relative;
+	overflow: hidden;
+	padding: 22px 20px;
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius-lg);
+	background: var(--ceafsn-white);
+	box-shadow: var(--ceafsn-shadow);
+}
+
+.ceafsn-med-wrap .ceafsn-cta::before {
+	content: "";
+	position: absolute;
+	inset: 0 0 auto;
+	height: 4px;
+	background: var(--ceafsn-gold);
+}
+
+.ceafsn-med-wrap .ceafsn-cta__eyebrow {
+	margin: 6px 0 6px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	color: var(--ceafsn-gold-dark);
+}
+
+.ceafsn-med-wrap .ceafsn-cta__title {
+	margin: 0 0 8px;
+	font-size: 17px;
+	font-weight: 700;
+}
+
+.ceafsn-med-wrap .ceafsn-cta__text {
+	margin: 0 0 14px;
+	font-size: 13px;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-med-wrap .ceafsn-cta .ceafsn-btn {
+	margin-top: 16px;
+}
+
+/* --------------------------------------------------------------------------
+ * Circular help badge
+ *
+ * Anchors to the on-page guidance card so it always leads somewhere real.
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-med-wrap .ceafsn-help {
+	position: fixed;
+	right: 26px;
+	bottom: 26px;
+	z-index: 20;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	border-radius: var(--ceafsn-radius-pill);
 	background: var(--ceafsn-green);
-	border-color: var(--ceafsn-green);
+	color: #fff;
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 1;
+	text-decoration: none;
+	box-shadow: var(--ceafsn-shadow-lg);
+}
+
+.ceafsn-med-wrap .ceafsn-help:hover,
+.ceafsn-med-wrap .ceafsn-help:focus {
+	background: var(--ceafsn-green-dark);
 	color: #fff;
 }
 
-/* Private — neutral, never alarming: private is the safe default. */
-.ceafsn-badge--private,
-.ceafsn-badge--status-completed {
-	background: var(--ceafsn-surface);
-	border-color: var(--ceafsn-line);
-	color: #41484e;
+.ceafsn-med-wrap .ceafsn-table__num {
+	font-variant-numeric: tabular-nums;
+	font-weight: 700;
+	color: var(--ceafsn-green);
 }
 
-/* Gold fill for attention states; dark text for contrast. */
-.ceafsn-badge--pending {
-	background: var(--ceafsn-gold-tint);
-	border-color: var(--ceafsn-gold);
-	color: #6b4f04;
-}
-
-.ceafsn-badge--status-suspended,
-.ceafsn-badge--unverified {
-	background: var(--ceafsn-danger-tint);
+/* Destructive action. */
+.ceafsn-med-wrap .ceafsn-btn--danger {
+	background: var(--ceafsn-white);
 	border-color: var(--ceafsn-danger-line);
 	color: var(--ceafsn-danger);
+}
+
+.ceafsn-med-wrap .ceafsn-btn--danger:hover,
+.ceafsn-med-wrap .ceafsn-btn--danger:focus {
+	background: var(--ceafsn-danger-tint);
+	border-color: var(--ceafsn-danger);
+	color: var(--ceafsn-danger);
+}
+
+/* Standalone form that is not inside .ceafsn-form. */
+.ceafsn-med-wrap .ceafsn-form__spaced {
+	margin-top: 18px;
+}
+
+/* Lead paragraph at the top of a card body. */
+.ceafsn-med-wrap .ceafsn-lead {
+	margin-top: 0;
 }
 
 /* --------------------------------------------------------------------------
  * Forms
  * -------------------------------------------------------------------------- */
 
-.ceafsn-form {
+.ceafsn-med-wrap .ceafsn-form {
 	max-width: 780px;
 }
 
-.ceafsn-field {
-	margin: 0 0 20px;
-	padding: 0;
-	border: 0;
+.ceafsn-med-wrap .ceafsn-field {
+	margin-bottom: 20px;
 }
 
-.ceafsn-field:last-child {
+.ceafsn-med-wrap .ceafsn-field:last-child {
 	margin-bottom: 0;
 }
 
-.ceafsn-field > label {
+.ceafsn-med-wrap .ceafsn-field > label {
 	display: block;
-	margin: 0 0 6px;
+	margin-bottom: 6px;
 	font-size: 13px;
 	font-weight: 600;
 	color: var(--ceafsn-ink);
 }
 
-.ceafsn-field .required {
+.ceafsn-med-wrap .ceafsn-field .required {
 	color: var(--ceafsn-danger);
 	font-weight: 700;
 }
 
-.ceafsn-field input[type="text"],
-.ceafsn-field input[type="url"],
-.ceafsn-field input[type="email"],
-.ceafsn-field input[type="number"],
-.ceafsn-field input[type="date"],
-.ceafsn-field select,
-.ceafsn-field textarea {
+.ceafsn-med-wrap .ceafsn-field input[type="text"],
+.ceafsn-med-wrap .ceafsn-field input[type="url"],
+.ceafsn-med-wrap .ceafsn-field input[type="email"],
+.ceafsn-med-wrap .ceafsn-field input[type="number"],
+.ceafsn-med-wrap .ceafsn-field input[type="date"],
+.ceafsn-med-wrap .ceafsn-field select,
+.ceafsn-med-wrap .ceafsn-field textarea {
 	width: 100%;
 	max-width: 100%;
 	padding: 9px 12px;
-	border: 1px solid #bfc6cb;
+	border: 1px solid var(--ceafsn-line);
 	border-radius: var(--ceafsn-radius);
 	background: var(--ceafsn-white);
 	color: var(--ceafsn-ink);
 	font-size: 14px;
 	line-height: 1.5;
-	box-shadow: none;
+	box-shadow: inset 0 1px 2px rgba(17, 21, 24, .04);
+	appearance: none;
 }
 
-.ceafsn-field textarea {
+.ceafsn-med-wrap .ceafsn-field textarea {
 	min-height: 92px;
 	resize: vertical;
 }
 
-.ceafsn-field input:focus,
-.ceafsn-field select:focus,
-.ceafsn-field textarea:focus {
-	border-color: var(--ceafsn-green);
-	box-shadow: none;
-	outline: 2px solid var(--ceafsn-green);
-	outline-offset: 0;
+/* Selector with a stacked-chevron affordance on the right. */
+.ceafsn-med-wrap .ceafsn-field select {
+	padding-right: 34px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%235c6770' d='M1.4 0 6 4.6 10.6 0 12 1.4 6 7.4 0 1.4z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 12px center;
+	cursor: pointer;
 }
 
-.ceafsn-field__hint {
+.ceafsn-med-wrap .ceafsn-field input:focus,
+.ceafsn-med-wrap .ceafsn-field select:focus,
+.ceafsn-med-wrap .ceafsn-field textarea:focus {
+	border-color: var(--ceafsn-green);
+	box-shadow: var(--ceafsn-ring);
+}
+
+.ceafsn-med-wrap .ceafsn-field__hint {
 	margin: 6px 0 0;
 	font-size: 12px;
 	color: var(--ceafsn-muted);
 }
 
-.ceafsn-form__actions {
+/* Monospace input for file names. */
+.ceafsn-med-wrap .ceafsn-field__mono {
+	font-family: Menlo, Consolas, monaco, monospace;
+	font-size: 13px;
+	line-height: 1.7;
+}
+
+.ceafsn-med-wrap .ceafsn-form__actions {
 	display: flex;
 	align-items: center;
 	gap: 12px;
 	margin-top: 24px;
 	padding-top: 20px;
-	border-top: 1px solid var(--ceafsn-line);
+	border-top: 1px solid var(--ceafsn-line-soft);
 }
 
-/* Inline checkbox rows (settings). */
-.ceafsn-check {
+/* --------------------------------------------------------------------------
+ * Inline checkbox rows
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-med-wrap .ceafsn-check {
 	display: flex;
 	gap: 12px;
 	align-items: flex-start;
@@ -611,29 +1056,30 @@
 	background: #fafbfb;
 }
 
-.ceafsn-check:last-child {
+.ceafsn-med-wrap .ceafsn-check:last-child {
 	margin-bottom: 0;
 }
 
-.ceafsn-check input[type="checkbox"] {
+.ceafsn-med-wrap .ceafsn-check input[type="checkbox"] {
 	flex: 0 0 auto;
 	margin: 2px 0 0;
 	width: 16px;
 	height: 16px;
 }
 
-.ceafsn-check__body {
+.ceafsn-med-wrap .ceafsn-check__body {
 	min-width: 0;
 }
 
-.ceafsn-check__title {
+.ceafsn-med-wrap .ceafsn-check__title {
 	display: block;
 	font-size: 13px;
 	font-weight: 600;
 	color: var(--ceafsn-ink);
+	cursor: pointer;
 }
 
-.ceafsn-check__hint {
+.ceafsn-med-wrap .ceafsn-check__hint {
 	display: block;
 	margin: 3px 0 0;
 	font-size: 12px;
@@ -644,72 +1090,55 @@
  * Empty states — honest, never fake data
  * -------------------------------------------------------------------------- */
 
-.ceafsn-empty {
-	padding: 40px 24px;
+.ceafsn-med-wrap .ceafsn-empty {
+	padding: 34px 24px;
 	text-align: center;
 }
 
-.ceafsn-empty__mark {
+.ceafsn-med-wrap .ceafsn-empty__mark {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	width: 44px;
 	height: 44px;
-	margin-bottom: 14px;
-	border: 1px solid var(--ceafsn-gold);
-	border-radius: var(--ceafsn-radius);
-	background: var(--ceafsn-gold-tint);
-	font-size: 20px;
-	color: var(--ceafsn-green);
+	margin-bottom: 12px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-surface);
+	color: var(--ceafsn-muted);
+	font-size: 18px;
 }
 
-.ceafsn-empty__title {
+.ceafsn-med-wrap .ceafsn-empty__title {
 	margin: 0 0 6px;
-	font-size: 15px;
+	font-size: 16px;
 	font-weight: 700;
-	color: var(--ceafsn-green);
 }
 
-.ceafsn-empty__text {
-	margin: 0 auto;
-	max-width: 46ch;
+.ceafsn-med-wrap .ceafsn-empty__text {
+	max-width: 52ch;
+	margin: 0 auto 16px;
 	font-size: 13px;
 	color: var(--ceafsn-muted);
 }
 
-.ceafsn-empty__action {
-	margin-top: 18px;
-}
-
-/* --------------------------------------------------------------------------
- * Notices
- * -------------------------------------------------------------------------- */
-
-.ceafsn-med-wrap .notice {
-	margin: 16px 0;
-	border-radius: var(--ceafsn-radius);
-	border-left-width: 4px;
-	box-shadow: none;
-}
-
-.ceafsn-med-wrap .notice p {
-	margin: 10px 14px;
+.ceafsn-med-wrap .ceafsn-empty__action {
+	margin-top: 4px;
 }
 
 /* --------------------------------------------------------------------------
  * Settings — danger zone
  * -------------------------------------------------------------------------- */
 
-.ceafsn-danger {
+.ceafsn-med-wrap .ceafsn-danger {
 	border-color: var(--ceafsn-danger-line);
 }
 
-.ceafsn-danger .ceafsn-card__head {
+.ceafsn-med-wrap .ceafsn-danger .ceafsn-card__head {
 	background: var(--ceafsn-danger-tint);
 	border-bottom-color: var(--ceafsn-danger-line);
 }
 
-.ceafsn-danger .ceafsn-card__title {
+.ceafsn-med-wrap .ceafsn-danger .ceafsn-card__title {
 	color: var(--ceafsn-danger);
 }
 
@@ -717,91 +1146,115 @@
  * Back link
  * -------------------------------------------------------------------------- */
 
-.ceafsn-back {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	margin: 0 0 18px;
+.ceafsn-med-wrap .ceafsn-back {
+	display: inline-block;
+	margin: 14px 0 4px;
 	font-size: 13px;
 	font-weight: 600;
 	text-decoration: none;
-	color: var(--ceafsn-sage);
 }
 
-.ceafsn-back:hover,
-.ceafsn-back:focus {
-	color: var(--ceafsn-green);
+.ceafsn-med-wrap .ceafsn-back:hover,
+.ceafsn-med-wrap .ceafsn-back:focus {
 	text-decoration: underline;
 }
 
 /* --------------------------------------------------------------------------
- * Settings tabs — our own, not the core .nav-tab-wrapper
+ * Settings tabs
  * -------------------------------------------------------------------------- */
 
-.ceafsn-tabs {
+.ceafsn-med-wrap .ceafsn-tabs {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 4px;
-	margin: 0 0 20px;
-	padding: 4px;
-	border: 1px solid var(--ceafsn-line);
-	border-radius: var(--ceafsn-radius);
+	margin: 18px 0 0;
+	border-bottom: 1px solid var(--ceafsn-line);
+}
+
+.ceafsn-med-wrap .ceafsn-tabs__tab {
+	padding: 10px 16px;
+	border: 1px solid transparent;
+	border-bottom: 0;
+	border-radius: var(--ceafsn-radius) var(--ceafsn-radius) 0 0;
+	margin-bottom: -1px;
+	color: var(--ceafsn-muted);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.ceafsn-med-wrap .ceafsn-tabs__tab:hover,
+.ceafsn-med-wrap .ceafsn-tabs__tab:focus {
+	color: var(--ceafsn-green);
 	background: var(--ceafsn-surface);
 }
 
-.ceafsn-tabs__tab {
-	padding: 8px 16px;
-	border: 1px solid transparent;
-	border-radius: var(--ceafsn-radius);
-	font-size: 13px;
-	font-weight: 600;
-	text-decoration: none;
-	color: var(--ceafsn-muted);
-}
-
-.ceafsn-tabs__tab:hover,
-.ceafsn-tabs__tab:focus {
+.ceafsn-med-wrap .ceafsn-tabs__tab--active,
+.ceafsn-med-wrap .ceafsn-tabs__tab--active:hover,
+.ceafsn-med-wrap .ceafsn-tabs__tab--active:focus {
 	background: var(--ceafsn-white);
 	border-color: var(--ceafsn-line);
 	color: var(--ceafsn-green);
-}
-
-.ceafsn-tabs__tab--active,
-.ceafsn-tabs__tab--active:hover,
-.ceafsn-tabs__tab--active:focus {
-	background: var(--ceafsn-green);
-	border-color: var(--ceafsn-green);
-	color: var(--ceafsn-white);
-}
-
-/* Lead paragraph at the top of a card body. */
-.ceafsn-lead {
-	margin-top: 0;
-}
-
-/* Standalone form that is not inside .ceafsn-form. */
-.ceafsn-form__spaced {
-	margin-top: 18px;
+	box-shadow: var(--ceafsn-shadow-sm);
 }
 
 /* --------------------------------------------------------------------------
  * Small screens
  * -------------------------------------------------------------------------- */
 
+@media screen and (max-width: 1100px) {
+	.ceafsn-med-wrap .ceafsn-app {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.ceafsn-med-wrap .ceafsn-app__rail {
+		position: static;
+	}
+
+	.ceafsn-med-wrap .ceafsn-help {
+		display: none;
+	}
+}
+
 @media screen and (max-width: 782px) {
 	.ceafsn-med-wrap {
 		margin-right: 12px;
 	}
 
-	.ceafsn-header {
-		padding: 20px 18px 22px;
+	.ceafsn-med-wrap .ceafsn-hero {
+		padding: 22px 20px 24px;
 	}
 
-	.ceafsn-header__title {
-		font-size: 21px;
+	.ceafsn-med-wrap .ceafsn-hero__title {
+		font-size: 22px;
 	}
 
-	.ceafsn-kpi__value {
-		font-size: 26px;
+	.ceafsn-med-wrap .ceafsn-kpi__value {
+		font-size: 24px;
+	}
+
+	.ceafsn-med-wrap .ceafsn-stepper {
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.ceafsn-med-wrap .ceafsn-step {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 0;
+		text-align: left;
+	}
+
+	.ceafsn-med-wrap .ceafsn-step::after {
+		top: 32px;
+		left: 15px;
+		right: auto;
+		width: 2px;
+		height: 14px;
+	}
+
+	.ceafsn-med-wrap .ceafsn-step__label {
+		margin-top: 0;
 	}
 }

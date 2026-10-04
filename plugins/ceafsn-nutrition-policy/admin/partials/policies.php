@@ -65,7 +65,7 @@ $np_is_list  = 'list' === $action;
 					<?php
 					printf(
 						/* translators: %s: total record count. */
-						esc_html__( '<strong>%s</strong> records', 'ceafsn-np' ),
+						wp_kses_post( __( '<strong>%s</strong> records', 'ceafsn-np'  ) ),
 						esc_html( number_format_i18n( count( $items ) ) )
 					);
 					?>

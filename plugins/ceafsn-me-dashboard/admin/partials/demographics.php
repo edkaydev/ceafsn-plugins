@@ -36,18 +36,18 @@ $med_is_edit = ( 'edit' === $action && $row instanceof stdClass );
 			&larr; <?php esc_html_e( 'Back to demographics', 'ceafsn-med' ); ?>
 		</a>
 
-		<header class="ceafsn-header">
-			<p class="ceafsn-header__eyebrow"><?php esc_html_e( 'M&E Dashboard', 'ceafsn-med' ); ?></p>
-			<h1 class="ceafsn-header__title">
+		<section class="ceafsn-hero">
+			<p class="ceafsn-hero__eyebrow"><?php esc_html_e( 'M&E Dashboard', 'ceafsn-med' ); ?></p>
+			<h1 class="ceafsn-hero__title">
 				<?php
 				echo $med_is_edit
 					? esc_html__( 'Edit demographic group', 'ceafsn-med' )
 					: esc_html__( 'Add demographic group', 'ceafsn-med' ); ?>
 			</h1>
-			<p class="ceafsn-header__subtitle">
+			<p class="ceafsn-hero__text">
 				<?php esc_html_e( 'Record a count or a percentage for one group, with the source and period it came from.', 'ceafsn-med' ); ?>
 			</p>
-		</header>
+		</section>
 
 		<section class="ceafsn-card">
 			<div class="ceafsn-card__body">
@@ -131,18 +131,18 @@ $med_is_edit = ( 'edit' === $action && $row instanceof stdClass );
 
 	<?php else : ?>
 
-		<header class="ceafsn-header">
-			<p class="ceafsn-header__eyebrow"><?php esc_html_e( 'M&E Dashboard', 'ceafsn-med' ); ?></p>
-			<h1 class="ceafsn-header__title"><?php esc_html_e( 'Demographics', 'ceafsn-med' ); ?></h1>
-			<p class="ceafsn-header__subtitle">
+		<section class="ceafsn-hero">
+			<p class="ceafsn-hero__eyebrow"><?php esc_html_e( 'M&E Dashboard', 'ceafsn-med' ); ?></p>
+			<h1 class="ceafsn-hero__title"><?php esc_html_e( 'Demographics', 'ceafsn-med' ); ?></h1>
+			<p class="ceafsn-hero__text">
 				<?php esc_html_e( 'Who the work reached, broken down by group. Each figure is a count or a percentage tied to a named source.', 'ceafsn-med' ); ?>
 			</p>
-			<div class="ceafsn-header__actions">
+			<div class="ceafsn-hero__actions">
 				<a class="ceafsn-btn ceafsn-btn--gold" href="<?php echo esc_url( admin_url( 'admin.php?page=' . CEAFSN_MED_Admin::PAGE_DEMOGRAPHICS . '&action=add' ) ); ?>">
 					<?php esc_html_e( '+ Add group', 'ceafsn-med' ); ?>
 				</a>
 			</div>
-		</header>
+		</section>
 
 		<section class="ceafsn-card">
 			<div class="ceafsn-card__head">
@@ -224,6 +224,7 @@ $med_is_edit = ( 'edit' === $action && $row instanceof stdClass );
 												'ceafsn_med_delete_demo_' . absint( $item->group_id )
 											)
 										); ?>"
+											data-confirm-message="<?php echo esc_attr( __( 'Delete this demographic group? This cannot be undone.', 'ceafsn-med' ) ); ?>"
 											onclick="return confirm('<?php echo esc_js( __( 'Delete this group? This cannot be undone.', 'ceafsn-med' ) ); ?>');">
 											<?php esc_html_e( 'Delete', 'ceafsn-med' ); ?>
 										</a>

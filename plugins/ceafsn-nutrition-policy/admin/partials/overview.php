@@ -177,7 +177,7 @@ foreach ( $np_steps as $np_index => $np_step ) {
 						<?php
 						printf(
 							/* translators: %s: total record count. */
-							esc_html__( '<strong>%s</strong> records', 'ceafsn-np' ),
+							wp_kses_post( __( '<strong>%s</strong> records', 'ceafsn-np'  ) ),
 							esc_html( number_format_i18n( $np_total ) )
 						);
 						?>
@@ -186,7 +186,7 @@ foreach ( $np_steps as $np_index => $np_step ) {
 						<?php
 						printf(
 							/* translators: %s: published count. */
-							esc_html__( '<strong>%s</strong> published', 'ceafsn-np' ),
+							wp_kses_post( __( '<strong>%s</strong> published', 'ceafsn-np'  ) ),
 							esc_html( number_format_i18n( $published ) )
 						);
 						?>
@@ -195,7 +195,7 @@ foreach ( $np_steps as $np_index => $np_step ) {
 						<?php
 						printf(
 							/* translators: %s: draft count. */
-							esc_html__( '<strong>%s</strong> draft', 'ceafsn-np' ),
+							wp_kses_post( __( '<strong>%s</strong> draft', 'ceafsn-np'  ) ),
 							esc_html( number_format_i18n( $np_drafts ) )
 						);
 						?>
@@ -204,7 +204,7 @@ foreach ( $np_steps as $np_index => $np_step ) {
 						<?php
 						printf(
 							/* translators: %s: topic count. */
-							esc_html__( '<strong>%s</strong> topics', 'ceafsn-np' ),
+							wp_kses_post( __( '<strong>%s</strong> topics', 'ceafsn-np'  ) ),
 							esc_html( number_format_i18n( count( $topics ) ) )
 						);
 						?>

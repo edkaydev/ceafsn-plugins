@@ -38,8 +38,11 @@
 - [x] Accessible tabs (Overview, Demographics, Project Registry)
 - [x] SVG/HTML charts with accessible data tables
 - [x] Empty state / Preview badge
-- [x] Branded admin UI — Overview landing page, KPI tiles, card-and-table records,
-      restyled forms, honest empty states
+- [x] Branded admin UI — three-column app layout (WordPress admin menu, main
+      canvas, right rail), alert banners, hero module, publishing-workflow
+      stepper, KPI tiles, dot-and-pill status rows, check-marked guidance,
+      export callout, circular help badge; every rule scoped to
+      `.ceafsn-med-wrap`
 - [x] Tests — 183 assertions (`php plugins/ceafsn-me-dashboard/tests/run-tests.php`)
 
 ### Plugin 2: ceafsn-nutrition-policy
@@ -62,9 +65,11 @@
 > no shadows, square badges — after feedback that the gradient/shadow/pill
 > styling looked machine-generated. That was then reversed: the target design
 > is the raised-card, rounded, dot-and-pill layout above, with shadows and
-> rounded corners. `ceafsn-nutrition-policy` is the reference implementation;
-> `ceafsn-me-dashboard` and the remaining plugins still carry the earlier flat
-> styling and need the same pass.
+> rounded corners. `ceafsn-nutrition-policy` is the reference implementation and
+> `ceafsn-me-dashboard` has had the same pass. The remaining plugins
+> (`ceafsn-open-datasets`, `ceafsn-projects-publications`,
+> `ceafsn-research-fellowships`, `ceafsn-grants-funding`) still carry the
+> earlier flat styling and need the same treatment.
 
 ### Plugin 3: ceafsn-open-datasets
 - [x] Plugin header and bootstrap file

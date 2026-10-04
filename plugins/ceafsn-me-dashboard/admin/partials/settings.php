@@ -28,13 +28,13 @@ $med_tabs = array(
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'ceafsn-med' ); ?></p></div>
 	<?php endif; ?>
 
-	<header class="ceafsn-header">
-		<p class="ceafsn-header__eyebrow"><?php esc_html_e( 'M&E Dashboard', 'ceafsn-med' ); ?></p>
-		<h1 class="ceafsn-header__title"><?php esc_html_e( 'Settings', 'ceafsn-med' ); ?></h1>
-		<p class="ceafsn-header__subtitle">
+	<section class="ceafsn-hero">
+		<p class="ceafsn-hero__eyebrow"><?php esc_html_e( 'M&E Dashboard', 'ceafsn-med' ); ?></p>
+		<h1 class="ceafsn-hero__title"><?php esc_html_e( 'Settings', 'ceafsn-med' ); ?></h1>
+		<p class="ceafsn-hero__text">
 			<?php esc_html_e( 'Preview mode, data export, and what happens to your records if the plugin is removed.', 'ceafsn-med' ); ?>
 		</p>
-	</header>
+	</section>
 
 	<nav class="ceafsn-tabs" aria-label="<?php esc_attr_e( 'Settings sections', 'ceafsn-med' ); ?>">
 		<?php foreach ( $med_tabs as $med_tab_key => $med_tab_label ) : ?>

@@ -3,13 +3,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CE-AFSN M&E Dashboard 1.0.0\n"
-"Report-Msgid-Bugs-To: https://ceafsn.duckdns.org/\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ceafsn-me-dashboard\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04T10:12:21+00:00\n"
+"POT-Creation-Date: 2026-10-04T12:24:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-med\n"
@@ -31,7 +31,7 @@ msgstr ""
 
 #. Author of the plugin
 #: ceafsn-me-dashboard.php
-#: admin/partials/overview.php:45
+#: admin/partials/overview.php:137
 msgid "CE-AFSN"
 msgstr ""
 
@@ -62,7 +62,7 @@ msgstr ""
 #: admin/class-ceafsn-med-admin.php:76
 #: admin/class-ceafsn-med-admin.php:77
 #: admin/partials/metrics.php:138
-#: admin/partials/overview.php:86
+#: admin/partials/overview.php:234
 msgid "Metrics"
 msgstr ""
 
@@ -75,7 +75,7 @@ msgstr ""
 
 #: admin/class-ceafsn-med-admin.php:94
 #: admin/class-ceafsn-med-admin.php:95
-#: admin/partials/overview.php:107
+#: admin/partials/overview.php:261
 #: admin/partials/projects.php:144
 msgid "Projects"
 msgstr ""
@@ -305,6 +305,7 @@ msgstr ""
 
 #: admin/partials/demographics.php:188
 #: admin/partials/metrics.php:190
+#: admin/partials/overview.php:321
 #: admin/partials/projects.php:196
 msgid "Actions"
 msgstr ""
@@ -325,12 +326,16 @@ msgid "Edit"
 msgstr ""
 
 #: admin/partials/demographics.php:227
-msgid "Delete this group? This cannot be undone."
+msgid "Delete this demographic group? This cannot be undone."
 msgstr ""
 
 #: admin/partials/demographics.php:228
-#: admin/partials/metrics.php:219
-#: admin/partials/projects.php:231
+msgid "Delete this group? This cannot be undone."
+msgstr ""
+
+#: admin/partials/demographics.php:229
+#: admin/partials/metrics.php:220
+#: admin/partials/projects.php:232
 msgid "Delete"
 msgstr ""
 
@@ -399,7 +404,8 @@ msgid "Every metric carries its own source and reporting period, so a published 
 msgstr ""
 
 #: admin/partials/metrics.php:144
-#: admin/partials/overview.php:52
+#: admin/partials/overview.php:144
+#: admin/partials/overview.php:421
 msgid "+ Add metric"
 msgstr ""
 
@@ -422,7 +428,7 @@ msgid "Nothing has been recorded. The public dashboard stays empty until you add
 msgstr ""
 
 #: admin/partials/metrics.php:174
-#: admin/partials/overview.php:76
+#: admin/partials/overview.php:105
 msgid "Add the first metric"
 msgstr ""
 
@@ -431,148 +437,299 @@ msgid "Metrics list"
 msgstr ""
 
 #: admin/partials/metrics.php:218
+#: admin/partials/metrics.php:219
 msgid "Delete this metric? This cannot be undone."
 msgstr ""
 
-#: admin/partials/overview.php:42
+#: admin/partials/overview.php:47
+msgid "Records added"
+msgstr ""
+
+#. translators: 1: metric count, 2: demographic count, 3: project count.
+#: admin/partials/overview.php:48
+#, php-format
+msgid "%1$s metrics · %2$s groups · %3$s projects"
+msgstr ""
+
+#: admin/partials/overview.php:52
+msgid "Marked public"
+msgstr ""
+
+#. translators: %s: count of public metrics.
+#: admin/partials/overview.php:53
+#, php-format
+msgid "%s metrics visible"
+msgstr ""
+
+#: admin/partials/overview.php:57
+msgid "Projects verified"
+msgstr ""
+
+#. translators: 1: verified count, 2: total projects.
+#: admin/partials/overview.php:58
+#, php-format
+msgid "%1$s of %2$s checked"
+msgstr ""
+
+#: admin/partials/overview.php:78
 msgid "Skip to dashboard content"
 msgstr ""
 
-#: admin/partials/overview.php:46
-msgid "Monitoring &amp; Evaluation"
+#: admin/partials/overview.php:85
+msgid "That change was not saved"
 msgstr ""
 
-#: admin/partials/overview.php:48
+#: admin/partials/overview.php:102
+msgid "This dashboard is empty"
+msgstr ""
+
+#: admin/partials/overview.php:104
+msgid "No records exist yet, so nothing is displayed on the public page."
+msgstr ""
+
+#. translators: %s: number of projects awaiting verification.
+#: admin/partials/overview.php:121
+#, php-format
+msgid "%s project(s) are not verified yet"
+msgstr ""
+
+#: admin/partials/overview.php:127
+msgid "Status and verification are tracked separately — an active project can still be awaiting a check."
+msgstr ""
+
+#: admin/partials/overview.php:128
+msgid "Review projects"
+msgstr ""
+
+#: admin/partials/overview.php:138
+msgid "Monitoring & Evaluation"
+msgstr ""
+
+#: admin/partials/overview.php:140
 msgid "Institutional metrics, demographic groups, and the project registry. Only verified records should be marked public."
 msgstr ""
 
-#: admin/partials/overview.php:55
-msgid "+ Add demographic"
-msgstr ""
-
-#: admin/partials/overview.php:58
+#: admin/partials/overview.php:147
+#: admin/partials/overview.php:427
 #: admin/partials/projects.php:150
 msgid "+ Add project"
 msgstr ""
 
-#: admin/partials/overview.php:70
-msgid "No records yet"
+#. translators: %s: total record count.
+#: admin/partials/overview.php:155
+#, php-format
+msgid "<strong>%s</strong> records"
 msgstr ""
 
-#: admin/partials/overview.php:72
-msgid "This dashboard is empty on purpose. Nothing is displayed publicly until you add real, sourced records below. Add your first metric, demographic group, or project to get started."
+#. translators: %s: public metric count.
+#: admin/partials/overview.php:164
+#, php-format
+msgid "<strong>%s</strong> metrics public"
+msgstr ""
+
+#. translators: %s: active project count.
+#: admin/partials/overview.php:173
+#, php-format
+msgid "<strong>%s</strong> active projects"
+msgstr ""
+
+#. translators: %s: number of reporting periods.
+#: admin/partials/overview.php:182
+#, php-format
+msgid "<strong>%s</strong> reporting periods"
+msgstr ""
+
+#: admin/partials/overview.php:193
+msgid "Publishing workflow"
+msgstr ""
+
+#: admin/partials/overview.php:194
+msgid "Counted from your records. A step is only complete when the numbers prove it."
+msgstr ""
+
+#: admin/partials/overview.php:216
+msgid "Current step:"
+msgstr ""
+
+#: admin/partials/overview.php:222
+msgid "All steps complete"
 msgstr ""
 
 #. translators: 1: public metric count, 2: private metric count.
-#: admin/partials/overview.php:92
+#: admin/partials/overview.php:241
 #, php-format
 msgid "%1$s public · %2$s private"
 msgstr ""
 
-#: admin/partials/overview.php:101
+#: admin/partials/overview.php:252
 msgid "Demographic groups"
 msgstr ""
 
-#: admin/partials/overview.php:103
+#: admin/partials/overview.php:255
 msgid "Breakdowns tracked"
 msgstr ""
 
 #. translators: %s: active project count.
-#: admin/partials/overview.php:113
+#: admin/partials/overview.php:268
 #, php-format
 msgid "%s active"
 msgstr ""
 
-#: admin/partials/overview.php:121
+#: admin/partials/overview.php:278
 msgid "Needs verification"
 msgstr ""
 
-#: admin/partials/overview.php:126
+#: admin/partials/overview.php:284
 msgid "Projects not yet verified"
 msgstr ""
 
-#: admin/partials/overview.php:128
+#: admin/partials/overview.php:286
 msgid "All projects verified"
 msgstr ""
 
-#: admin/partials/overview.php:141
+#: admin/partials/overview.php:296
 msgid "Needs your attention"
 msgstr ""
 
-#: admin/partials/overview.php:143
+#: admin/partials/overview.php:297
 msgid "Projects that are not marked verified yet."
 msgstr ""
 
-#: admin/partials/overview.php:147
+#: admin/partials/overview.php:300
 msgid "All projects"
 msgstr ""
 
-#: admin/partials/overview.php:154
+#: admin/partials/overview.php:307
 msgid "Everything is verified"
 msgstr ""
 
-#: admin/partials/overview.php:156
+#: admin/partials/overview.php:309
 msgid "No project is waiting on a verification decision."
 msgstr ""
 
+#: admin/partials/overview.php:315
+msgid "Projects awaiting verification"
+msgstr ""
+
+#: admin/partials/overview.php:318
+msgid "Project"
+msgstr ""
+
+#: admin/partials/overview.php:319
+#: admin/partials/projects.php:81
+#: admin/partials/projects.php:193
+#: public/partials/dashboard.php:249
+msgid "Status"
+msgstr ""
+
+#: admin/partials/overview.php:320
+#: admin/partials/projects.php:194
+#: public/partials/dashboard.php:250
+msgid "Verification"
+msgstr ""
+
 #. translators: 1: principal investigator, 2: last updated date.
-#: admin/partials/overview.php:170
+#: admin/partials/overview.php:336
 #, php-format
 msgid "%1$s · updated %2$s"
 msgstr ""
 
-#: admin/partials/overview.php:180
+#: admin/partials/overview.php:352
 #: admin/partials/projects.php:105
 #: admin/partials/projects.php:214
 #: public/partials/dashboard.php:33
 msgid "Unverified"
 msgstr ""
 
-#: admin/partials/overview.php:182
+#: admin/partials/overview.php:354
 #: admin/partials/projects.php:99
 #: admin/partials/projects.php:216
 #: public/partials/dashboard.php:32
 msgid "Pending"
 msgstr ""
 
-#: admin/partials/overview.php:185
+#: admin/partials/overview.php:359
 msgid "Review"
 msgstr ""
 
 #. translators: %s: number of remaining projects.
-#: admin/partials/overview.php:197
+#: admin/partials/overview.php:373
 #, php-format
 msgid "and %s more — open All projects to review the rest."
 msgstr ""
 
-#: admin/partials/overview.php:211
+#: admin/partials/overview.php:385
 msgid "Reporting coverage"
 msgstr ""
 
-#: admin/partials/overview.php:215
+#: admin/partials/overview.php:390
 msgid "No reporting period recorded yet."
 msgstr ""
 
-#. translators: %s: number of metrics.
-#: admin/partials/overview.php:226
+#. translators: 1: reporting period, 2: number of metrics.
+#: admin/partials/overview.php:398
 #, php-format
-msgid "%s metrics"
+msgid "%1$s — %2$s metrics"
 msgstr ""
 
-#: admin/partials/overview.php:241
+#: admin/partials/overview.php:415
+msgid "Get started"
+msgstr ""
+
+#: admin/partials/overview.php:416
+msgid "Add a record"
+msgstr ""
+
+#: admin/partials/overview.php:418
+msgid "Metrics, demographic groups, and projects are stored separately. Every record needs a source."
+msgstr ""
+
+#: admin/partials/overview.php:424
+msgid "+ Add demographic"
+msgstr ""
+
+#: admin/partials/overview.php:432
 msgid "Before you publish"
 msgstr ""
 
-#: admin/partials/overview.php:248
-msgid "Every metric needs a source and a reporting period before it can be marked public."
+#: admin/partials/overview.php:433
+msgid "Visibility rules"
 msgstr ""
 
-#: admin/partials/overview.php:255
-msgid "Leave a record private until the value is verified and approved for public display."
+#: admin/partials/overview.php:435
+msgid "Every metric needs a source and a reporting period."
 msgstr ""
 
-#: admin/partials/overview.php:262
-msgid "Review all metrics"
+#: admin/partials/overview.php:436
+msgid "Leave a record private until the value is checked."
+msgstr ""
+
+#: admin/partials/overview.php:437
+msgid "Project verification is independent of project status."
+msgstr ""
+
+#: admin/partials/overview.php:438
+msgid "Only public records reach the front-end dashboard."
+msgstr ""
+
+#: admin/partials/overview.php:443
+msgid "Keep a copy"
+msgstr ""
+
+#: admin/partials/overview.php:444
+msgid "Export records"
+msgstr ""
+
+#: admin/partials/overview.php:446
+msgid "Download every metric, group, and project as JSON before bulk changes or removing the plugin."
+msgstr ""
+
+#: admin/partials/overview.php:449
+msgid "Open export"
+msgstr ""
+
+#: admin/partials/overview.php:457
+msgid "Jump to visibility rules"
 msgstr ""
 
 #: admin/partials/projects.php:27
@@ -612,12 +769,6 @@ msgstr ""
 
 #: admin/partials/projects.php:76
 msgid "Target region"
-msgstr ""
-
-#: admin/partials/projects.php:81
-#: admin/partials/projects.php:193
-#: public/partials/dashboard.php:249
-msgid "Status"
 msgstr ""
 
 #: admin/partials/projects.php:84
@@ -704,16 +855,12 @@ msgstr ""
 msgid "Region"
 msgstr ""
 
-#: admin/partials/projects.php:194
-#: public/partials/dashboard.php:250
-msgid "Verification"
-msgstr ""
-
 #: admin/partials/projects.php:195
 msgid "Updated"
 msgstr ""
 
 #: admin/partials/projects.php:230
+#: admin/partials/projects.php:231
 msgid "Delete this project? This cannot be undone."
 msgstr ""
 
