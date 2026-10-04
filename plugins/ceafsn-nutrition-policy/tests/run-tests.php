@@ -1038,6 +1038,22 @@ ok(
 );
 has_substring( '.ceafsn-np', $public_css, 'public styles are component-scoped' );
 
+test( 'the settings screen shows the administrator which shortcode to use' );
+$np_settings_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+has_substring( '[ceafsn_policy_table]', $np_settings_partial, 'the exact shortcode is shown' );
+foreach ( array( 'per_page', 'topic' ) as $np_attribute ) {
+	has_substring( '<code>' . $np_attribute . '</code>', $np_settings_partial, "the shortcode card documents {$np_attribute}" );
+}
+foreach ( array( 'ceafsn-embed__code', 'ceafsn-embed__table', 'ceafsn-embed__caption' ) as $np_class ) {
+	has_substring( $np_class, $np_settings_partial, "the shortcode card uses {$np_class}" );
+}
+ok( str_contains( $np_settings_partial, "'display' === \$active_tab" ), 'the shortcode has its own read-only tab' );
+has_substring( 'ceafsn-embed', $np_admin_css_source = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-np-admin.css' ), 'the reference stylesheet carries the shared embed component' );
+ok(
+	substr_count( $np_admin_css_source, '{' ) === substr_count( $np_admin_css_source, '}' ),
+	'the reference stylesheet braces are still balanced'
+);
+
 // Clean up fixtures.
 foreach ( (array) glob( $fixture_dir . '/*' ) as $fixture_file ) {
 	if ( is_string( $fixture_file ) ) {

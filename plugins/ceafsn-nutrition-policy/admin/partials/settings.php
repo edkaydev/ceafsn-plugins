@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 
 $delete_flag = get_option( 'ceafsn_np_uninstall_delete_data', false );
 $placeholders = CEAFSN_NP_Validator::placeholder_filenames();
-$active_tab   = sanitize_key( $_GET['tab'] ?? 'general' );
+$active_tab   = sanitize_key( $_GET['tab'] ?? 'display' );
 $form_url     = admin_url( 'admin-post.php' );
 $settings_url = admin_url( 'admin.php?page=' . CEAFSN_NP_Admin::PAGE_SETTINGS );
 
@@ -41,6 +41,11 @@ $np_is_general = 'general' === $active_tab;
 	</section>
 
 	<nav class="ceafsn-tabs" aria-label="<?php esc_attr_e( 'Settings sections', 'ceafsn-np' ); ?>">
+		<a class="ceafsn-tabs__tab <?php echo 'display' === $active_tab ? 'ceafsn-tabs__tab--active' : ''; ?>"
+			href="<?php echo esc_url( add_query_arg( 'tab', 'display', $settings_url ) ); ?>"
+			<?php echo 'display' === $active_tab ? 'aria-current="page"' : ''; ?>>
+			<?php esc_html_e( 'Display', 'ceafsn-np' ); ?>
+		</a>
 		<a class="ceafsn-tabs__tab <?php echo $np_is_general ? 'ceafsn-tabs__tab--active' : ''; ?>"
 			href="<?php echo esc_url( add_query_arg( 'tab', 'general', $settings_url ) ); ?>"
 			<?php echo $np_is_general ? 'aria-current="page"' : ''; ?>>
@@ -57,6 +62,72 @@ $np_is_general = 'general' === $active_tab;
 			<?php esc_html_e( 'Uninstall', 'ceafsn-np' ); ?>
 		</a>
 	</nav>
+
+	<?php if ( 'display' === $active_tab ) : ?>
+
+		<section class="ceafsn-card">
+			<div class="ceafsn-card__head">
+				<div>
+					<h2 class="ceafsn-card__title"><?php esc_html_e( 'Display the policies', 'ceafsn-np' ); ?></h2>
+					<p class="ceafsn-card__hint"><?php esc_html_e( 'Policies stay invisible to visitors until this shortcode is on a page and the records themselves are published.', 'ceafsn-np' ); ?></p>
+				</div>
+			</div>
+			<div class="ceafsn-card__body">
+
+				<div class="ceafsn-embed">
+					<p class="ceafsn-embed__label"><?php esc_html_e( 'Paste this shortcode into the page that should list policies', 'ceafsn-np' ); ?></p>
+					<code class="ceafsn-embed__code">[ceafsn_policy_table]</code>
+				</div>
+
+				<p class="ceafsn-field__hint">
+					<?php esc_html_e( 'It goes in the page content, in a Code / Preformatted block, or anywhere the block editor accepts HTML.', 'ceafsn-np' ); ?>
+				</p>
+
+				<table class="ceafsn-embed__table">
+					<caption class="ceafsn-embed__caption"><?php esc_html_e( 'Optional attributes', 'ceafsn-np' ); ?></caption>
+					<thead>
+						<tr>
+							<th scope="col"><?php esc_html_e( 'Attribute', 'ceafsn-np' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Default', 'ceafsn-np' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'What it does', 'ceafsn-np' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><code>per_page</code></td>
+							<td><code>20</code></td>
+							<td><?php esc_html_e( 'Rows per page. Values are clamped between 1 and 100.', 'ceafsn-np' ); ?></td>
+						</tr>
+						<tr>
+							<td><code>topic</code></td>
+							<td><code>""</code></td>
+							<td>
+								<?php esc_html_e( 'Show one topic only. Spell it exactly as it is on the record, for example:', 'ceafsn-np' ); ?>
+								<code><?php echo esc_html( 'Maternal Health' ); ?></code>.
+								<?php esc_html_e( 'Leave empty for every topic.', 'ceafsn-np' ); ?>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<p class="ceafsn-field__hint">
+					<?php esc_html_e( 'Example: [ceafsn_policy_table per_page="10" topic="Maternal Health"]', 'ceafsn-np' ); ?>
+				</p>
+
+				<div class="ceafsn-alert ceafsn-alert--warn">
+					<span class="ceafsn-alert__icon" aria-hidden="true">i</span>
+					<div class="ceafsn-alert__body">
+						<p class="ceafsn-alert__title"><?php esc_html_e( 'Visitors can still narrow the list', 'ceafsn-np' ); ?></p>
+						<p class="ceafsn-alert__text">
+							<?php esc_html_e( 'Sorting, topic filtering, search, and pagination come from the visitor’s link. That is intentional: a filtered link shows the same results for everyone who opens it, including a visitor who has JS turned off.', 'ceafsn-np' ); ?>
+						</p>
+					</div>
+				</div>
+
+			</div>
+		</section>
+
+	<?php else : ?>
 
 	<section class="ceafsn-card<?php echo 'uninstall' === $active_tab ? ' ceafsn-danger' : ''; ?>">
 		<?php if ( 'uninstall' === $active_tab ) : ?>
@@ -126,5 +197,7 @@ $np_is_general = 'general' === $active_tab;
 
 		</div>
 	</section>
+
+	<?php endif; ?>
 
 </div><!-- .ceafsn-np-wrap -->

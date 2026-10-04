@@ -811,6 +811,21 @@ has_substring( '{$wpdb->prefix}ceafsn_med_metrics', $db_source, 'metrics table u
 has_substring( '{$wpdb->prefix}ceafsn_med_demographics', $db_source, 'demographics table uses $wpdb->prefix' );
 has_substring( '{$wpdb->prefix}ceafsn_med_projects', $db_source, 'projects table uses $wpdb->prefix' );
 
+test( 'the settings screen shows the administrator which shortcode to use' );
+$med_settings_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+has_substring( '[ceafsn_me_dashboard]', $med_settings_partial, 'the exact shortcode is shown' );
+has_substring( 'ceafsn-embed__code', $med_settings_partial, 'the shortcode is shown in the shared code block' );
+has_substring( 'ceafsn-embed__label', $med_settings_partial, 'the code block carries a label' );
+lacks_substring( '<code>per_page</code>', $med_settings_partial, 'no attribute is claimed for a shortcode that takes none' );
+has_substring( 'no attributes', $med_settings_partial, 'the card says the shortcode takes no attributes' );
+ok( str_contains( $med_settings_partial, "'display' === \$active_tab" ), 'the shortcode has its own read-only tab' );
+$med_admin_css_source = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-med-admin.css' );
+has_substring( 'ceafsn-embed', $med_admin_css_source, 'the stylesheet carries the shared embed component' );
+ok(
+	substr_count( $med_admin_css_source, '{' ) === substr_count( $med_admin_css_source, '}' ),
+	'the admin stylesheet braces are still balanced'
+);
+
 // -----------------------------------------------------------------------------
 $pass = $GLOBALS['ceafsn_test_pass'];
 $fail = $GLOBALS['ceafsn_test_fail'];

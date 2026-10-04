@@ -1516,6 +1516,18 @@ foreach ( array( 'ceafsn_od_save_dataset', 'ceafsn_od_dataset_nonce', 'ceafsn_od
 	has_substring( $contract, $datasets_partial, "the form keeps {$contract}" );
 }
 
+test( 'the settings screen shows the administrator which shortcode to use' );
+$od_settings_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+has_substring( '[ceafsn_open_datasets]', $od_settings_partial, 'the exact shortcode is shown' );
+foreach ( array( 'per_page', 'category', 'file_type' ) as $od_attribute ) {
+	has_substring( '<code>' . $od_attribute . '</code>', $od_settings_partial, "the shortcode card documents {$od_attribute}" );
+}
+foreach ( array( 'ceafsn-embed__code', 'ceafsn-embed__table', 'ceafsn-embed__caption' ) as $od_class ) {
+	has_substring( $od_class, $od_settings_partial, "the shortcode card uses {$od_class}" );
+}
+ok( str_contains( $od_settings_partial, "'display' === \$active_tab" ), 'the shortcode has its own read-only tab' );
+has_substring( 'ceafsn-embed', $admin_css, 'the admin stylesheet carries the shared embed component' );
+
 test( 'the admin write forms all post to admin-post.php' );
 has_substring( 'admin-post.php', $datasets_partial, 'the dataset form posts to admin-post.php' );
 has_substring( 'admin-post.php', $settings_partial, 'the settings form posts to admin-post.php' );

@@ -1,4 +1,4 @@
-# Copyright (C) 2026 CE-AFSN
+# Copyright (C) 2026 edkaydev
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04T12:43:15+00:00\n"
+"POT-Creation-Date: 2026-10-04T13:14:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-od\n"
@@ -31,19 +31,19 @@ msgstr ""
 
 #. Author of the plugin
 #: ceafsn-open-datasets.php
-msgid "CE-AFSN"
+msgid "edkaydev"
 msgstr ""
 
 #. Author URI of the plugin
 #: ceafsn-open-datasets.php
-msgid "https://ceafsn.duckdns.org/"
+msgid "https://www.linkedin.com/in/edkaydev"
 msgstr ""
 
 #: admin/class-ceafsn-od-admin.php:42
 #: admin/class-ceafsn-od-admin.php:43
 #: admin/partials/datasets.php:179
 #: admin/partials/datasets.php:462
-#: admin/partials/settings.php:47
+#: admin/partials/settings.php:48
 msgid "Open Datasets"
 msgstr ""
 
@@ -54,7 +54,7 @@ msgstr ""
 
 #: admin/class-ceafsn-od-admin.php:62
 #: admin/class-ceafsn-od-admin.php:63
-#: admin/partials/settings.php:48
+#: admin/partials/settings.php:49
 msgid "Settings"
 msgstr ""
 
@@ -214,7 +214,7 @@ msgid "+ Add dataset"
 msgstr ""
 
 #: admin/partials/datasets.php:189
-#: admin/partials/settings.php:20
+#: admin/partials/settings.php:21
 msgid "Export"
 msgstr ""
 
@@ -395,7 +395,7 @@ msgid "Keep a copy"
 msgstr ""
 
 #: admin/partials/datasets.php:446
-#: admin/partials/settings.php:114
+#: admin/partials/settings.php:219
 msgid "Export records"
 msgstr ""
 
@@ -562,94 +562,198 @@ msgid "Jump to download rules"
 msgstr ""
 
 #: admin/partials/settings.php:19
+msgid "Display"
+msgstr ""
+
+#: admin/partials/settings.php:20
 msgid "General"
 msgstr ""
 
-#: admin/partials/settings.php:21
+#: admin/partials/settings.php:22
 msgid "Uninstall"
 msgstr ""
 
-#: admin/partials/settings.php:31
+#: admin/partials/settings.php:32
 msgid "Skip to settings content"
 msgstr ""
 
-#: admin/partials/settings.php:40
+#: admin/partials/settings.php:41
 msgid "Settings saved."
 msgstr ""
 
-#: admin/partials/settings.php:50
+#: admin/partials/settings.php:51
 msgid "Privacy, file type checks, data export, and what happens to your records if the plugin is removed."
 msgstr ""
 
-#: admin/partials/settings.php:54
+#: admin/partials/settings.php:55
 msgid "Settings sections"
 msgstr ""
 
-#: admin/partials/settings.php:69
-msgid "Privacy and file types"
+#: admin/partials/settings.php:73
+msgid "Display the datasets"
 msgstr ""
 
-#: admin/partials/settings.php:70
-msgid "Both options are off by default."
+#: admin/partials/settings.php:74
+msgid "Datasets stay invisible to visitors until this shortcode is on a page and the records themselves are published."
 msgstr ""
 
-#: admin/partials/settings.php:82
-msgid "Show the contact / owner on the public page"
+#: admin/partials/settings.php:80
+msgid "Paste this shortcode into the page that should list datasets"
 msgstr ""
 
 #: admin/partials/settings.php:85
-msgid "Off by default. Contact details stay in the database and are only rendered publicly when this is enabled."
+msgid "It goes in the page content, in a Code / Preformatted block, or anywhere the block editor accepts HTML."
+msgstr ""
+
+#: admin/partials/settings.php:89
+msgid "Optional attributes"
+msgstr ""
+
+#: admin/partials/settings.php:92
+msgid "Attribute"
+msgstr ""
+
+#: admin/partials/settings.php:93
+msgid "Default"
 msgstr ""
 
 #: admin/partials/settings.php:94
-msgid "Allow the \"Other\" file type in the media picker"
+msgid "What it does"
 msgstr ""
 
-#: admin/partials/settings.php:97
-msgid "Off by default. When enabled, files that are not CSV, ZIP, or XLSX can be attached. \"Other\" files are checked for a non-zero size but their contents are not inspected."
+#: admin/partials/settings.php:101
+msgid "Rows per page. Values are clamped between 1 and 100."
 msgstr ""
 
-#: admin/partials/settings.php:103
-msgid "Save settings"
+#: admin/partials/settings.php:107
+msgid "Show one category only. Spell it exactly as it is on the record, for example:"
 msgstr ""
 
-#: admin/partials/settings.php:115
-msgid "A plain JSON copy of everything this plugin stores."
+#: admin/partials/settings.php:109
+msgid "Leave empty for every category."
 msgstr ""
 
-#: admin/partials/settings.php:120
-msgid "Download every dataset record as JSON before making bulk changes or uninstalling the plugin."
+#: admin/partials/settings.php:116
+msgid "Show one file type only:"
 msgstr ""
 
-#: admin/partials/settings.php:124
-msgid "Download export"
+#: admin/partials/settings.php:118
+msgid "Leave empty for every type."
+msgstr ""
+
+#: admin/partials/settings.php:125
+msgid "Example: [ceafsn_open_datasets per_page=\"12\" file_type=\"csv\"]"
+msgstr ""
+
+#: admin/partials/settings.php:131
+msgid "Visitors can still narrow the list"
 msgstr ""
 
 #: admin/partials/settings.php:133
-msgid "Data removal on uninstall"
+msgid "Sorting, category and file-type filtering, search, and pagination come from the visitor’s link. That is intentional: a filtered link shows the same results for everyone who opens it, including a visitor who has JS turned off."
 msgstr ""
 
-#: admin/partials/settings.php:138
-msgid "Warning:"
+#: admin/partials/settings.php:146
+msgid "What visitors see"
 msgstr ""
 
-#: admin/partials/settings.php:139
-msgid "Enabling the option below means that all dataset records and plugin options will be permanently deleted when you delete this plugin via Plugins → Delete. This cannot be undone. Export your data first."
+#: admin/partials/settings.php:147
+msgid "Only published datasets"
+msgstr ""
+
+#: admin/partials/settings.php:149
+msgid "Drafts and archived datasets never reach the page."
+msgstr ""
+
+#: admin/partials/settings.php:150
+msgid "A dataset with no file attached cannot be published at all."
 msgstr ""
 
 #: admin/partials/settings.php:151
-msgid "Delete all dataset records and plugin options when the plugin is deleted"
+msgid "External links are shown only when they are allowed."
 msgstr ""
 
-#: admin/partials/settings.php:154
-msgid "Leave this off to keep your records if the plugin is ever removed or reinstalled. Files in the media library are never removed — other pages may still link to them."
+#: admin/partials/settings.php:156
+msgid "Manage datasets"
 msgstr ""
 
-#: admin/partials/settings.php:160
-msgid "Save uninstall settings"
+#: admin/partials/settings.php:157
+msgid "Add and publish"
+msgstr ""
+
+#: admin/partials/settings.php:159
+msgid "The shortcode is only the container. Add datasets and set each one to Published."
 msgstr ""
 
 #: admin/partials/settings.php:162
+msgid "Go to datasets"
+msgstr ""
+
+#: admin/partials/settings.php:174
+msgid "Privacy and file types"
+msgstr ""
+
+#: admin/partials/settings.php:175
+msgid "Both options are off by default."
+msgstr ""
+
+#: admin/partials/settings.php:187
+msgid "Show the contact / owner on the public page"
+msgstr ""
+
+#: admin/partials/settings.php:190
+msgid "Off by default. Contact details stay in the database and are only rendered publicly when this is enabled."
+msgstr ""
+
+#: admin/partials/settings.php:199
+msgid "Allow the \"Other\" file type in the media picker"
+msgstr ""
+
+#: admin/partials/settings.php:202
+msgid "Off by default. When enabled, files that are not CSV, ZIP, or XLSX can be attached. \"Other\" files are checked for a non-zero size but their contents are not inspected."
+msgstr ""
+
+#: admin/partials/settings.php:208
+msgid "Save settings"
+msgstr ""
+
+#: admin/partials/settings.php:220
+msgid "A plain JSON copy of everything this plugin stores."
+msgstr ""
+
+#: admin/partials/settings.php:225
+msgid "Download every dataset record as JSON before making bulk changes or uninstalling the plugin."
+msgstr ""
+
+#: admin/partials/settings.php:229
+msgid "Download export"
+msgstr ""
+
+#: admin/partials/settings.php:238
+msgid "Data removal on uninstall"
+msgstr ""
+
+#: admin/partials/settings.php:243
+msgid "Warning:"
+msgstr ""
+
+#: admin/partials/settings.php:244
+msgid "Enabling the option below means that all dataset records and plugin options will be permanently deleted when you delete this plugin via Plugins → Delete. This cannot be undone. Export your data first."
+msgstr ""
+
+#: admin/partials/settings.php:256
+msgid "Delete all dataset records and plugin options when the plugin is deleted"
+msgstr ""
+
+#: admin/partials/settings.php:259
+msgid "Leave this off to keep your records if the plugin is ever removed or reinstalled. Files in the media library are never removed — other pages may still link to them."
+msgstr ""
+
+#: admin/partials/settings.php:265
+msgid "Save uninstall settings"
+msgstr ""
+
+#: admin/partials/settings.php:267
 msgid "Export first"
 msgstr ""
 

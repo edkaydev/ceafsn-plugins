@@ -1,4 +1,4 @@
-# Copyright (C) 2026 CE-AFSN
+# Copyright (C) 2026 edkaydev
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04T12:43:14+00:00\n"
+"POT-Creation-Date: 2026-10-04T13:13:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-np\n"
@@ -31,13 +31,12 @@ msgstr ""
 
 #. Author of the plugin
 #: ceafsn-nutrition-policy.php
-#: admin/partials/overview.php:162
-msgid "CE-AFSN"
+msgid "edkaydev"
 msgstr ""
 
 #. Author URI of the plugin
 #: ceafsn-nutrition-policy.php
-msgid "https://ceafsn.duckdns.org/"
+msgid "https://www.linkedin.com/in/edkaydev"
 msgstr ""
 
 #: admin/class-ceafsn-np-admin.php:45
@@ -177,6 +176,10 @@ msgstr ""
 
 #: admin/partials/overview.php:152
 msgid "Review records"
+msgstr ""
+
+#: admin/partials/overview.php:162
+msgid "CE-AFSN"
 msgstr ""
 
 #: admin/partials/overview.php:165
@@ -372,7 +375,7 @@ msgid "Keep a copy"
 msgstr ""
 
 #: admin/partials/overview.php:441
-#: admin/partials/settings.php:86
+#: admin/partials/settings.php:157
 msgid "Export records"
 msgstr ""
 
@@ -582,50 +585,110 @@ msgid "Settings sections"
 msgstr ""
 
 #: admin/partials/settings.php:47
-msgid "General"
+msgid "Display"
 msgstr ""
 
 #: admin/partials/settings.php:52
-msgid "Export"
+msgid "General"
 msgstr ""
 
 #: admin/partials/settings.php:57
+msgid "Export"
+msgstr ""
+
+#: admin/partials/settings.php:62
 msgid "Uninstall"
 msgstr ""
 
-#: admin/partials/settings.php:64
+#: admin/partials/settings.php:71
+msgid "Display the policies"
+msgstr ""
+
+#: admin/partials/settings.php:72
+msgid "Policies stay invisible to visitors until this shortcode is on a page and the records themselves are published."
+msgstr ""
+
+#: admin/partials/settings.php:78
+msgid "Paste this shortcode into the page that should list policies"
+msgstr ""
+
+#: admin/partials/settings.php:83
+msgid "It goes in the page content, in a Code / Preformatted block, or anywhere the block editor accepts HTML."
+msgstr ""
+
+#: admin/partials/settings.php:87
+msgid "Optional attributes"
+msgstr ""
+
+#: admin/partials/settings.php:90
+msgid "Attribute"
+msgstr ""
+
+#: admin/partials/settings.php:91
+msgid "Default"
+msgstr ""
+
+#: admin/partials/settings.php:92
+msgid "What it does"
+msgstr ""
+
+#: admin/partials/settings.php:99
+msgid "Rows per page. Values are clamped between 1 and 100."
+msgstr ""
+
+#: admin/partials/settings.php:105
+msgid "Show one topic only. Spell it exactly as it is on the record, for example:"
+msgstr ""
+
+#: admin/partials/settings.php:107
+msgid "Leave empty for every topic."
+msgstr ""
+
+#: admin/partials/settings.php:114
+msgid "Example: [ceafsn_policy_table per_page=\"10\" topic=\"Maternal Health\"]"
+msgstr ""
+
+#: admin/partials/settings.php:120
+msgid "Visitors can still narrow the list"
+msgstr ""
+
+#: admin/partials/settings.php:122
+msgid "Sorting, topic filtering, search, and pagination come from the visitor’s link. That is intentional: a filtered link shows the same results for everyone who opens it, including a visitor who has JS turned off."
+msgstr ""
+
+#: admin/partials/settings.php:135
 msgid "Data removal on uninstall"
 msgstr ""
 
-#: admin/partials/settings.php:76
+#: admin/partials/settings.php:147
 msgid "Known placeholder files"
 msgstr ""
 
-#: admin/partials/settings.php:80
+#: admin/partials/settings.php:151
 msgid "One file name per line. A policy record can never be published while its PDF matches one of these names. ceafsn.pdf is always included and cannot be removed from this list."
 msgstr ""
 
-#: admin/partials/settings.php:88
+#: admin/partials/settings.php:159
 msgid "Download every policy record as JSON before making bulk changes or removing the plugin. The export contains record text and attachment IDs; it does not copy the PDF files themselves."
 msgstr ""
 
-#: admin/partials/settings.php:93
+#: admin/partials/settings.php:164
 msgid "Download export"
 msgstr ""
 
-#: admin/partials/settings.php:100
+#: admin/partials/settings.php:171
 msgid "Deactivating the plugin never deletes anything. Tick the box below only if you intend to delete the plugin and permanently remove the policy table."
 msgstr ""
 
-#: admin/partials/settings.php:108
+#: admin/partials/settings.php:179
 msgid "Delete all policy records and plugin options when the plugin is deleted"
 msgstr ""
 
-#: admin/partials/settings.php:111
+#: admin/partials/settings.php:182
 msgid "Files in the Media Library are never removed — other pages may still link to them."
 msgstr ""
 
-#: admin/partials/settings.php:121
+#: admin/partials/settings.php:192
 msgid "Save settings"
 msgstr ""
 

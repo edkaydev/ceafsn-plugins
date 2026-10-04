@@ -1,497 +1,1145 @@
-# Copyright (C) 2026 CE-AFSN
+# Copyright (C) 2026 edkaydev
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: CE-AFSN Projects & Publications 1.0.0\n"
-"Report-Msgid-Bugs-To: https://ceafsn.duckdns.org/\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ceafsn-projects-publications\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-04T13:11:41+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-pp\n"
 
-#: admin/class-ceafsn-pp-admin.php
-msgid "A PDF attachment is required."
+#. Plugin Name of the plugin
+#: ceafsn-projects-publications.php
+msgid "CE-AFSN Projects & Publications"
 msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "Author or institution is required."
+
+#. Plugin URI of the plugin
+#: ceafsn-projects-publications.php
+msgid "https://ceafsn.duckdns.org/publications/"
 msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "DOI / citation must be a valid URL."
+
+#. Description of the plugin
+#: ceafsn-projects-publications.php
+msgid "Admin-managed library of CE-AFSN projects, reports, and publications. Every published record requires its own validated, readable PDF. Shortcode: [ceafsn_projects_pubs]"
 msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "Describe the cover image in the alt text field."
+
+#. Author of the plugin
+#: ceafsn-projects-publications.php
+msgid "edkaydev"
 msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "Invalid access level."
+
+#. Author URI of the plugin
+#: ceafsn-projects-publications.php
+msgid "https://www.linkedin.com/in/edkaydev"
 msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "Invalid content type."
-msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "Invalid project status."
-msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "Invalid status value."
-msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "Publication date must be a valid date (YYYY-MM-DD)."
-msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "The cover must be an image from the media library."
-msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "The record was saved as a draft instead."
-msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "Title is required."
-msgstr ""
-#: admin/class-ceafsn-pp-admin.php
-msgid "You do not have permission to perform this action."
-msgstr ""
-#: admin/class-ceafsn-pp-admin.php:39 admin/class-ceafsn-pp-admin.php
-#: admin/partials/publications.php
+
+#: admin/class-ceafsn-pp-admin.php:42
+#: admin/class-ceafsn-pp-admin.php:43
+#: admin/partials/publications.php:207
+#: admin/partials/settings.php:57
 msgid "Projects & Publications"
 msgstr ""
-#: admin/class-ceafsn-pp-admin.php:50 admin/class-ceafsn-pp-admin.php
+
+#: admin/class-ceafsn-pp-admin.php:53
+#: admin/class-ceafsn-pp-admin.php:54
 msgid "All Records"
 msgstr ""
-#: admin/class-ceafsn-pp-admin.php:59 admin/class-ceafsn-pp-admin.php
+
+#: admin/class-ceafsn-pp-admin.php:62
+#: admin/class-ceafsn-pp-admin.php:63
+#: admin/partials/settings.php:58
 msgid "Settings"
 msgstr ""
-#: admin/partials/publications.php
-msgid "(shared)"
+
+#: admin/class-ceafsn-pp-admin.php:195
+msgid "The record was saved as a draft instead."
 msgstr ""
-#: admin/partials/publications.php
-msgid "A record can only be published when this PDF is readable, belongs to this record alone, and its page count matches the field below."
+
+#: admin/class-ceafsn-pp-admin.php:384
+msgid "Title is required."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Access"
+
+#: admin/class-ceafsn-pp-admin.php:387
+msgid "Author or institution is required."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Access level"
+
+#: admin/class-ceafsn-pp-admin.php:390
+msgid "A PDF attachment is required."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Actions"
+
+#: admin/class-ceafsn-pp-admin.php:393
+msgid "Publication date must be a valid date (YYYY-MM-DD)."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Add New"
+
+#: admin/class-ceafsn-pp-admin.php:397
+msgid "Invalid content type."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Add New Record"
+
+#: admin/class-ceafsn-pp-admin.php:400
+msgid "Invalid project status."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Cancel"
+
+#: admin/class-ceafsn-pp-admin.php:403
+msgid "Invalid access level."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Content type"
+
+#: admin/class-ceafsn-pp-admin.php:406
+msgid "Invalid status value."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Cover image"
+
+#: admin/class-ceafsn-pp-admin.php:413
+msgid "Describe the cover image in the alt text field."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Cover image alt text"
+
+#: admin/class-ceafsn-pp-admin.php:422
+msgid "The cover must be an image from the media library."
 msgstr ""
-#: admin/partials/publications.php
-msgid "DOI / citation URL"
+
+#: admin/class-ceafsn-pp-admin.php:427
+msgid "DOI / citation must be a valid URL."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Delete"
+
+#: admin/class-ceafsn-pp-admin.php:442
+msgid "You do not have permission to perform this action."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Document attached"
+
+#: admin/partials/publications.php:64
+msgid "Skip to record content"
 msgstr ""
-#: admin/partials/publications.php
-msgid "Document flags"
+
+#: admin/partials/publications.php:73
+msgid "That change was not saved"
 msgstr ""
-#: admin/partials/publications.php
-msgid "Edit"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Edit Record"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Executive summary"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Leave at 0 if you do not know. A value that disagrees with the document blocks publishing."
-msgstr ""
-#: admin/partials/publications.php
-msgid "Members"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Members Only"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Members-only records are hidden from logged-out visitors and cannot be linked to directly."
-msgstr ""
-#: admin/partials/publications.php
-msgid "No PDF"
-msgstr ""
-#: admin/partials/publications.php
-msgid "No file selected"
-msgstr ""
-#: admin/partials/publications.php
-msgid "No image selected"
-msgstr ""
-#: admin/partials/publications.php
-msgid "No records yet. Add the first one using \"Add New\"."
-msgstr ""
-#: admin/partials/publications.php
-msgid "Only a record whose document passes every check can be Published."
-msgstr ""
-#: admin/partials/publications.php
-msgid "Optional. A record without a cover image is shown as a text-only card."
-msgstr ""
-#: admin/partials/publications.php
-msgid "PDF attachment"
-msgstr ""
-#. translators: %d: page count.
-#: admin/partials/publications.php
-msgid "PDF verified: readable, %d page(s)."
-msgstr ""
-#: admin/partials/publications.php
-msgid "Page count"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Publication date"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Published state"
-msgstr ""
-#: admin/partials/publications.php
+
+#: admin/partials/publications.php:89
 msgid "Record deleted."
 msgstr ""
-#: admin/partials/publications.php
+
+#: admin/partials/publications.php:90
 msgid "Record saved."
 msgstr ""
-#: admin/partials/publications.php
-msgid "Records stay invisible on the public page until they are published with their own validated PDF."
+
+#: admin/partials/publications.php:133
+msgid "Records added"
 msgstr ""
-#: admin/partials/publications.php
-msgid "Required when a cover image is set. Describe what the image shows."
+
+#. translators: %s: number of records.
+#: admin/partials/publications.php:134
+#, php-format
+msgid "%s records"
 msgstr ""
-#: admin/partials/publications.php
-msgid "Required when the box above is ticked. Explain why this document is used more than once."
+
+#: admin/partials/publications.php:138
+#: admin/partials/publications.php:703
+msgid "Document attached"
 msgstr ""
-#: admin/partials/publications.php
-msgid "Save record"
+
+#. translators: %s: number of records with a PDF.
+#: admin/partials/publications.php:139
+#, php-format
+msgid "%s with a PDF"
 msgstr ""
-#: admin/partials/publications.php
-msgid "Select PDF"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Select image"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Sharing / placeholder note"
-msgstr ""
-#: admin/partials/publications.php
-msgid "Shown on the record card. Leave empty to hide the summary rather than repeat the title."
-msgstr ""
-#: admin/partials/publications.php
-msgid "The same document is attached to %d other record. Each publication should have its own document."
-msgid_plural "The same document is attached to %d other records. Each publication should have its own document."
-msgstr[0] ""
-msgstr[1] ""
-#: admin/partials/publications.php
-msgid "This document is intentionally shared, or is a known placeholder"
-msgstr ""
-#: admin/partials/publications.php
-msgid "This is a scanned document (no extractable text is expected)"
-msgstr ""
-#: admin/partials/publications.php
-msgid "This published record no longer passes PDF validation:"
-msgstr ""
-#: admin/partials/publications.php:113 admin/partials/publications.php
-msgid "Public"
-msgstr ""
-#: admin/partials/publications.php:278 admin/partials/publications.php
-msgid "Clear"
-msgstr ""
-#: admin/partials/publications.php:65 admin/partials/publications.php
-#: public/partials/publications.php
-msgid "Title"
-msgstr ""
-#: admin/partials/publications.php:66 public/partials/publications.php
-#: public/partials/publications.php
-msgid "Type"
-msgstr ""
-#: admin/partials/publications.php:67 admin/partials/publications.php
-#: public/partials/publications.php:160 public/partials/publications.php
-#: public/partials/publications.php
-msgid "Author / institution"
-msgstr ""
-#: admin/partials/publications.php:68 public/partials/publications.php
-#: public/partials/publications.php
-msgid "Date"
-msgstr ""
-#: admin/partials/publications.php:69 admin/partials/publications.php
-msgid "Project status"
-msgstr ""
-#: admin/partials/publications.php:70 public/partials/publications.php
-msgid "Document"
-msgstr ""
-#: admin/partials/publications.php:72 public/partials/publications.php
+
+#: admin/partials/publications.php:143
+#: admin/partials/publications.php:314
+#: public/partials/publications.php:262
 msgid "Published"
 msgstr ""
-#: admin/partials/publications.php:96 public/class-ceafsn-pp-public.php
-msgid "PDF"
+
+#. translators: %s: number of published records.
+#: admin/partials/publications.php:144
+#, php-format
+msgid "%s visible to visitors"
 msgstr ""
-#: admin/partials/settings.php
-msgid "Data removal on uninstall"
+
+#: admin/partials/publications.php:172
+msgid "No records yet"
 msgstr ""
-#: admin/partials/settings.php
-msgid "Deactivating the plugin never deletes anything. Tick the box below only if you intend to delete the plugin and permanently remove the records table."
+
+#: admin/partials/publications.php:174
+msgid "Nothing is displayed on the public page until a record is published with its own validated PDF."
 msgstr ""
-#: admin/partials/settings.php
-msgid "Delete all records and plugin options when the plugin is deleted"
+
+#: admin/partials/publications.php:175
+#: admin/partials/publications.php:377
+msgid "Add the first record"
 msgstr ""
-#: admin/partials/settings.php
-msgid "Download every record as JSON before making bulk changes or uninstalling the plugin. The export includes members-only records, so it is as sensitive as the records themselves."
+
+#. translators: %s: number of records with no PDF.
+#: admin/partials/publications.php:191
+#, php-format
+msgid "%s record(s) have no document attached"
 msgstr ""
-#: admin/partials/settings.php
-msgid "Download export"
+
+#: admin/partials/publications.php:197
+msgid "A record can only be published once its own PDF passes every check."
 msgstr ""
-#: admin/partials/settings.php
+
+#: admin/partials/publications.php:206
+#: admin/partials/publications.php:535
+msgid "CE-AFSN"
+msgstr ""
+
+#: admin/partials/publications.php:209
+msgid "Reports, policy briefs, working papers, and project records. Every publication carries its own validated document."
+msgstr ""
+
+#: admin/partials/publications.php:213
+#: admin/partials/publications.php:363
+#: admin/partials/publications.php:501
+msgid "+ Add record"
+msgstr ""
+
+#: admin/partials/publications.php:216
+#: admin/partials/settings.php:30
 msgid "Export"
 msgstr ""
-#: admin/partials/settings.php
+
+#. translators: %s: total record count.
+#: admin/partials/publications.php:224
+#, php-format
+msgid "<strong>%s</strong> records"
+msgstr ""
+
+#. translators: %s: published record count.
+#: admin/partials/publications.php:233
+#, php-format
+msgid "<strong>%s</strong> published"
+msgstr ""
+
+#. translators: %s: number of draft records.
+#: admin/partials/publications.php:242
+#, php-format
+msgid "<strong>%s</strong> drafts"
+msgstr ""
+
+#. translators: %s: number of members-only records.
+#: admin/partials/publications.php:251
+#, php-format
+msgid "<strong>%s</strong> members-only"
+msgstr ""
+
+#: admin/partials/publications.php:264
+msgid "Publishing workflow"
+msgstr ""
+
+#: admin/partials/publications.php:265
+msgid "Counted from your records. A step is only complete when the numbers prove it."
+msgstr ""
+
+#: admin/partials/publications.php:287
+msgid "Current step:"
+msgstr ""
+
+#: admin/partials/publications.php:293
+msgid "All steps complete"
+msgstr ""
+
+#: admin/partials/publications.php:305
+msgid "Records"
+msgstr ""
+
+#: admin/partials/publications.php:308
+msgid "In this plugin"
+msgstr ""
+
+#: admin/partials/publications.php:317
+msgid "Visible to visitors"
+msgstr ""
+
+#: admin/partials/publications.php:323
+msgid "Drafts"
+msgstr ""
+
+#: admin/partials/publications.php:326
+msgid "Not yet public"
+msgstr ""
+
+#: admin/partials/publications.php:332
+msgid "No document"
+msgstr ""
+
+#: admin/partials/publications.php:338
+msgid "Cannot be published"
+msgstr ""
+
+#: admin/partials/publications.php:340
+msgid "Every record has one"
+msgstr ""
+
+#: admin/partials/publications.php:353
+msgid "All records"
+msgstr ""
+
+#: admin/partials/publications.php:359
+msgid "Draft, archived, and members-only records are visible to admins only."
+msgstr ""
+
+#: admin/partials/publications.php:371
+msgid "Nothing to show yet"
+msgstr ""
+
+#: admin/partials/publications.php:373
+msgid "Records stay invisible on the public page until they are published with their own validated PDF."
+msgstr ""
+
+#: admin/partials/publications.php:386
+msgid "Publication and project records"
+msgstr ""
+
+#: admin/partials/publications.php:389
+#: admin/partials/publications.php:618
+#: public/partials/publications.php:34
+msgid "Title"
+msgstr ""
+
+#: admin/partials/publications.php:390
+#: public/partials/publications.php:36
+#: public/partials/publications.php:189
+msgid "Type"
+msgstr ""
+
+#: admin/partials/publications.php:391
+#: admin/partials/publications.php:650
+#: public/partials/publications.php:160
+#: public/partials/publications.php:197
+#: public/partials/publications.php:258
+msgid "Author / institution"
+msgstr ""
+
+#: admin/partials/publications.php:392
+#: public/partials/publications.php:35
+#: public/partials/publications.php:184
+msgid "Date"
+msgstr ""
+
+#: admin/partials/publications.php:393
+#: admin/partials/publications.php:668
+msgid "Project status"
+msgstr ""
+
+#: admin/partials/publications.php:394
+#: admin/partials/publications.php:687
+#: public/partials/publications.php:161
+msgid "Document"
+msgstr ""
+
+#: admin/partials/publications.php:395
+msgid "Access"
+msgstr ""
+
+#: admin/partials/publications.php:396
+msgid "State"
+msgstr ""
+
+#: admin/partials/publications.php:397
+msgid "Actions"
+msgstr ""
+
+#. translators: 1: page count, 2: record date.
+#: admin/partials/publications.php:422
+#, php-format
+msgid "%1$s · %2$s"
+msgstr ""
+
+#. translators: %s: page count.
+#: admin/partials/publications.php:425
+#, php-format
+msgid "%s page"
+msgid_plural "%s pages"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: record date.
+#: admin/partials/publications.php:432
+#, php-format
+msgid "No document yet · %s"
+msgstr ""
+
+#: admin/partials/publications.php:451
+#: public/class-ceafsn-pp-public.php:199
+msgid "PDF"
+msgstr ""
+
+#: admin/partials/publications.php:453
+msgid "(shared)"
+msgstr ""
+
+#: admin/partials/publications.php:457
+msgid "No PDF"
+msgstr ""
+
+#: admin/partials/publications.php:462
+msgid "Members"
+msgstr ""
+
+#: admin/partials/publications.php:464
+#: admin/partials/publications.php:825
+msgid "Public"
+msgstr ""
+
+#: admin/partials/publications.php:474
+msgid "Edit"
+msgstr ""
+
+#: admin/partials/publications.php:478
+msgid "Delete"
+msgstr ""
+
+#: admin/partials/publications.php:495
+msgid "Get started"
+msgstr ""
+
+#: admin/partials/publications.php:496
+msgid "Add a record"
+msgstr ""
+
+#: admin/partials/publications.php:498
+msgid "Each publication needs its own document. Two records should not share one PDF unless it is a known placeholder."
+msgstr ""
+
+#: admin/partials/publications.php:506
+msgid "Before you publish"
+msgstr ""
+
+#: admin/partials/publications.php:507
+msgid "Document rules"
+msgstr ""
+
+#: admin/partials/publications.php:509
+msgid "The PDF must be readable and belong to this record alone."
+msgstr ""
+
+#: admin/partials/publications.php:510
+msgid "A page count that disagrees with the file blocks publishing."
+msgstr ""
+
+#: admin/partials/publications.php:511
+msgid "Scanned documents need the scanned flag ticked."
+msgstr ""
+
+#: admin/partials/publications.php:512
+msgid "Project status is tracked separately from the published state."
+msgstr ""
+
+#: admin/partials/publications.php:513
+msgid "Files stay in the media library even if the record is deleted."
+msgstr ""
+
+#: admin/partials/publications.php:518
+msgid "Keep a copy"
+msgstr ""
+
+#: admin/partials/publications.php:519
+#: admin/partials/settings.php:289
 msgid "Export records"
 msgstr ""
-#: admin/partials/settings.php
-msgid "Export your records first. This cannot be undone."
+
+#: admin/partials/publications.php:521
+msgid "Download every publication and project record as JSON before bulk changes or removing the plugin."
 msgstr ""
-#: admin/partials/settings.php
-msgid "Files in the Media Library are never removed — other pages may still link to them."
+
+#: admin/partials/publications.php:524
+msgid "Open export"
 msgstr ""
-#: admin/partials/settings.php
-msgid "General"
+
+#: admin/partials/publications.php:540
+msgid "Edit record"
 msgstr ""
-#: admin/partials/settings.php
-msgid "Known placeholder files"
+
+#: admin/partials/publications.php:541
+msgid "Add record"
 msgstr ""
-#: admin/partials/settings.php
-msgid "Leave this on until every old link has been updated. If a real page is later created at the old address, that page takes precedence and the redirect steps aside."
+
+#: admin/partials/publications.php:546
+msgid "A record can only be published when its own PDF is readable and its page count matches the file."
 msgstr ""
-#: admin/partials/settings.php
-msgid "Legacy route redirect"
+
+#: admin/partials/publications.php:555
+msgid "This published record no longer passes PDF validation:"
 msgstr ""
-#: admin/partials/settings.php
-msgid "One file name per line. A record can never be published while its PDF matches one of these names unless the document is explicitly confirmed."
+
+#. translators: %d: number of other records.
+#: admin/partials/publications.php:575
+#, php-format
+msgid "The same document is attached to %d other record."
+msgid_plural "The same document is attached to %d other records."
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/partials/publications.php:585
+msgid "Each publication should have its own document."
 msgstr ""
-#. translators: 1: legacy path, 2: new path.
-#: admin/partials/settings.php
-msgid "Permanently redirect %1$s to %2$s"
+
+#: admin/partials/publications.php:610
+msgid "Record details"
 msgstr ""
-#: admin/partials/settings.php
-msgid "Projects & Publications — Settings"
+
+#: admin/partials/publications.php:611
+msgid "Fields marked with an asterisk are required."
 msgstr ""
-#: admin/partials/settings.php
+
+#: admin/partials/publications.php:627
+msgid "Content type"
+msgstr ""
+
+#: admin/partials/publications.php:642
+msgid "Executive summary"
+msgstr ""
+
+#: admin/partials/publications.php:645
+msgid "Shown on the record card. Leave empty to hide the summary rather than repeat the title."
+msgstr ""
+
+#: admin/partials/publications.php:659
+msgid "Publication date"
+msgstr ""
+
+#: admin/partials/publications.php:688
+msgid "One PDF per record, validated on save."
+msgstr ""
+
+#: admin/partials/publications.php:695
+msgid "PDF attachment"
+msgstr ""
+
+#: admin/partials/publications.php:702
+msgid "No file selected"
+msgstr ""
+
+#: admin/partials/publications.php:706
+msgid "Select PDF"
+msgstr ""
+
+#: admin/partials/publications.php:709
+#: admin/partials/publications.php:768
+msgid "Clear"
+msgstr ""
+
+#: admin/partials/publications.php:713
+msgid "A record can only be published when this PDF is readable, belongs to this record alone, and its page count matches the field below."
+msgstr ""
+
+#: admin/partials/publications.php:719
+msgid "Page count"
+msgstr ""
+
+#: admin/partials/publications.php:723
+msgid "Leave at 0 if you do not know. A value that disagrees with the document blocks publishing."
+msgstr ""
+
+#. translators: %d: page count.
+#: admin/partials/publications.php:732
+#, php-format
+msgid "PDF verified: readable, %d page(s)."
+msgstr ""
+
+#: admin/partials/publications.php:748
+msgid "Cover image"
+msgstr ""
+
+#: admin/partials/publications.php:749
+msgid "Optional. A record without a cover image is shown as a text-only card."
+msgstr ""
+
+#: admin/partials/publications.php:755
+msgid "Image"
+msgstr ""
+
+#: admin/partials/publications.php:761
+msgid "No image selected"
+msgstr ""
+
+#: admin/partials/publications.php:765
+msgid "Select image"
+msgstr ""
+
+#: admin/partials/publications.php:775
+msgid "Cover image alt text"
+msgstr ""
+
+#: admin/partials/publications.php:781
+msgid "Required when a cover image is set. Describe what the image shows."
+msgstr ""
+
+#: admin/partials/publications.php:791
+msgid "Visibility and sharing"
+msgstr ""
+
+#: admin/partials/publications.php:792
+msgid "Only a record whose document passes every check can be Published."
+msgstr ""
+
+#: admin/partials/publications.php:799
+msgid "Published state"
+msgstr ""
+
+#: admin/partials/publications.php:814
+msgid "Access level"
+msgstr ""
+
+#: admin/partials/publications.php:824
+msgid "Members Only"
+msgstr ""
+
+#: admin/partials/publications.php:831
+msgid "Members-only records are hidden from logged-out visitors and cannot be linked to directly."
+msgstr ""
+
+#: admin/partials/publications.php:836
+msgid "DOI / citation URL"
+msgstr ""
+
+#: admin/partials/publications.php:848
+msgid "Document flags"
+msgstr ""
+
+#: admin/partials/publications.php:849
+msgid "Only tick these when they are true — they suppress validation warnings."
+msgstr ""
+
+#: admin/partials/publications.php:859
+msgid "This is a scanned document (no extractable text is expected)"
+msgstr ""
+
+#: admin/partials/publications.php:862
+msgid "Use this for photocopies and scans so a missing text layer is not treated as a broken file."
+msgstr ""
+
+#: admin/partials/publications.php:872
+msgid "This document is intentionally shared, or is a known placeholder"
+msgstr ""
+
+#: admin/partials/publications.php:875
+msgid "Add a note below explaining why this document is used more than once."
+msgstr ""
+
+#: admin/partials/publications.php:882
+msgid "Sharing / placeholder note"
+msgstr ""
+
+#: admin/partials/publications.php:887
+msgid "Required when the box above is ticked. Explain why this document is used more than once."
+msgstr ""
+
+#: admin/partials/publications.php:895
+msgid "Save record"
+msgstr ""
+
+#: admin/partials/publications.php:896
+#: admin/partials/settings.php:222
+#: admin/partials/settings.php:280
+#: admin/partials/settings.php:347
+msgid "Cancel"
+msgstr ""
+
+#: admin/partials/publications.php:904
+msgid "Jump to document rules"
+msgstr ""
+
+#: admin/partials/settings.php:27
+msgid "Display"
+msgstr ""
+
+#: admin/partials/settings.php:28
+msgid "Placeholders"
+msgstr ""
+
+#: admin/partials/settings.php:29
 msgid "Routes"
 msgstr ""
-#: admin/partials/settings.php
-msgid "Save settings"
-msgstr ""
-#: admin/partials/settings.php
-msgid "Settings saved."
-msgstr ""
-#: admin/partials/settings.php
-msgid "Settings sections"
-msgstr ""
-#: admin/partials/settings.php
-msgid "The target page must exist and contain the [ceafsn_projects_pubs] shortcode, or the redirect will land visitors on a 404."
-msgstr ""
-#: admin/partials/settings.php
+
+#: admin/partials/settings.php:31
 msgid "Uninstall"
 msgstr ""
-#: admin/partials/settings.php
-msgid "ceafsn.pdf is always included and cannot be removed from this list."
+
+#: admin/partials/settings.php:41
+msgid "Skip to settings content"
 msgstr ""
-#. translators: %s: placeholder file name.
-#: includes/class-ceafsn-pp-validator.php
-msgid "\"%s\" is a known placeholder document. Tick \"Confirm this document is intentional\" to publish it anyway."
+
+#: admin/partials/settings.php:50
+msgid "Settings saved."
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
-msgid "A note is required when a document is shared or is a known placeholder."
+
+#: admin/partials/settings.php:60
+msgid "How the shortcode is placed on a page, which file names count as placeholders, legacy route redirects, data export, and what happens to your records if the plugin is removed."
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
-msgid "No PDF is attached to this record."
+
+#: admin/partials/settings.php:64
+msgid "Settings sections"
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
-msgid "No text could be read from this PDF. If it is a scanned document, tick \"This is a scanned document\"."
+
+#: admin/partials/settings.php:82
+msgid "Display the records"
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
-msgid "The PDF appears to be truncated or corrupt."
+
+#: admin/partials/settings.php:83
+msgid "Records stay invisible to visitors until this shortcode is on a page and the records themselves are published."
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
-msgid "The PDF page count could not be read. The file may be damaged."
+
+#: admin/partials/settings.php:89
+msgid "Paste this shortcode into the page that should list records"
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
-msgid "The attached PDF is missing from the media library."
+
+#: admin/partials/settings.php:94
+msgid "It goes in the page content, in a Code / Preformatted block, or anywhere the block editor accepts HTML."
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
-msgid "The attached PDF is zero bytes."
+
+#: admin/partials/settings.php:98
+msgid "Optional attributes"
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
+
+#: admin/partials/settings.php:101
+msgid "Attribute"
+msgstr ""
+
+#: admin/partials/settings.php:102
+msgid "Default"
+msgstr ""
+
+#: admin/partials/settings.php:103
+msgid "What it does"
+msgstr ""
+
+#: admin/partials/settings.php:110
+msgid "Records per page. Values are clamped between 1 and 48."
+msgstr ""
+
+#: admin/partials/settings.php:116
+msgid "Limit the list to one type:"
+msgstr ""
+
+#: admin/partials/settings.php:118
+msgid "Leave empty for every type."
+msgstr ""
+
+#: admin/partials/settings.php:124
+msgid "Set to list for a table layout instead of cards."
+msgstr ""
+
+#: admin/partials/settings.php:130
+msgid "Example: [ceafsn_projects_pubs per_page=\"24\" view=\"list\"]"
+msgstr ""
+
+#: admin/partials/settings.php:136
+msgid "Visitors can still narrow the list"
+msgstr ""
+
+#: admin/partials/settings.php:138
+msgid "Sorting, filtering, search, and pagination come from the visitor’s link. That is intentional: a filtered link shows the same results for everyone who opens it, including a visitor who has JS turned off."
+msgstr ""
+
+#: admin/partials/settings.php:151
+msgid "What visitors see"
+msgstr ""
+
+#: admin/partials/settings.php:152
+msgid "Only published records"
+msgstr ""
+
+#: admin/partials/settings.php:154
+msgid "Drafts and archived records never reach the page."
+msgstr ""
+
+#: admin/partials/settings.php:155
+msgid "Members-only records are hidden from logged-out visitors."
+msgstr ""
+
+#: admin/partials/settings.php:156
+msgid "Records with no validated PDF cannot be published at all."
+msgstr ""
+
+#: admin/partials/settings.php:161
+msgid "Manage records"
+msgstr ""
+
+#: admin/partials/settings.php:162
+msgid "Add and publish"
+msgstr ""
+
+#: admin/partials/settings.php:164
+msgid "The shortcode is only the container. Add records and set each one to Published."
+msgstr ""
+
+#: admin/partials/settings.php:167
+msgid "Go to records"
+msgstr ""
+
+#: admin/partials/settings.php:183
+msgid "Known placeholder files"
+msgstr ""
+
+#: admin/partials/settings.php:184
+msgid "One file name per line."
+msgstr ""
+
+#. translators: %s: number of placeholder names.
+#: admin/partials/settings.php:190
+#, php-format
+msgid "%s known"
+msgstr ""
+
+#: admin/partials/settings.php:199
+msgid "File names that must never be published"
+msgstr ""
+
+#: admin/partials/settings.php:203
+msgid "A record can never be published while its PDF matches one of these names unless the document is explicitly confirmed as a known placeholder."
+msgstr ""
+
+#: admin/partials/settings.php:210
+msgid "ceafsn.pdf is always blocked"
+msgstr ""
+
+#: admin/partials/settings.php:212
+msgid "It is added automatically and cannot be removed from this list."
+msgstr ""
+
+#: admin/partials/settings.php:221
+#: admin/partials/settings.php:279
+#: admin/partials/settings.php:346
+msgid "Save settings"
+msgstr ""
+
+#: admin/partials/settings.php:235
+msgid "Legacy route redirect"
+msgstr ""
+
+#: admin/partials/settings.php:236
+msgid "For visitors who already have an old link or bookmark."
+msgstr ""
+
+#: admin/partials/settings.php:239
+msgid "On"
+msgstr ""
+
+#: admin/partials/settings.php:239
+msgid "Off"
+msgstr ""
+
+#. translators: 1: legacy route, 2: current route.
+#: admin/partials/settings.php:253
+#, php-format
+msgid "Permanently redirect %1$s to %2$s"
+msgstr ""
+
+#: admin/partials/settings.php:260
+msgid "Leave this on until every old link has been updated. If a real page is later created at the old address, that page takes precedence and the redirect steps aside."
+msgstr ""
+
+#: admin/partials/settings.php:268
+msgid "The target page must contain the shortcode"
+msgstr ""
+
+#: admin/partials/settings.php:270
+msgid "A page that contains [ceafsn_projects_pubs] is required, or the redirect will land visitors on an empty page."
+msgstr ""
+
+#: admin/partials/settings.php:290
+msgid "One file, every record."
+msgstr ""
+
+#: admin/partials/settings.php:296
+msgid "Download every record as JSON before making bulk changes or uninstalling the plugin. The export includes members-only records, so it is as sensitive as the records themselves."
+msgstr ""
+
+#: admin/partials/settings.php:300
+msgid "The export is a full copy of your records. Treat it as confidential and delete it once it is safely stored."
+msgstr ""
+
+#: admin/partials/settings.php:305
+msgid "Download export"
+msgstr ""
+
+#: admin/partials/settings.php:316
+msgid "Data removal on uninstall"
+msgstr ""
+
+#: admin/partials/settings.php:317
+msgid "Deactivating the plugin never deletes anything."
+msgstr ""
+
+#: admin/partials/settings.php:332
+msgid "Delete all records and plugin options when the plugin is deleted"
+msgstr ""
+
+#: admin/partials/settings.php:335
+msgid "Tick this only if you intend to delete the plugin and permanently remove the records table."
+msgstr ""
+
+#: admin/partials/settings.php:341
+msgid "Files in the Media Library are never removed — other pages may still link to them."
+msgstr ""
+
+#: admin/partials/settings.php:342
+msgid "Export your records first. This cannot be undone."
+msgstr ""
+
+#: admin/partials/settings.php:359
+msgid "Jump to help"
+msgstr ""
+
+#: includes/class-ceafsn-pp-validator.php:44
 msgid "The attached file is empty or could not be read."
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
+
+#: includes/class-ceafsn-pp-validator.php:49
 msgid "The attached file is not a PDF."
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
+
+#: includes/class-ceafsn-pp-validator.php:54
+msgid "The PDF appears to be truncated or corrupt."
+msgstr ""
+
+#: includes/class-ceafsn-pp-validator.php:59
+msgid "The PDF page count could not be read. The file may be damaged."
+msgstr ""
+
+#: includes/class-ceafsn-pp-validator.php:167
+msgid "No PDF is attached to this record."
+msgstr ""
+
+#: includes/class-ceafsn-pp-validator.php:172
+msgid "The attached PDF is missing from the media library."
+msgstr ""
+
+#: includes/class-ceafsn-pp-validator.php:177
 msgid "The attached file is not a PDF. Allowed type: application/pdf."
 msgstr ""
+
+#: includes/class-ceafsn-pp-validator.php:182
+msgid "The attached PDF is zero bytes."
+msgstr ""
+
+#. translators: %s: placeholder file name.
+#: includes/class-ceafsn-pp-validator.php:213
+#, php-format
+msgid "\"%s\" is a known placeholder document. Tick \"Confirm this document is intentional\" to publish it anyway."
+msgstr ""
+
 #. translators: 1: entered page count, 2: page count read from the PDF.
-#: includes/class-ceafsn-pp-validator.php
+#: includes/class-ceafsn-pp-validator.php:224
+#, php-format
 msgid "The page count you entered (%1$d) does not match the document (%2$d pages). Correct the field or attach the right file."
 msgstr ""
-#: includes/class-ceafsn-pp-validator.php
+
+#: includes/class-ceafsn-pp-validator.php:233
+msgid "No text could be read from this PDF. If it is a scanned document, tick \"This is a scanned document\"."
+msgstr ""
+
+#. translators: %d: number of other records using the same document.
+#: includes/class-ceafsn-pp-validator.php:242
+#, php-format
 msgid "The same document is already attached to %d other record. Tick \"This document is intentionally shared\" and add a note explaining why."
 msgid_plural "The same document is already attached to %d other records. Tick \"This document is intentionally shared\" and add a note explaining why."
 msgstr[0] ""
 msgstr[1] ""
-#. translators: %d: file size in bytes.
-#: public/class-ceafsn-pp-public.php
-msgid "%d B"
+
+#: includes/class-ceafsn-pp-validator.php:256
+msgid "A note is required when a document is shared or is a known placeholder."
 msgstr ""
+
+#: public/class-ceafsn-pp-public.php:145
+msgid "Report"
+msgstr ""
+
+#: public/class-ceafsn-pp-public.php:146
+msgid "Annual Report"
+msgstr ""
+
+#: public/class-ceafsn-pp-public.php:147
+msgid "Policy Brief"
+msgstr ""
+
+#: public/class-ceafsn-pp-public.php:148
+msgid "Working Paper"
+msgstr ""
+
+#: public/class-ceafsn-pp-public.php:149
+msgid "Strategic Document"
+msgstr ""
+
+#: public/class-ceafsn-pp-public.php:150
+msgid "Project"
+msgstr ""
+
+#: public/class-ceafsn-pp-public.php:164
+msgid "In Progress"
+msgstr ""
+
+#: public/class-ceafsn-pp-public.php:165
+msgid "Completed"
+msgstr ""
+
+#: public/class-ceafsn-pp-public.php:166
+msgid "Under Review"
+msgstr ""
+
+#: public/class-ceafsn-pp-public.php:167
+msgid "Archived"
+msgstr ""
+
+#. translators: 1: record title, 2: document details.
+#: public/class-ceafsn-pp-public.php:197
+#, php-format
+msgid "View document: %1$s (%2$s), opens in a new tab"
+msgstr ""
+
 #. translators: %d: number of pages.
-#: public/class-ceafsn-pp-public.php
+#: public/class-ceafsn-pp-public.php:226
+#, php-format
 msgid "%d page"
 msgid_plural "%d pages"
 msgstr[0] ""
 msgstr[1] ""
+
+#. translators: %d: file size in bytes.
+#: public/class-ceafsn-pp-public.php:276
+#, php-format
+msgid "%d B"
+msgstr ""
+
 #. translators: %s: file size in kilobytes.
-#: public/class-ceafsn-pp-public.php
+#: public/class-ceafsn-pp-public.php:282
+#, php-format
 msgid "%s KB"
 msgstr ""
+
 #. translators: %s: file size in megabytes.
-#: public/class-ceafsn-pp-public.php
+#: public/class-ceafsn-pp-public.php:286
+#, php-format
 msgid "%s MB"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "Annual Report"
+
+#: public/partials/publications.php:37
+#: public/partials/publications.php:192
+msgid "Status"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "Archived"
+
+#: public/partials/publications.php:50
+msgid "Search records"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "Completed"
+
+#: public/partials/publications.php:53
+msgid "Title, summary, or institution"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "In Progress"
+
+#: public/partials/publications.php:57
+msgid "Filter by type"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "Policy Brief"
+
+#: public/partials/publications.php:59
+msgid "All types"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "Project"
+
+#: public/partials/publications.php:69
+msgid "Filter by status"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "Report"
+
+#: public/partials/publications.php:71
+msgid "All statuses"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "Strategic Document"
+
+#: public/partials/publications.php:81
+msgid "Filter by year"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "Under Review"
+
+#: public/partials/publications.php:83
+msgid "All years"
 msgstr ""
-#. translators: 1: record title, 2: document details.
-#: public/class-ceafsn-pp-public.php
-msgid "View document: %1$s (%2$s), opens in a new tab"
+
+#: public/partials/publications.php:93
+msgid "Apply filters"
 msgstr ""
-#: public/class-ceafsn-pp-public.php
-msgid "Working Paper"
+
+#: public/partials/publications.php:97
+msgid "Clear filters"
 msgstr ""
+
 #. translators: %d: number of publication records.
-#: public/partials/publications.php
+#: public/partials/publications.php:108
+#, php-format
 msgid "%d record"
 msgid_plural "%d records"
 msgstr[0] ""
 msgstr[1] ""
-#: public/partials/publications.php
-msgid "All statuses"
-msgstr ""
-#: public/partials/publications.php
-msgid "All types"
-msgstr ""
-#: public/partials/publications.php
-msgid "All years"
-msgstr ""
-#: public/partials/publications.php
-msgid "Apply filters"
-msgstr ""
-#: public/partials/publications.php
-msgid "Clear filters"
-msgstr ""
-#: public/partials/publications.php
-msgid "File size"
-msgstr ""
-#: public/partials/publications.php
-msgid "Filter by status"
-msgstr ""
-#: public/partials/publications.php
-msgid "Filter by type"
-msgstr ""
-#: public/partials/publications.php
-msgid "Filter by year"
-msgstr ""
-#: public/partials/publications.php
-msgid "Grid"
-msgstr ""
-#: public/partials/publications.php
+
+#: public/partials/publications.php:114
 msgid "Layout"
 msgstr ""
-#: public/partials/publications.php
-msgid "Length"
+
+#: public/partials/publications.php:118
+msgid "Grid"
 msgstr ""
-#: public/partials/publications.php
+
+#: public/partials/publications.php:123
 msgid "List"
 msgstr ""
-#: public/partials/publications.php
-msgid "Next"
-msgstr ""
-#: public/partials/publications.php
+
+#: public/partials/publications.php:133
 msgid "No publications or projects have been published yet."
 msgstr ""
-#. translators: 1: current page, 2: total pages.
-#: public/partials/publications.php
-msgid "Page %1$d of %2$d"
-msgstr ""
-#: public/partials/publications.php
-msgid "Previous"
-msgstr ""
-#: public/partials/publications.php
-msgid "Publication record pages"
-msgstr ""
-#: public/partials/publications.php
+
+#: public/partials/publications.php:143
 msgid "Published CE-AFSN projects and publications"
 msgstr ""
-#: public/partials/publications.php
-msgid "Search records"
-msgstr ""
-#: public/partials/publications.php
-msgid "Shared document"
-msgstr ""
-#: public/partials/publications.php
-msgid "This document is shared with another record."
-msgstr ""
-#: public/partials/publications.php
-msgid "Title, summary, or institution"
-msgstr ""
-#: public/partials/publications.php:175 public/partials/publications.php
+
+#: public/partials/publications.php:175
+#: public/partials/publications.php:245
 msgid "Members only"
 msgstr ""
-#: public/partials/publications.php:203 public/partials/publications.php
+
+#: public/partials/publications.php:180
+msgid "Shared document"
+msgstr ""
+
+#: public/partials/publications.php:203
+#: public/partials/publications.php:291
 msgid "Sign in to view this document."
 msgstr ""
-#: public/partials/publications.php:210 public/partials/publications.php
+
+#: public/partials/publications.php:210
+#: public/partials/publications.php:298
 msgid "View Document"
 msgstr ""
-#: public/partials/publications.php:214 public/partials/publications.php
+
+#: public/partials/publications.php:214
+#: public/partials/publications.php:302
 msgid "Document currently unavailable."
 msgstr ""
-#: public/partials/publications.php:37 public/partials/publications.php
-msgid "Status"
+
+#: public/partials/publications.php:271
+msgid "File size"
+msgstr ""
+
+#: public/partials/publications.php:277
+msgid "Length"
+msgstr ""
+
+#: public/partials/publications.php:285
+msgid "This document is shared with another record."
+msgstr ""
+
+#: public/partials/publications.php:316
+msgid "Publication record pages"
+msgstr ""
+
+#: public/partials/publications.php:321
+msgid "Previous"
+msgstr ""
+
+#. translators: 1: current page, 2: total pages.
+#: public/partials/publications.php:329
+#, php-format
+msgid "Page %1$d of %2$d"
+msgstr ""
+
+#: public/partials/publications.php:340
+msgid "Next"
 msgstr ""

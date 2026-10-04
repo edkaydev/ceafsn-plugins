@@ -1,7 +1,7 @@
 # CE-AFSN Plugin Suite — Implementation Checklist
 
 > Last verified against the working tree: all six plugin suites build clean
-> (`php -l`) and pass their full assertion set — **1500 assertions, 0 failures** —
+> (`php -l`) and pass their full assertion set — **1638 assertions, 0 failures** —
 > both in place and again from each extracted release ZIP. Items below are only
 > checked when the evidence exists in this repository. Anything requiring the live
 > WordPress install at `ceafsn.duckdns.org` stays unchecked until it is run against
@@ -43,7 +43,9 @@
       stepper, KPI tiles, dot-and-pill status rows, check-marked guidance,
       export callout, circular help badge; every rule scoped to
       `.ceafsn-med-wrap`
-- [x] Tests — 183 assertions (`php plugins/ceafsn-me-dashboard/tests/run-tests.php`)
+- [x] Settings screen shows the exact `[ceafsn_me_dashboard]` shortcode on a
+      read-only Display tab, and states plainly that it takes no attributes
+- [x] Tests — 191 assertions (`php plugins/ceafsn-me-dashboard/tests/run-tests.php`)
 
 ### Plugin 2: ceafsn-nutrition-policy
 - [x] Plugin header and bootstrap file
@@ -59,16 +61,18 @@
       stepper, KPI tiles, dot-and-pill status rows, check-marked guidance,
       promotional callouts, circular help badge; every rule scoped to
       `.ceafsn-np-wrap`
-- [x] Tests — 247 assertions (`php plugins/ceafsn-nutrition-policy/tests/run-tests.php`)
+- [x] Settings screen shows the exact `[ceafsn_policy_table]` shortcode with
+      its `per_page` and `topic` attributes on a read-only Display tab
+- [x] Tests — 256 assertions (`php plugins/ceafsn-nutrition-policy/tests/run-tests.php`)
 
 > **Design direction (2026-10-04).** The first pass was deliberately flat —
 > no shadows, square badges — after feedback that the gradient/shadow/pill
 > styling looked machine-generated. That was then reversed: the target design
 > is the raised-card, rounded, dot-and-pill layout above, with shadows and
 > rounded corners. `ceafsn-nutrition-policy` is the reference implementation;
-> `ceafsn-me-dashboard` and `ceafsn-open-datasets` have had the same pass. The
-> remaining plugins (`ceafsn-projects-publications`,
-> `ceafsn-research-fellowships`, `ceafsn-grants-funding`) still carry the
+> `ceafsn-me-dashboard`, `ceafsn-open-datasets`, and
+> `ceafsn-projects-publications` have had the same pass. The remaining plugins
+> (`ceafsn-research-fellowships`, `ceafsn-grants-funding`) still carry the
 > earlier flat styling and need the same treatment.
 
 ### Plugin 3: ceafsn-open-datasets
@@ -88,7 +92,10 @@
       export callout, circular help badge; dataset form split into detail /
       download-target / visibility cards; settings rebuilt on the shared tabs
       and checkbox pattern; every rule scoped to `.ceafsn-od-wrap`
-- [x] Tests — 415 assertions (`php plugins/ceafsn-open-datasets/tests/run-tests.php`)
+- [x] Settings screen shows the exact `[ceafsn_open_datasets]` shortcode with
+      its `per_page`, `category`, and `file_type` attributes on a read-only
+      Display tab
+- [x] Tests — 424 assertions (`php plugins/ceafsn-open-datasets/tests/run-tests.php`)
 
 ### Plugin 4: ceafsn-projects-publications
 - [x] Plugin header and bootstrap file
@@ -103,7 +110,18 @@
 - [x] 301 redirect `/privacy-policy-2/` → `/publications/`, configurable
 - [x] JSON export and opt-in uninstall that never touches the Media Library
 - [x] `readme.txt` and `languages/ceafsn-pp.pot`
-- [x] Tests — 332 assertions (`php plugins/ceafsn-projects-publications/tests/run-tests.php`)
+- [x] Branded admin UI — three-column app layout (WordPress admin menu, main
+      canvas, right rail), alert banners, hero module, publishing-workflow
+      stepper, KPI tiles, dot-and-pill status rows, check-marked guidance,
+      promotional callouts, circular help badge; record form split into
+      details / document / cover image / visibility / document-flag cards;
+      settings rebuilt on the shared tabs and checkbox pattern with the
+      Display, Placeholders, Routes, Export, and Uninstall sections; every
+      rule scoped to `.ceafsn-pp-wrap`
+- [x] Settings screen shows the exact `[ceafsn_projects_pubs]` shortcode with
+      its `per_page`, `content_type`, and `view` attributes, so the paste-in
+      step is documented in the admin rather than only in `readme.txt`
+- [x] Tests — 398 assertions (`php plugins/ceafsn-projects-publications/tests/run-tests.php`)
 
 ### Plugin 5: ceafsn-research-fellowships
 - [x] Plugin header and bootstrap file

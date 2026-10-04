@@ -15,6 +15,9 @@ class CEAFSN_PP_Admin {
 	/** @var string Admin page parent slug. */
 	const MENU_SLUG = 'ceafsn-pp';
 
+	/** @var string Admin page slug for the settings screen. */
+	const SETTINGS_SLUG = 'ceafsn-pp-settings';
+
 	/**
 	 * Register WordPress hooks.
 	 */
@@ -59,7 +62,7 @@ class CEAFSN_PP_Admin {
 			__( 'Settings', 'ceafsn-pp' ),
 			__( 'Settings', 'ceafsn-pp' ),
 			'manage_options',
-			'ceafsn-pp-settings',
+			self::SETTINGS_SLUG,
 			array( $this, 'page_settings' )
 		);
 	}

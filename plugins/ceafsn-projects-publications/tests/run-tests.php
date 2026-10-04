@@ -1655,6 +1655,73 @@ has_substring( 'prefers-reduced-motion', $public_css, 'motion is reduced when th
 test( 'the layout reflows to one column on a narrow screen' );
 has_substring( 'minmax(min(100%, 17rem), 1fr)', $public_css, 'the grid track can shrink to the viewport width' );
 
+test( 'the admin stylesheet is scoped to the component' );
+$pp_admin_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-pp-admin.css' );
+ok(
+	! preg_match( '/(^|\})\s*(body|html|p|h1|h2)\s*\{/m', $pp_admin_css ),
+	'no bare element selectors in the admin stylesheet'
+);
+has_substring( '.ceafsn-pp-wrap', $pp_admin_css, 'admin styles are scoped to the wrapper' );
+ok( substr_count( $pp_admin_css, '{' ) === substr_count( $pp_admin_css, '}' ), 'admin CSS braces are balanced' );
+foreach ( array( 'ceafsn-np-', 'ceafsn-med-', 'ceafsn-od-' ) as $other ) {
+	lacks_substring( $other, $pp_admin_css, "no styles leaked in from {$other}" );
+}
+foreach ( array( 'ceafsn-app__rail', 'ceafsn-hero', 'ceafsn-stepper', 'ceafsn-kpi-row', 'ceafsn-embed', 'ceafsn-alert--ok', 'ceafsn-btn--danger', 'box-shadow' ) as $component ) {
+	has_substring( $component, $pp_admin_css, "the admin stylesheet carries {$component}" );
+}
+
+test( 'the admin partials use the branded app layout' );
+$pp_pub_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/publications.php' );
+$pp_set_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+foreach ( array( 'ceafsn-app__main', 'ceafsn-app__rail', 'ceafsn-hero', 'ceafsn-stepper', 'ceafsn-kpi-row', 'ceafsn-ticks', 'ceafsn-cta', 'ceafsn-empty', 'ceafsn-sr' ) as $component ) {
+	has_substring( $component, $pp_pub_partial, "the publications view uses {$component}" );
+}
+foreach ( array( 'ceafsn-hero', 'ceafsn-tabs', 'ceafsn-check', 'ceafsn-danger', 'ceafsn-embed' ) as $component ) {
+	has_substring( $component, $pp_set_partial, "the settings view uses {$component}" );
+}
+lacks_substring( 'wp-list-table', $pp_pub_partial, 'the legacy WordPress list table is gone' );
+lacks_substring( 'nav-tab', $pp_set_partial, 'the legacy nav-tab markup is gone' );
+ok( ! preg_match( '/\bonclick=/i', $pp_pub_partial ), 'no inline handlers, so the enhanced delete confirm still works' );
+
+test( 'the settings view tells the administrator which shortcode to use' );
+has_substring( '[ceafsn_projects_pubs]', $pp_set_partial, 'the exact shortcode is shown' );
+foreach ( array( 'per_page', 'content_type', 'view' ) as $attribute ) {
+	has_substring( '<code>' . $attribute . '</code>', $pp_set_partial, "the shortcode card documents {$attribute}" );
+}
+
+test( 'the admin markup keeps its JavaScript contracts' );
+foreach (
+	array(
+		'ceafsn-pp-cover-id', 'ceafsn-pp-cover-field', 'ceafsn-pp-cover-button', 'ceafsn-pp-cover-clear',
+		'ceafsn-pp-pdf-id', 'ceafsn-pp-pdf-field', 'ceafsn-pp-pdf-button', 'ceafsn-pp-pdf-clear',
+	) as $element_id
+) {
+	has_substring( 'id="' . $element_id . '"', $pp_pub_partial, "the media picker keeps #{$element_id}" );
+}
+foreach ( array( 'data-target="ceafsn-pp-cover-id"', 'data-target="ceafsn-pp-pdf-id"', 'ceafsn-pp-media__name', 'ceafsn-pp-validation', 'ceafsn-pp-shared-list' ) as $contract ) {
+	has_substring( $contract, $pp_pub_partial, "the record view keeps {$contract}" );
+}
+has_substring( 'class="ceafsn-pp-delete-link"', $pp_pub_partial, 'the delete link keeps its class' );
+foreach ( array( 'ceafsn_pp_save_publication', 'ceafsn_pp_publication_nonce', 'ceafsn_pp_nonce', 'ceafsn_pp_delete_publication' ) as $contract ) {
+	has_substring( $contract, $pp_pub_partial, "the record form keeps {$contract}" );
+}
+foreach ( array( 'ceafsn_pp_save_settings', 'ceafsn_pp_settings_nonce', 'ceafsn_pp_nonce' ) as $contract ) {
+	has_substring( $contract, $pp_set_partial, "the settings form keeps {$contract}" );
+}
+has_substring( 'ceafsn_pp_export_nonce', $pp_set_partial, 'the export link keeps its nonce action' );
+foreach ( array( 'admin-post.php', 'wp_nonce_field' ) as $contract ) {
+	has_substring( $contract, $pp_pub_partial, "the record form keeps {$contract}" );
+	has_substring( $contract, $pp_set_partial, "the settings form keeps {$contract}" );
+}
+
+test( 'the settings URL uses the declared slug constant' );
+$pp_admin_class = (string) file_get_contents( $plugin_dir . '/admin/class-ceafsn-pp-admin.php' );
+has_substring( "const SETTINGS_SLUG = 'ceafsn-pp-settings'", $pp_admin_class, 'the settings page slug is a constant' );
+foreach ( array( $pp_pub_partial, $pp_set_partial ) as $partial ) {
+	lacks_substring( "admin.php?page=ceafsn-pp-settings", $partial, 'a hard-coded settings URL is gone' );
+	has_substring( 'CEAFSN_PP_Admin::SETTINGS_SLUG', $partial, 'the settings URL uses the constant' );
+}
+
 test( 'the translation template exists and covers every translatable string' );
 $pot_path = $plugin_dir . '/languages/ceafsn-pp.pot';
 ok( file_exists( $pot_path ), 'languages/ceafsn-pp.pot exists' );

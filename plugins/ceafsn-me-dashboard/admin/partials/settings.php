@@ -9,13 +9,14 @@ defined( 'ABSPATH' ) || exit;
 
 $preview_mode = get_option( 'ceafsn_med_preview_mode', '0' );
 $delete_flag  = get_option( 'ceafsn_med_uninstall_delete_data', false );
-$active_tab   = sanitize_key( $_GET['tab'] ?? 'general' );
+$active_tab   = sanitize_key( $_GET['tab'] ?? 'display' );
 
 $med_settings_url = static function ( string $tab ): string {
 	return admin_url( 'admin.php?page=' . CEAFSN_MED_Admin::PAGE_SETTINGS . '&tab=' . $tab );
 };
 
 $med_tabs = array(
+	'display'   => __( 'Display', 'ceafsn-med' ),
 	'general'   => __( 'General', 'ceafsn-med' ),
 	'export'    => __( 'Export', 'ceafsn-med' ),
 	'uninstall' => __( 'Uninstall', 'ceafsn-med' ),
@@ -46,7 +47,50 @@ $med_tabs = array(
 		<?php endforeach; ?>
 	</nav>
 
-	<?php if ( 'general' === $active_tab ) : ?>
+	<?php if ( 'display' === $active_tab ) : ?>
+
+		<section class="ceafsn-card">
+			<div class="ceafsn-card__head">
+				<div>
+					<h2 class="ceafsn-card__title"><?php esc_html_e( 'Display the dashboard', 'ceafsn-med' ); ?></h2>
+					<p class="ceafsn-card__hint"><?php esc_html_e( 'The dashboard only appears where this shortcode is placed.', 'ceafsn-med' ); ?></p>
+				</div>
+			</div>
+			<div class="ceafsn-card__body">
+
+				<div class="ceafsn-embed">
+					<p class="ceafsn-embed__label"><?php esc_html_e( 'Paste this shortcode into the page that should show the dashboard', 'ceafsn-med' ); ?></p>
+					<code class="ceafsn-embed__code">[ceafsn_me_dashboard]</code>
+				</div>
+
+				<p class="ceafsn-field__hint">
+					<?php esc_html_e( 'It goes in the page content, in a Code / Preformatted block, or anywhere the block editor accepts HTML.', 'ceafsn-med' ); ?>
+				</p>
+
+				<div class="ceafsn-alert ceafsn-alert--warn">
+					<span class="ceafsn-alert__icon" aria-hidden="true">i</span>
+					<div class="ceafsn-alert__body">
+						<p class="ceafsn-alert__title"><?php esc_html_e( 'This shortcode takes no attributes', 'ceafsn-med' ); ?></p>
+						<p class="ceafsn-alert__text">
+							<?php esc_html_e( 'The dashboard decides for itself what to show from the published records. Anything written inside the shortcode brackets is ignored, so paste it exactly as shown.', 'ceafsn-med' ); ?>
+						</p>
+					</div>
+				</div>
+
+				<div class="ceafsn-alert ceafsn-alert--warn">
+					<span class="ceafsn-alert__icon" aria-hidden="true">i</span>
+					<div class="ceafsn-alert__body">
+						<p class="ceafsn-alert__title"><?php esc_html_e( 'A page with the shortcode can still look empty', 'ceafsn-med' ); ?></p>
+						<p class="ceafsn-alert__text">
+							<?php esc_html_e( 'The dashboard renders nothing until a record is published, so check that the records are published before sending the page link out.', 'ceafsn-med' ); ?>
+						</p>
+					</div>
+				</div>
+
+			</div>
+		</section>
+
+	<?php elseif ( 'general' === $active_tab ) : ?>
 
 		<section class="ceafsn-card">
 			<div class="ceafsn-card__head">

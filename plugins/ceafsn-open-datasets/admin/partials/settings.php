@@ -10,12 +10,13 @@ defined( 'ABSPATH' ) || exit;
 $delete_flag  = get_option( CEAFSN_OD_DB::UNINSTALL_OPTION, false );
 $show_contact = (bool) get_option( 'ceafsn_od_show_contact', 0 );
 $allow_other  = (bool) get_option( 'ceafsn_od_allow_other_files', 0 );
-$active_tab   = CEAFSN_OD_Request::key( 'tab', 'general' );
+$active_tab   = CEAFSN_OD_Request::key( 'tab', 'display' );
 $form_url     = admin_url( 'admin-post.php' );
 $settings_url = admin_url( 'admin.php?page=' . CEAFSN_OD_Admin::SETTINGS_SLUG );
 $notice_saved = CEAFSN_OD_Request::has( 'saved' );
 
 $od_tabs = array(
+	'display'   => __( 'Display', 'ceafsn-od' ),
 	'general'   => __( 'General', 'ceafsn-od' ),
 	'export'    => __( 'Export', 'ceafsn-od' ),
 	'uninstall' => __( 'Uninstall', 'ceafsn-od' ),
@@ -61,7 +62,111 @@ $od_tab_url = static function ( string $tab ) use ( $settings_url ): string {
 		<?php endforeach; ?>
 	</nav>
 
-	<?php if ( 'general' === $active_tab ) : ?>
+	<?php if ( 'display' === $active_tab ) : ?>
+
+		<div class="ceafsn-app">
+			<div class="ceafsn-app__main">
+
+				<section class="ceafsn-card">
+					<div class="ceafsn-card__head">
+						<div>
+							<h2 class="ceafsn-card__title"><?php esc_html_e( 'Display the datasets', 'ceafsn-od' ); ?></h2>
+							<p class="ceafsn-card__hint"><?php esc_html_e( 'Datasets stay invisible to visitors until this shortcode is on a page and the records themselves are published.', 'ceafsn-od' ); ?></p>
+						</div>
+					</div>
+					<div class="ceafsn-card__body">
+
+						<div class="ceafsn-embed">
+							<p class="ceafsn-embed__label"><?php esc_html_e( 'Paste this shortcode into the page that should list datasets', 'ceafsn-od' ); ?></p>
+							<code class="ceafsn-embed__code">[ceafsn_open_datasets]</code>
+						</div>
+
+						<p class="ceafsn-field__hint">
+							<?php esc_html_e( 'It goes in the page content, in a Code / Preformatted block, or anywhere the block editor accepts HTML.', 'ceafsn-od' ); ?>
+						</p>
+
+						<table class="ceafsn-embed__table">
+							<caption class="ceafsn-embed__caption"><?php esc_html_e( 'Optional attributes', 'ceafsn-od' ); ?></caption>
+							<thead>
+								<tr>
+									<th scope="col"><?php esc_html_e( 'Attribute', 'ceafsn-od' ); ?></th>
+									<th scope="col"><?php esc_html_e( 'Default', 'ceafsn-od' ); ?></th>
+									<th scope="col"><?php esc_html_e( 'What it does', 'ceafsn-od' ); ?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><code>per_page</code></td>
+									<td><code>20</code></td>
+									<td><?php esc_html_e( 'Rows per page. Values are clamped between 1 and 100.', 'ceafsn-od' ); ?></td>
+								</tr>
+								<tr>
+									<td><code>category</code></td>
+									<td><code>""</code></td>
+									<td>
+										<?php esc_html_e( 'Show one category only. Spell it exactly as it is on the record, for example:', 'ceafsn-od' ); ?>
+										<code><?php echo esc_html( 'Health' ); ?></code>.
+										<?php esc_html_e( 'Leave empty for every category.', 'ceafsn-od' ); ?>
+									</td>
+								</tr>
+								<tr>
+									<td><code>file_type</code></td>
+									<td><code>""</code></td>
+									<td>
+										<?php esc_html_e( 'Show one file type only:', 'ceafsn-od' ); ?>
+										<code>csv</code>, <code>zip</code>, <code>xlsx</code>.
+										<?php esc_html_e( 'Leave empty for every type.', 'ceafsn-od' ); ?>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<p class="ceafsn-field__hint">
+							<?php esc_html_e( 'Example: [ceafsn_open_datasets per_page="12" file_type="csv"]', 'ceafsn-od' ); ?>
+						</p>
+
+						<div class="ceafsn-alert ceafsn-alert--warn">
+							<span class="ceafsn-alert__icon" aria-hidden="true">i</span>
+							<div class="ceafsn-alert__body">
+								<p class="ceafsn-alert__title"><?php esc_html_e( 'Visitors can still narrow the list', 'ceafsn-od' ); ?></p>
+								<p class="ceafsn-alert__text">
+									<?php esc_html_e( 'Sorting, category and file-type filtering, search, and pagination come from the visitor’s link. That is intentional: a filtered link shows the same results for everyone who opens it, including a visitor who has JS turned off.', 'ceafsn-od' ); ?>
+								</p>
+							</div>
+						</div>
+
+					</div>
+				</section>
+
+			</div>
+
+			<aside class="ceafsn-app__rail">
+
+				<div class="ceafsn-cta">
+					<p class="ceafsn-cta__eyebrow"><?php esc_html_e( 'What visitors see', 'ceafsn-od' ); ?></p>
+					<h2 class="ceafsn-cta__title"><?php esc_html_e( 'Only published datasets', 'ceafsn-od' ); ?></h2>
+					<ul class="ceafsn-ticks">
+						<li><?php esc_html_e( 'Drafts and archived datasets never reach the page.', 'ceafsn-od' ); ?></li>
+						<li><?php esc_html_e( 'A dataset with no file attached cannot be published at all.', 'ceafsn-od' ); ?></li>
+						<li><?php esc_html_e( 'External links are shown only when they are allowed.', 'ceafsn-od' ); ?></li>
+					</ul>
+				</div>
+
+				<div class="ceafsn-cta" id="ceafsn-od-help">
+					<p class="ceafsn-cta__eyebrow"><?php esc_html_e( 'Manage datasets', 'ceafsn-od' ); ?></p>
+					<h2 class="ceafsn-cta__title"><?php esc_html_e( 'Add and publish', 'ceafsn-od' ); ?></h2>
+					<p class="ceafsn-cta__text">
+						<?php esc_html_e( 'The shortcode is only the container. Add datasets and set each one to Published.', 'ceafsn-od' ); ?>
+					</p>
+					<a class="ceafsn-btn ceafsn-btn--primary ceafsn-btn--block" href="<?php echo esc_url( admin_url( 'admin.php?page=' . CEAFSN_OD_Admin::MENU_SLUG ) ); ?>">
+						<?php esc_html_e( 'Go to datasets', 'ceafsn-od' ); ?>
+					</a>
+				</div>
+
+			</aside>
+		</div>
+
+	<?php elseif ( 'general' === $active_tab ) : ?>
 
 		<section class="ceafsn-card">
 			<div class="ceafsn-card__head">
