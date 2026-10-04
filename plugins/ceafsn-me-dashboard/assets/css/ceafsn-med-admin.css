@@ -250,6 +250,22 @@
 	color: #fff;
 }
 
+.ceafsn-med-wrap .ceafsn-alert--ok {
+	border-color: #b9d0be;
+	background: var(--ceafsn-success-tint);
+}
+
+.ceafsn-med-wrap .ceafsn-alert--ok .ceafsn-alert__icon {
+	background: var(--ceafsn-green);
+	color: #fff;
+}
+
+.ceafsn-med-wrap .ceafsn-alert__list {
+	margin: 6px 0 0;
+	padding-left: 18px;
+	font-size: 13px;
+}
+
 /* --------------------------------------------------------------------------
  * Hero — broad welcome module
  * -------------------------------------------------------------------------- */
@@ -710,6 +726,12 @@
 	color: #6b4f04;
 }
 
+.ceafsn-med-wrap .ceafsn-table__num {
+	font-variant-numeric: tabular-nums;
+	font-weight: 700;
+	color: var(--ceafsn-green);
+}
+
 /* --------------------------------------------------------------------------
  * Tables
  * -------------------------------------------------------------------------- */
@@ -785,6 +807,15 @@
 .ceafsn-med-wrap .ceafsn-table__actions a:hover,
 .ceafsn-med-wrap .ceafsn-table__actions a:focus {
 	text-decoration: underline;
+}
+
+.ceafsn-med-wrap .ceafsn-table__actions .ceafsn-delete-link {
+	color: var(--ceafsn-danger);
+}
+
+.ceafsn-med-wrap .ceafsn-table__actions .ceafsn-delete-link:hover,
+.ceafsn-med-wrap .ceafsn-table__actions .ceafsn-delete-link:focus {
+	color: #6d1414;
 }
 
 .ceafsn-med-wrap .ceafsn-table__actions .ceafsn-delete-link {
@@ -919,36 +950,6 @@
 	color: #fff;
 }
 
-.ceafsn-med-wrap .ceafsn-table__num {
-	font-variant-numeric: tabular-nums;
-	font-weight: 700;
-	color: var(--ceafsn-green);
-}
-
-/* Destructive action. */
-.ceafsn-med-wrap .ceafsn-btn--danger {
-	background: var(--ceafsn-white);
-	border-color: var(--ceafsn-danger-line);
-	color: var(--ceafsn-danger);
-}
-
-.ceafsn-med-wrap .ceafsn-btn--danger:hover,
-.ceafsn-med-wrap .ceafsn-btn--danger:focus {
-	background: var(--ceafsn-danger-tint);
-	border-color: var(--ceafsn-danger);
-	color: var(--ceafsn-danger);
-}
-
-/* Standalone form that is not inside .ceafsn-form. */
-.ceafsn-med-wrap .ceafsn-form__spaced {
-	margin-top: 18px;
-}
-
-/* Lead paragraph at the top of a card body. */
-.ceafsn-med-wrap .ceafsn-lead {
-	margin-top: 0;
-}
-
 /* --------------------------------------------------------------------------
  * Forms
  * -------------------------------------------------------------------------- */
@@ -1030,6 +1031,30 @@
 	font-family: Menlo, Consolas, monaco, monospace;
 	font-size: 13px;
 	line-height: 1.7;
+}
+
+/* Destructive action. */
+.ceafsn-med-wrap .ceafsn-btn--danger {
+	background: var(--ceafsn-white);
+	border-color: var(--ceafsn-danger-line);
+	color: var(--ceafsn-danger);
+}
+
+.ceafsn-med-wrap .ceafsn-btn--danger:hover,
+.ceafsn-med-wrap .ceafsn-btn--danger:focus {
+	background: var(--ceafsn-danger-tint);
+	border-color: var(--ceafsn-danger);
+	color: var(--ceafsn-danger);
+}
+
+/* Standalone form that is not inside .ceafsn-card__body. */
+.ceafsn-med-wrap .ceafsn-form__spaced {
+	margin-top: 18px;
+}
+
+/* Lead paragraph at the top of a card body. */
+.ceafsn-med-wrap .ceafsn-lead {
+	margin-top: 0;
 }
 
 .ceafsn-med-wrap .ceafsn-form__actions {

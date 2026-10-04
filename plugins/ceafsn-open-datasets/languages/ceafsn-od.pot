@@ -3,602 +3,880 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CE-AFSN Open Datasets 1.0.0\n"
-"Report-Msgid-Bugs-To: https://ceafsn.duckdns.org/\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ceafsn-open-datasets\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-04T12:43:15+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-od\n"
 
-#: admin/class-ceafsn-od-admin.php
+#. Plugin Name of the plugin
+#: ceafsn-open-datasets.php
+msgid "CE-AFSN Open Datasets"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: ceafsn-open-datasets.php
+msgid "https://ceafsn.duckdns.org/open-datasets/"
+msgstr ""
+
+#. Description of the plugin
+#: ceafsn-open-datasets.php
+msgid "Open data repository for CE-AFSN food security and nutrition datasets. Every download points to a real, validated CSV, ZIP, or XLSX file. Shortcode: [ceafsn_open_datasets]"
+msgstr ""
+
+#. Author of the plugin
+#: ceafsn-open-datasets.php
+msgid "CE-AFSN"
+msgstr ""
+
+#. Author URI of the plugin
+#: ceafsn-open-datasets.php
+msgid "https://ceafsn.duckdns.org/"
+msgstr ""
+
+#: admin/class-ceafsn-od-admin.php:42
+#: admin/class-ceafsn-od-admin.php:43
+#: admin/partials/datasets.php:179
+#: admin/partials/datasets.php:462
+#: admin/partials/settings.php:47
 msgid "Open Datasets"
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:53
+#: admin/class-ceafsn-od-admin.php:54
 msgid "Datasets"
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:62
+#: admin/class-ceafsn-od-admin.php:63
+#: admin/partials/settings.php:48
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:191
 msgid "The record was saved as a draft instead."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:348
 msgid "Dataset name is required."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:351
 msgid "Description is required."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:354
 msgid "Category / sector is required."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:357
 msgid "Coverage area is required."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:360
 msgid "Data license is required."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:368
+#: includes/class-ceafsn-od-validator.php:455
 msgid "Attach a dataset file or enter a download URL. One of the two is required."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:372
 msgid "Provide either a file attachment or a download URL, not both. The attachment takes precedence, so remove the URL."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:376
 msgid "The attached file is zero bytes or could not be read."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:380
 msgid "Download URL is not a valid URL."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:385
 msgid "Last updated must be a valid date (YYYY-MM-DD)."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:389
 msgid "Invalid status value."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:393
 msgid "Invalid file type."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:399
 msgid "The \"other\" file type is not enabled. Enable it in Settings, or choose CSV, ZIP, or XLSX."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:403
 msgid "Methodology / data dictionary URL is not a valid URL."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:428
 msgid "This record has no download target."
 msgstr ""
 
-#: admin/class-ceafsn-od-admin.php
+#: admin/class-ceafsn-od-admin.php:449
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: admin/partials/datasets.php
-msgid "Dataset record saved."
+#: admin/partials/datasets.php:49
+msgid "Skip to dataset content"
 msgstr ""
 
-#: admin/partials/datasets.php
+#: admin/partials/datasets.php:58
+msgid "That change was not saved"
+msgstr ""
+
+#: admin/partials/datasets.php:74
 msgid "Dataset record deleted."
 msgstr ""
 
-#: admin/partials/datasets.php
-msgid "Open Dataset Records"
+#: admin/partials/datasets.php:75
+msgid "Dataset record saved."
 msgstr ""
 
-#: admin/partials/datasets.php
-msgid "Add New Dataset"
+#: admin/partials/datasets.php:106
+msgid "Records added"
 msgstr ""
 
-#: admin/partials/datasets.php
-msgid "No dataset records yet. Add the first one using \"Add New Dataset\"."
+#. translators: %s: number of records.
+#: admin/partials/datasets.php:107
+#, php-format
+msgid "%s datasets"
 msgstr ""
 
-#: admin/partials/datasets.php
-msgid "Records stay invisible on the public page until they are published with a working download target."
+#: admin/partials/datasets.php:111
+msgid "Download attached"
 msgstr ""
 
-#: admin/partials/datasets.php
-msgid "Dataset"
+#. translators: %s: number of records with a download target.
+#: admin/partials/datasets.php:112
+#, php-format
+msgid "%s with a file or URL"
 msgstr ""
 
-#: admin/partials/datasets.php
-msgid "Category"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Coverage"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Updated"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Type"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Size"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Download"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Status"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Actions"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "File"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "URL"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "No download"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Edit"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Delete"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Edit Dataset"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "This published record no longer has a working download:"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "This record has no working download:"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Dataset name"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Description"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "What the dataset contains, how it was collected, and any known limitations."
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Category / sector"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Coverage area"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Geographic or administrative scope, e.g. \"All 15 counties\" or \"Northern Province\"."
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Last updated"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "File type"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "The type is used to validate the file. Pick the real format, not a guess."
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "The \"other\" file type is not enabled. Turn it on in Settings if you need a format this plugin cannot inspect."
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Dataset file"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "No file selected"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Select file"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Clear"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "The file name and size are read from the attachment itself, never from this form. A record can only be published when the file is non-empty and passes the checks for its declared type."
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Download URL"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Use this instead of a file for datasets hosted elsewhere. The URL must return HTTP 200 and report a file size. Provide one route, not both."
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Data license"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Methodology / data dictionary URL"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Contact / owner"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Kept private unless \"Show contact on the public page\" is enabled in Settings."
-msgstr ""
-
-#. translators: %d: number of entries or rows.
-#: admin/partials/datasets.php
-msgid "Download verified: readable, %d item(s)."
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Save dataset"
-msgstr ""
-
-#: admin/partials/datasets.php
-msgid "Cancel"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Settings saved."
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Open Datasets — Settings"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Settings sections"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "General"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Export"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Uninstall"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Privacy and file types"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Contact visibility"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Show the contact / owner on the public page"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Off by default. Contact details stay in the database and are only rendered publicly when this is enabled."
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Other file types"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Allow the \"Other\" file type in the media picker"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Off by default. When enabled, files that are not CSV, ZIP, or XLSX can be attached. \"Other\" files are checked for a non-zero size but their contents are not inspected."
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Export records"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Download every dataset record as JSON before making bulk changes or uninstalling the plugin."
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Download export"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Data removal on uninstall"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Deactivating the plugin never deletes anything. Tick the box below only if you intend to delete the plugin and permanently remove the dataset table."
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Delete all dataset records and plugin options when the plugin is deleted"
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Files in the Media Library are never removed — other pages may still link to them."
-msgstr ""
-
-#: admin/partials/settings.php
-msgid "Save settings"
-msgstr ""
-
-#: includes/class-ceafsn-od-db.php
-msgid "CSV"
-msgstr ""
-
-#: includes/class-ceafsn-od-db.php
-msgid "ZIP"
-msgstr ""
-
-#: includes/class-ceafsn-od-db.php
-msgid "XLSX"
-msgstr ""
-
-#: includes/class-ceafsn-od-db.php
-msgid "Other"
-msgstr ""
-
-#: includes/class-ceafsn-od-db.php
-msgid "Draft"
-msgstr ""
-
-#: includes/class-ceafsn-od-db.php
+#: admin/partials/datasets.php:116
+#: admin/partials/datasets.php:278
+#: includes/class-ceafsn-od-db.php:65
 msgid "Published"
 msgstr ""
 
-#: includes/class-ceafsn-od-db.php
+#. translators: %s: number of published records.
+#: admin/partials/datasets.php:117
+#, php-format
+msgid "%s live on the public page"
+msgstr ""
+
+#: admin/partials/datasets.php:145
+msgid "No dataset records yet"
+msgstr ""
+
+#: admin/partials/datasets.php:147
+msgid "Nothing is displayed on the public page until a record is published with a working download target."
+msgstr ""
+
+#: admin/partials/datasets.php:148
+#: admin/partials/datasets.php:341
+msgid "Add the first dataset"
+msgstr ""
+
+#. translators: %s: number of records with no download target.
+#: admin/partials/datasets.php:164
+#, php-format
+msgid "%s record(s) have no download target"
+msgstr ""
+
+#: admin/partials/datasets.php:170
+msgid "A record can only be published once its file or URL resolves."
+msgstr ""
+
+#: admin/partials/datasets.php:180
+#: admin/partials/datasets.php:350
+msgid "Dataset records"
+msgstr ""
+
+#: admin/partials/datasets.php:182
+msgid "Every record carries its own file, source, and license, so a published download can always be traced back to where it came from."
+msgstr ""
+
+#: admin/partials/datasets.php:186
+#: admin/partials/datasets.php:327
+#: admin/partials/datasets.php:429
+msgid "+ Add dataset"
+msgstr ""
+
+#: admin/partials/datasets.php:189
+#: admin/partials/settings.php:20
+msgid "Export"
+msgstr ""
+
+#. translators: %s: total record count.
+#: admin/partials/datasets.php:197
+#, php-format
+msgid "<strong>%s</strong> records"
+msgstr ""
+
+#. translators: %s: published record count.
+#: admin/partials/datasets.php:206
+#, php-format
+msgid "<strong>%s</strong> published"
+msgstr ""
+
+#. translators: %s: number of distinct categories.
+#: admin/partials/datasets.php:215
+#, php-format
+msgid "<strong>%s</strong> categories"
+msgstr ""
+
+#: admin/partials/datasets.php:228
+msgid "Publishing workflow"
+msgstr ""
+
+#: admin/partials/datasets.php:229
+msgid "Counted from your records. A step is only complete when the numbers prove it."
+msgstr ""
+
+#: admin/partials/datasets.php:251
+msgid "Current step:"
+msgstr ""
+
+#: admin/partials/datasets.php:257
+msgid "All steps complete"
+msgstr ""
+
+#: admin/partials/datasets.php:269
+msgid "Records"
+msgstr ""
+
+#: admin/partials/datasets.php:272
+msgid "In this plugin"
+msgstr ""
+
+#: admin/partials/datasets.php:281
+msgid "Visible to visitors"
+msgstr ""
+
+#: admin/partials/datasets.php:287
+msgid "With download"
+msgstr ""
+
+#: admin/partials/datasets.php:290
+msgid "File or URL"
+msgstr ""
+
+#: admin/partials/datasets.php:296
+#: admin/partials/datasets.php:392
+msgid "No download"
+msgstr ""
+
+#: admin/partials/datasets.php:302
+msgid "Cannot be published"
+msgstr ""
+
+#: admin/partials/datasets.php:304
+msgid "Every record resolves"
+msgstr ""
+
+#: admin/partials/datasets.php:317
+msgid "All datasets"
+msgstr ""
+
+#: admin/partials/datasets.php:323
+msgid "Draft and archived records are visible to admins only."
+msgstr ""
+
+#: admin/partials/datasets.php:335
+msgid "Nothing to show yet"
+msgstr ""
+
+#: admin/partials/datasets.php:337
+msgid "Records stay invisible on the public page until they are published with a working download target."
+msgstr ""
+
+#: admin/partials/datasets.php:353
+#: public/partials/datasets.php:31
+msgid "Dataset"
+msgstr ""
+
+#: admin/partials/datasets.php:354
+#: public/partials/datasets.php:32
+#: public/partials/datasets.php:177
+msgid "Category"
+msgstr ""
+
+#: admin/partials/datasets.php:355
+msgid "Coverage"
+msgstr ""
+
+#: admin/partials/datasets.php:356
+msgid "Updated"
+msgstr ""
+
+#: admin/partials/datasets.php:357
+msgid "Type"
+msgstr ""
+
+#: admin/partials/datasets.php:358
+#: public/partials/datasets.php:130
+msgid "Download"
+msgstr ""
+
+#: admin/partials/datasets.php:359
+#: admin/partials/datasets.php:703
+msgid "Status"
+msgstr ""
+
+#: admin/partials/datasets.php:360
+msgid "Actions"
+msgstr ""
+
+#: admin/partials/datasets.php:389
+msgid "File"
+msgstr ""
+
+#: admin/partials/datasets.php:389
+msgid "URL"
+msgstr ""
+
+#: admin/partials/datasets.php:402
+msgid "Edit"
+msgstr ""
+
+#: admin/partials/datasets.php:406
+msgid "Delete"
+msgstr ""
+
+#: admin/partials/datasets.php:423
+msgid "Get started"
+msgstr ""
+
+#: admin/partials/datasets.php:424
+msgid "Add a dataset"
+msgstr ""
+
+#: admin/partials/datasets.php:426
+msgid "Provide one download route per record — a file from the media library, or a URL that returns a file."
+msgstr ""
+
+#: admin/partials/datasets.php:434
+msgid "Before you publish"
+msgstr ""
+
+#: admin/partials/datasets.php:435
+msgid "Download rules"
+msgstr ""
+
+#: admin/partials/datasets.php:437
+msgid "A record needs a file or a URL before it can be published."
+msgstr ""
+
+#: admin/partials/datasets.php:438
+msgid "The declared file type is checked against the file itself."
+msgstr ""
+
+#: admin/partials/datasets.php:439
+msgid "Every record needs a license, a coverage area, and a last-updated date."
+msgstr ""
+
+#: admin/partials/datasets.php:440
+msgid "Files stay in the media library even if the record is deleted."
+msgstr ""
+
+#: admin/partials/datasets.php:445
+msgid "Keep a copy"
+msgstr ""
+
+#: admin/partials/datasets.php:446
+#: admin/partials/settings.php:114
+msgid "Export records"
+msgstr ""
+
+#: admin/partials/datasets.php:448
+msgid "Download every dataset record as JSON before bulk changes or removing the plugin."
+msgstr ""
+
+#: admin/partials/datasets.php:451
+msgid "Open export"
+msgstr ""
+
+#: admin/partials/datasets.php:467
+msgid "Edit dataset"
+msgstr ""
+
+#: admin/partials/datasets.php:468
+msgid "Add dataset"
+msgstr ""
+
+#: admin/partials/datasets.php:473
+msgid "The file name and size are read from the attachment itself, never from this form."
+msgstr ""
+
+#: admin/partials/datasets.php:486
+msgid "This published record no longer has a working download:"
+msgstr ""
+
+#: admin/partials/datasets.php:487
+msgid "This record has no working download:"
+msgstr ""
+
+#: admin/partials/datasets.php:509
+msgid "Dataset details"
+msgstr ""
+
+#: admin/partials/datasets.php:510
+msgid "Fields marked with an asterisk are required."
+msgstr ""
+
+#: admin/partials/datasets.php:517
+msgid "Dataset name"
+msgstr ""
+
+#: admin/partials/datasets.php:526
+msgid "Description"
+msgstr ""
+
+#: admin/partials/datasets.php:530
+msgid "What the dataset contains, how it was collected, and any known limitations."
+msgstr ""
+
+#: admin/partials/datasets.php:535
+msgid "Category / sector"
+msgstr ""
+
+#: admin/partials/datasets.php:549
+#: public/partials/datasets.php:128
+#: public/partials/datasets.php:187
+msgid "Coverage area"
+msgstr ""
+
+#: admin/partials/datasets.php:554
+msgid "Geographic or administrative scope, e.g. \"All 15 counties\" or \"Northern Province\"."
+msgstr ""
+
+#: admin/partials/datasets.php:559
+#: public/partials/datasets.php:33
+#: public/partials/datasets.php:178
+msgid "Last updated"
+msgstr ""
+
+#: admin/partials/datasets.php:568
+msgid "Data license"
+msgstr ""
+
+#: admin/partials/datasets.php:583
+msgid "Contact / owner"
+msgstr ""
+
+#: admin/partials/datasets.php:587
+msgid "Kept private unless \"Show contact on the public page\" is enabled in Settings."
+msgstr ""
+
+#: admin/partials/datasets.php:596
+msgid "Download target"
+msgstr ""
+
+#: admin/partials/datasets.php:597
+msgid "Provide one route, not both."
+msgstr ""
+
+#: admin/partials/datasets.php:604
+msgid "File type"
+msgstr ""
+
+#: admin/partials/datasets.php:618
+msgid "The type is used to validate the file. Pick the real format, not a guess."
+msgstr ""
+
+#: admin/partials/datasets.php:621
+msgid "The \"other\" file type is not enabled. Turn it on in Settings if you need a format this plugin cannot inspect."
+msgstr ""
+
+#: admin/partials/datasets.php:628
+msgid "Dataset file"
+msgstr ""
+
+#: admin/partials/datasets.php:648
+msgid "No file selected"
+msgstr ""
+
+#: admin/partials/datasets.php:651
+msgid "Select file"
+msgstr ""
+
+#: admin/partials/datasets.php:654
+msgid "Clear"
+msgstr ""
+
+#: admin/partials/datasets.php:658
+msgid "The file name and size are read from the attachment itself, never from this form. A record can only be published when the file is non-empty and passes the checks for its declared type."
+msgstr ""
+
+#: admin/partials/datasets.php:664
+msgid "Download URL"
+msgstr ""
+
+#: admin/partials/datasets.php:669
+msgid "Use this instead of a file for datasets hosted elsewhere. The URL must return HTTP 200 and report a file size."
+msgstr ""
+
+#. translators: %d: number of entries or rows.
+#: admin/partials/datasets.php:679
+#, php-format
+msgid "Download verified: readable, %d item(s)."
+msgstr ""
+
+#: admin/partials/datasets.php:695
+msgid "Visibility"
+msgstr ""
+
+#: admin/partials/datasets.php:696
+msgid "Only published records with a working download appear on the public page."
+msgstr ""
+
+#: admin/partials/datasets.php:714
+msgid "An invalid download downgrades the record to draft when you save."
+msgstr ""
+
+#: admin/partials/datasets.php:719
+msgid "Methodology / data dictionary URL"
+msgstr ""
+
+#: admin/partials/datasets.php:729
+msgid "Save dataset"
+msgstr ""
+
+#: admin/partials/datasets.php:730
+msgid "Cancel"
+msgstr ""
+
+#: admin/partials/datasets.php:738
+msgid "Jump to download rules"
+msgstr ""
+
+#: admin/partials/settings.php:19
+msgid "General"
+msgstr ""
+
+#: admin/partials/settings.php:21
+msgid "Uninstall"
+msgstr ""
+
+#: admin/partials/settings.php:31
+msgid "Skip to settings content"
+msgstr ""
+
+#: admin/partials/settings.php:40
+msgid "Settings saved."
+msgstr ""
+
+#: admin/partials/settings.php:50
+msgid "Privacy, file type checks, data export, and what happens to your records if the plugin is removed."
+msgstr ""
+
+#: admin/partials/settings.php:54
+msgid "Settings sections"
+msgstr ""
+
+#: admin/partials/settings.php:69
+msgid "Privacy and file types"
+msgstr ""
+
+#: admin/partials/settings.php:70
+msgid "Both options are off by default."
+msgstr ""
+
+#: admin/partials/settings.php:82
+msgid "Show the contact / owner on the public page"
+msgstr ""
+
+#: admin/partials/settings.php:85
+msgid "Off by default. Contact details stay in the database and are only rendered publicly when this is enabled."
+msgstr ""
+
+#: admin/partials/settings.php:94
+msgid "Allow the \"Other\" file type in the media picker"
+msgstr ""
+
+#: admin/partials/settings.php:97
+msgid "Off by default. When enabled, files that are not CSV, ZIP, or XLSX can be attached. \"Other\" files are checked for a non-zero size but their contents are not inspected."
+msgstr ""
+
+#: admin/partials/settings.php:103
+msgid "Save settings"
+msgstr ""
+
+#: admin/partials/settings.php:115
+msgid "A plain JSON copy of everything this plugin stores."
+msgstr ""
+
+#: admin/partials/settings.php:120
+msgid "Download every dataset record as JSON before making bulk changes or uninstalling the plugin."
+msgstr ""
+
+#: admin/partials/settings.php:124
+msgid "Download export"
+msgstr ""
+
+#: admin/partials/settings.php:133
+msgid "Data removal on uninstall"
+msgstr ""
+
+#: admin/partials/settings.php:138
+msgid "Warning:"
+msgstr ""
+
+#: admin/partials/settings.php:139
+msgid "Enabling the option below means that all dataset records and plugin options will be permanently deleted when you delete this plugin via Plugins → Delete. This cannot be undone. Export your data first."
+msgstr ""
+
+#: admin/partials/settings.php:151
+msgid "Delete all dataset records and plugin options when the plugin is deleted"
+msgstr ""
+
+#: admin/partials/settings.php:154
+msgid "Leave this off to keep your records if the plugin is ever removed or reinstalled. Files in the media library are never removed — other pages may still link to them."
+msgstr ""
+
+#: admin/partials/settings.php:160
+msgid "Save uninstall settings"
+msgstr ""
+
+#: admin/partials/settings.php:162
+msgid "Export first"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php:50
+msgid "CSV"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php:51
+msgid "ZIP"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php:52
+msgid "XLSX"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php:53
+msgid "Other"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php:64
+msgid "Draft"
+msgstr ""
+
+#: includes/class-ceafsn-od-db.php:66
 msgid "Archived"
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:65
 msgid "The dataset file is empty or could not be read."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:76
 msgid "The CSV header row could not be read. The first row must contain at least one column name."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:85
 msgid "The attached file is not a ZIP archive."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:87
 msgid "The ZIP archive appears to be truncated or corrupt."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:89
 msgid "The ZIP archive contains no files."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:96
 msgid "The attached file is not a valid XLSX workbook."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:98
 msgid "The XLSX workbook is missing [Content_Types].xml and cannot be opened."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:293
 msgid "No dataset file is attached to this record."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:298
 msgid "The attached dataset file is missing from the media library."
 msgstr ""
 
 #. translators: %s: MIME type.
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:308
+#, php-format
 msgid "The attached file has an unexpected type (%s)."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:309
 msgid "unknown"
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:316
 msgid "The attached dataset file is zero bytes."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:344
 msgid "The download URL is not a valid URL."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:351
 msgid "The download URL must be an http:// or https:// address."
 msgstr ""
 
 #. translators: %s: error message.
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:360
+#, php-format
 msgid "The download URL could not be reached: %s"
 msgstr ""
 
 #. translators: %d: HTTP status code.
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:371
+#, php-format
 msgid "The download URL returned HTTP %d instead of 200."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:380
 msgid "The download URL did not report a file size."
 msgstr ""
 
 #. translators: 1: declared file type, 2: content type reported by the server.
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:391
+#, php-format
 msgid "The download URL serves %2$s, which does not match the declared file type (%1$s)."
 msgstr ""
 
-#: includes/class-ceafsn-od-validator.php
-msgid "Attach a dataset file or enter a download URL. One of the two is required."
-msgstr ""
-
-#: includes/class-ceafsn-od-validator.php
+#: includes/class-ceafsn-od-validator.php:467
 msgid "Not available"
 msgstr ""
 
-#: public/partials/datasets.php
-msgid "Dataset"
-msgstr ""
-
-#: public/partials/datasets.php
-msgid "Category"
-msgstr ""
-
-#: public/partials/datasets.php
-msgid "Last updated"
-msgstr ""
-
-#: public/partials/datasets.php
+#: public/partials/datasets.php:34
+#: public/partials/datasets.php:183
 msgid "File type / size"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:46
 msgid "Search datasets"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:48
 msgid "Name, description, or area"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:52
 msgid "Filter by category"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:54
 msgid "All categories"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:64
 msgid "Filter by file type"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:66
 msgid "All file types"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:76
 msgid "Apply filters"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:80
 msgid "Clear filters"
 msgstr ""
 
-#: public/partials/datasets.php
+#. translators: %d: number of dataset records.
+#: public/partials/datasets.php:92
+#, php-format
 msgid "%d dataset"
 msgid_plural "%d datasets"
 msgstr[0] ""
 msgstr[1] ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:101
 msgid "No public dataset is currently available for download."
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:111
 msgid "Published open food security and nutrition datasets"
 msgstr ""
 
-#: public/partials/datasets.php
-msgid "Coverage area"
-msgstr ""
-
-#: public/partials/datasets.php
+#: public/partials/datasets.php:129
+#: public/partials/datasets.php:188
 msgid "License"
 msgstr ""
 
-#: public/partials/datasets.php
-msgid "Download"
-msgstr ""
-
-#: public/partials/datasets.php
+#: public/partials/datasets.php:152
 msgid "Data dictionary"
 msgstr ""
 
 #. translators: %s: dataset name.
-#: public/partials/datasets.php
+#: public/partials/datasets.php:157
+#, php-format
 msgid "(opens the data dictionary for %s in a new tab)"
 msgstr ""
 
 #. translators: %s: contact owner.
-#: public/partials/datasets.php
+#: public/partials/datasets.php:170
+#, php-format
 msgid "Contact: %s"
 msgstr ""
 
-#: public/partials/datasets.php
+#. translators: 1: dataset name, 2: file size.
+#: public/partials/datasets.php:194
+#, php-format
 msgid "Download %1$s, %2$s"
 msgstr ""
 
-#: public/partials/datasets.php
+#. translators: 1: dataset name, 2: file type, 3: file size.
+#: public/partials/datasets.php:196
+#, php-format
 msgid "Download %1$s as %2$s, %3$s"
 msgstr ""
 
 #. translators: %s: file type.
-#: public/partials/datasets.php
+#: public/partials/datasets.php:205
+#, php-format
 msgid "Download %s"
 msgstr ""
 
 #. translators: %s: dataset name.
-#: public/partials/datasets.php
+#: public/partials/datasets.php:213
+#, php-format
 msgid "(opens %s in a new tab)"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:221
 msgid "Download currently unavailable. Please contact the publisher."
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:235
 msgid "Dataset record pages"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:240
 msgid "Previous"
 msgstr ""
 
 #. translators: 1: current page, 2: total pages.
-#: public/partials/datasets.php
+#: public/partials/datasets.php:248
+#, php-format
 msgid "Page %1$d of %2$d"
 msgstr ""
 
-#: public/partials/datasets.php
+#: public/partials/datasets.php:259
 msgid "Next"
 msgstr ""

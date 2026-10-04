@@ -1479,6 +1479,47 @@ ok(
 );
 has_substring( '.ceafsn-od', $public_css, 'public styles are component-scoped' );
 
+test( 'the admin stylesheet is scoped to the component' );
+$admin_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-od-admin.css' );
+ok(
+	! preg_match( '/(^|\})\s*(body|html|p|h1|h2)\s*\{/m', $admin_css ),
+	'no bare element selectors in the admin stylesheet'
+);
+has_substring( '.ceafsn-od-wrap', $admin_css, 'admin styles are component-scoped' );
+ok( substr_count( $admin_css, '{' ) === substr_count( $admin_css, '}' ), 'admin CSS braces are balanced' );
+lacks_substring( 'ceafsn-np-', $admin_css, 'no styles leaked in from another plugin' );
+lacks_substring( 'ceafsn-med-', $admin_css, 'no styles leaked in from another plugin' );
+has_substring( '.ceafsn-alert--ok', $admin_css, 'the shared success alert variant is available' );
+has_substring( '.ceafsn-btn--danger', $admin_css, 'the shared destructive button is available' );
+
+test( 'the admin partials use the branded app layout' );
+$datasets_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/datasets.php' );
+$settings_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
+foreach ( array( 'ceafsn-app__main', 'ceafsn-app__rail', 'ceafsn-hero', 'ceafsn-stepper', 'ceafsn-kpi-row', 'ceafsn-ticks', 'ceafsn-cta' ) as $component ) {
+	has_substring( $component, $datasets_partial, "datasets view uses {$component}" );
+}
+foreach ( array( 'ceafsn-hero', 'ceafsn-tabs', 'ceafsn-check', 'ceafsn-danger' ) as $component ) {
+	has_substring( $component, $settings_partial, "settings view uses {$component}" );
+}
+lacks_substring( 'wp-list-table', $datasets_partial, 'the legacy WordPress list table is gone' );
+lacks_substring( 'ceafsn-od-empty', $datasets_partial, 'the legacy empty-state block is gone' );
+lacks_substring( 'nav-tab', $settings_partial, 'the legacy nav-tab markup is gone' );
+
+test( 'the admin markup keeps its JavaScript contracts' );
+foreach ( array( 'ceafsn-od-file-id', 'ceafsn-od-file-field', 'ceafsn-od-file-type', 'ceafsn-od-media-button', 'ceafsn-od-media-clear' ) as $element_id ) {
+	has_substring( 'id="' . $element_id . '"', $datasets_partial, "the media picker keeps #{$element_id}" );
+}
+has_substring( 'class="ceafsn-od-delete-link"', $datasets_partial, 'the delete link keeps its class' );
+has_substring( 'data-ceafsn-od="file-type"', $datasets_partial, 'the file type field keeps its data hook' );
+has_substring( 'ceafsn-od-media__name', $datasets_partial, 'the filename box is styled as a media name' );
+foreach ( array( 'ceafsn_od_save_dataset', 'ceafsn_od_dataset_nonce', 'ceafsn_od_nonce' ) as $contract ) {
+	has_substring( $contract, $datasets_partial, "the form keeps {$contract}" );
+}
+
+test( 'the admin write forms all post to admin-post.php' );
+has_substring( 'admin-post.php', $datasets_partial, 'the dataset form posts to admin-post.php' );
+has_substring( 'admin-post.php', $settings_partial, 'the settings form posts to admin-post.php' );
+
 // Clean up fixtures.
 foreach ( (array) glob( $fixture_dir . '/*' ) as $fixture_file ) {
 	if ( is_string( $fixture_file ) ) {

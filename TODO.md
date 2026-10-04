@@ -65,9 +65,9 @@
 > no shadows, square badges — after feedback that the gradient/shadow/pill
 > styling looked machine-generated. That was then reversed: the target design
 > is the raised-card, rounded, dot-and-pill layout above, with shadows and
-> rounded corners. `ceafsn-nutrition-policy` is the reference implementation and
-> `ceafsn-me-dashboard` has had the same pass. The remaining plugins
-> (`ceafsn-open-datasets`, `ceafsn-projects-publications`,
+> rounded corners. `ceafsn-nutrition-policy` is the reference implementation;
+> `ceafsn-me-dashboard` and `ceafsn-open-datasets` have had the same pass. The
+> remaining plugins (`ceafsn-projects-publications`,
 > `ceafsn-research-fellowships`, `ceafsn-grants-funding`) still carry the
 > earlier flat styling and need the same treatment.
 
@@ -82,7 +82,13 @@
 - [x] No-download empty state and honest unavailable row
 - [x] Contact privacy, "other" file type opt-in, scoped upload restriction
 - [x] JSON export and opt-in uninstall that never touches the Media Library
-- [x] Tests — 381 assertions (`php plugins/ceafsn-open-datasets/tests/run-tests.php`)
+- [x] Branded admin UI — three-column app layout (WordPress admin menu, main
+      canvas, right rail), alert banners, hero module, publishing-workflow
+      stepper, KPI tiles, dot-and-pill status rows, check-marked guidance,
+      export callout, circular help badge; dataset form split into detail /
+      download-target / visibility cards; settings rebuilt on the shared tabs
+      and checkbox pattern; every rule scoped to `.ceafsn-od-wrap`
+- [x] Tests — 415 assertions (`php plugins/ceafsn-open-datasets/tests/run-tests.php`)
 
 ### Plugin 4: ceafsn-projects-publications
 - [x] Plugin header and bootstrap file
