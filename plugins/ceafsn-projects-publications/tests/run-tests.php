@@ -78,6 +78,12 @@ final class FakePpWpdb {
 	/** @var array<int,string> Every query the plugin ran. */
 	public array $queries = array();
 
+	/** @var array<int,array<string,mixed>> Values as actually stored, after $format casting. */
+	public array $inserted_rows = array();
+
+	/** @var array<int,array<string,mixed>> Values as actually stored, after $format casting. */
+	public array $updated_rows = array();
+
 	/** @var array<int,mixed> Result queue for the next get_results() calls. */
 	public array $results_queue = array();
 
@@ -163,21 +169,28 @@ final class FakePpWpdb {
 	}
 
 	/**
-	 * Record an insert.
+	 * Record an insert, honouring the $format list exactly as $wpdb does.
+	 *
+	 * $wpdb matches $format entries to values *positionally* and casts each
+	 * value with the given specifier before building the SQL. A fake that
+	 * ignores $format cannot observe the corruption that a mismatched
+	 * specifier causes, so this implementation reproduces the same cast.
 	 *
 	 * @param string $table  Table.
 	 * @param array  $data   Column data.
 	 * @param array  $format Formats.
 	 * @return int Always 1.
+	 * @throws RuntimeException When $format does not line up with $data.
 	 */
 	public function insert( string $table, array $data, array $format = array() ): int {
-		unset( $format );
-		$this->queries[] = 'INSERT INTO ' . $table . ' ' . (string) json_encode( $data );
+		$row = $this->coerce_row( $data, $format );
+		$this->queries[]       = 'INSERT INTO ' . $table . ' ' . (string) json_encode( $row );
+		$this->inserted_rows[] = $row;
 		return 1;
 	}
 
 	/**
-	 * Record an update.
+	 * Record an update, honouring the $format list exactly as $wpdb does.
 	 *
 	 * @param string $table        Table.
 	 * @param array  $data         Column data.
@@ -185,11 +198,52 @@ final class FakePpWpdb {
 	 * @param array  $format       Formats.
 	 * @param array  $where_format Where formats.
 	 * @return int Always 1.
+	 * @throws RuntimeException When $format does not line up with $data.
 	 */
 	public function update( string $table, array $data, array $where, array $format = array(), array $where_format = array() ): int {
-		unset( $format, $where_format );
-		$this->queries[] = 'UPDATE ' . $table . ' ' . (string) json_encode( $data ) . ' ' . (string) json_encode( $where );
+		$row = $this->coerce_row( $data, $format );
+		$this->queries[]       = 'UPDATE ' . $table . ' ' . (string) json_encode( $row ) . ' ' . (string) json_encode( $where );
+		$this->updated_rows[]  = $row;
 		return 1;
+	}
+
+	/**
+	 * Apply positional format specifiers to a column/value pair.
+	 *
+	 * Reproduces the cast $wpdb performs inside prepare(): a %d specifier on a
+	 * non-numeric string yields 0, which is exactly how an ENUM value such as
+	 * `in_progress` gets destroyed in the database.
+	 *
+	 * @param array<string,mixed> $data   Column data.
+	 * @param array<int,string>   $format Format specifiers.
+	 * @return array<string,mixed> Values after casting.
+	 * @throws RuntimeException When the counts differ.
+	 */
+	private function coerce_row( array $data, array $format ): array {
+		$values = array_values( $data );
+		$keys   = array_keys( $data );
+
+		if ( ! empty( $format ) && count( $format ) !== count( $values ) ) {
+			throw new RuntimeException(
+				sprintf(
+					'$format has %d specifier(s) but %d value(s) were supplied; positional casting is ambiguous.',
+					count( $format ),
+					count( $values )
+				)
+			);
+		}
+
+		$row = array();
+		foreach ( $values as $index => $value ) {
+			$spec    = $format[ $index ] ?? ( is_int( $value ) ? '%d' : '%s' );
+			$row[ $keys[ $index ] ] = match ( $spec ) {
+				'%d'    => (int) $value,
+				'%f'    => (float) $value,
+				default => (string) $value,
+			};
+		}
+
+		return $row;
 	}
 
 	/**
@@ -225,6 +279,8 @@ final class FakePpWpdb {
 	public function reset_state(): void {
 		$this->insert_id     = 1;
 		$this->queries       = array();
+		$this->inserted_rows = array();
+		$this->updated_rows  = array();
 		$this->results_queue = array();
 		$this->var_queue     = array();
 		$this->var_result    = 0;
@@ -1000,8 +1056,17 @@ call_admin( $admin_ref, 'persist_publication', $complete, 0 );
 has_substring( 'INSERT INTO', (string) $wpdb->queries[0], 'a record with no ID is inserted' );
 $wpdb->reset_state();
 call_admin( $admin_ref, 'persist_publication', $complete, 7 );
-has_substring( 'UPDATE', (string) $wpdb->queries[0], 'a record with an ID is updated' );
-has_substring( '"publication_id":7', (string) $wpdb->queries[0], 'the update is scoped to that record' );
+// The write is preceded by a read-back so the audit log can capture the
+// previous state, so the write is located by content rather than position.
+$pp_write = '';
+foreach ( (array) $wpdb->queries as $ceafsn_q ) {
+	if ( str_contains( (string) $ceafsn_q, 'UPDATE' ) ) {
+		$pp_write = (string) $ceafsn_q;
+		break;
+	}
+}
+has_substring( 'UPDATE', $pp_write, 'a record with an ID is updated' );
+has_substring( '"publication_id":7', $pp_write, 'the update is scoped to that record' );
 
 // -----------------------------------------------------------------------------
 section( 'Data layer' );
@@ -1119,6 +1184,108 @@ has_substring( '"content_type":"report"', $written, 'an invalid content type fal
 has_substring( '"status":"draft"', $written, 'an invalid status falls back to draft' );
 has_substring( '"access_level":"public"', $written, 'an invalid access level falls back to public' );
 has_substring( '"project_status":"in_progress"', $written, 'an invalid project status falls back to in_progress' );
+
+// -----------------------------------------------------------------------------
+// Regression: $wpdb casts values positionally by $format. An ENUM column paired
+// with %d destroys the value, so every column must be paired with a specifier
+// that matches the PHP type prepare_row() produces for it.
+// -----------------------------------------------------------------------------
+
+test( 'every enum column is formatted as a string' );
+$pp_formats = CEAFSN_PP_DB::column_formats();
+foreach ( array( 'content_type', 'status', 'project_status', 'access_level' ) as $pp_enum ) {
+	is_same( '%s', $pp_formats[ $pp_enum ] ?? 'missing', "{$pp_enum} is an ENUM and must be %s, never %d" );
+}
+
+test( 'every integer column is formatted as an integer' );
+foreach ( array( 'cover_image_id', 'pdf_attachment_id', 'page_count', 'scanned', 'duplicate_ok', 'updated_by' ) as $pp_int ) {
+	is_same( '%d', $pp_formats[ $pp_int ] ?? 'missing', "{$pp_int} is an integer and must be %d" );
+}
+
+test( 'every text and date column is formatted as a string' );
+foreach ( array( 'title', 'executive_summary', 'author_institution', 'publication_date', 'cover_image_alt', 'doi_citation', 'duplicate_note' ) as $pp_text ) {
+	is_same( '%s', $pp_formats[ $pp_text ] ?? 'missing', "{$pp_text} is a string column and must be %s" );
+}
+
+test( 'the format list covers every column exactly once' );
+is_same(
+	17,
+	count( $pp_formats ),
+	'the publications table has seventeen writable columns and each needs one specifier'
+);
+is_same(
+	count( $pp_formats ),
+	count( array_unique( array_keys( $pp_formats ) ) ),
+	'no column is listed twice in the format map'
+);
+
+test( 'the format specifier count matches the values actually written' );
+CEAFSN_PP_Test_State::reset();
+CEAFSN_PP_DB::insert_publication( $complete );
+is_same(
+	count( CEAFSN_PP_DB::column_formats() ),
+	count( $wpdb->inserted_rows[0] ),
+	'insert writes one value per format specifier, so positional casting is unambiguous'
+);
+
+test( 'enum values survive an insert without numeric coercion' );
+CEAFSN_PP_Test_State::reset();
+CEAFSN_PP_DB::insert_publication(
+	array_merge(
+		$complete,
+		array(
+			'project_status' => 'in_progress',
+			'access_level'   => 'members_only',
+			'content_type'   => 'working_paper',
+			'status'         => 'published',
+		)
+	)
+);
+$pp_stored = $wpdb->inserted_rows[0];
+is_same( 'in_progress', $pp_stored['project_status'], 'project_status must not be cast to 0' );
+is_same( 'members_only', $pp_stored['access_level'], 'access_level must not be cast to 0' );
+is_same( 'working_paper', $pp_stored['content_type'], 'content_type must not be cast to 0' );
+is_same( 'published', $pp_stored['status'], 'status must not be cast to 0' );
+is_same( 'members_only', CEAFSN_PP_DB::access_levels()[1], 'the members_only value is a real enum member' );
+ok( 'in_progress' !== '0', 'a %d specifier would have reduced in_progress to 0' );
+
+test( 'enum values survive an update without numeric coercion' );
+CEAFSN_PP_Test_State::reset();
+CEAFSN_PP_DB::update_publication(
+	7,
+	array_merge( $complete, array( 'project_status' => 'under_review', 'access_level' => 'members_only' ) )
+);
+is_same( 'under_review', $wpdb->updated_rows[0]['project_status'], 'update must not cast project_status' );
+is_same( 'members_only', $wpdb->updated_rows[0]['access_level'], 'update must not cast access_level' );
+
+test( 'integer columns stay integers and are not stringified' );
+CEAFSN_PP_Test_State::reset();
+CEAFSN_PP_DB::insert_publication(
+	array_merge(
+		$complete,
+		array(
+			'cover_image_id'    => 42,
+			'pdf_attachment_id' => 11,
+			'page_count'        => 17,
+			'scanned'           => 1,
+			'duplicate_ok'      => 1,
+		)
+	)
+);
+$pp_stored = $wpdb->inserted_rows[0];
+foreach ( array( 'cover_image_id' => 42, 'pdf_attachment_id' => 11, 'page_count' => 17, 'scanned' => 1, 'duplicate_ok' => 1, 'updated_by' => 1 ) as $pp_col => $pp_expected ) {
+	is_same( $pp_expected, $pp_stored[ $pp_col ], "{$pp_col} must be stored as an integer" );
+}
+
+test( 'the harness fails loudly when formats and values disagree' );
+$pp_threw = false;
+try {
+	$wpdb->insert( 'wp_x', array( 'a' => 'one', 'b' => 'two' ), array( '%s' ) );
+} catch ( RuntimeException $e ) {
+	$pp_threw = true;
+}
+ok( $pp_threw, 'a short $format list raises, so a positional mismatch cannot pass silently again' );
+CEAFSN_PP_Test_State::reset();
 
 // -----------------------------------------------------------------------------
 section( 'Public front end' );
@@ -1541,7 +1708,7 @@ has_substring( "ENUM('report','annual_report'", $schema, 'the content type enum 
 has_substring( "ENUM('in_progress','completed'", $schema, 'the project status enum is in the schema' );
 has_substring( "ENUM('public','members_only')", $schema, 'the access level enum is in the schema' );
 has_substring( 'KEY pdf_attachment_id', $schema, 'the duplicate-document lookup is indexed' );
-is_same( '1.0.0', get_option( 'ceafsn_pp_db_version' ), 'the schema version is recorded' );
+is_same( CEAFSN_PP_DB::SCHEMA_VERSION, get_option( 'ceafsn_pp_db_version' ), 'the schema version is recorded' );
 
 // -----------------------------------------------------------------------------
 section( 'Uninstall safety' );
@@ -1631,10 +1798,14 @@ is_same( 4, count( $handlers ), 'the four write handlers are present (' . implod
 foreach ( $handlers as $handler ) {
 	preg_match( '/public function ' . preg_quote( $handler, '/' ) . '\(.*?\n\t\}/s', $source, $body );
 	$body = (string) ( $body[0] ?? '' );
-	has_substring( 'require_manage_options()', $body, "{$handler} checks manage_options" );
+	$ceafsn_want = ( preg_match( '/handle_(save_settings|export|uninstall)/', $handler ) ) ? 'require_manage()' : 'require_edit()';
+	$ceafsn_have = ( false !== strpos( $body, 'require_manage();' ) ) ? 'require_manage()' : 'require_edit()';
+	is_same( $ceafsn_want, $ceafsn_have, "{$handler} is guarded by the capability that matches what it does" );
+	has_substring( $ceafsn_want, $body, "{$handler} checks {$ceafsn_want}" );
 	has_substring( 'check_admin_referer', $body, "{$handler} verifies a nonce" );
 }
-has_substring( "'manage_options'", $source, 'manage_options is the required capability' );
+has_substring( "'manage_options'", $source, 'manage_options is still accepted as a fallback capability' );
+has_substring( 'private const CAP_EDIT', $source, 'the capability names are mirrored locally so a missing shared library cannot fatal' );
 
 test( 'publishing is gated on document validation in the handler' );
 has_substring( 'if ( \'published\' === $data[\'status\'] )', $source, 'the published branch is guarded' );
@@ -1836,7 +2007,98 @@ foreach ( array( 'placeholders', 'routes', 'uninstall' ) as $scope ) {
 $pp_admin_class_src = (string) file_get_contents( $plugin_dir . '/admin/class-ceafsn-pp-admin.php' );
 has_substring( 'private function persist_settings( array $post ): void', $pp_admin_class_src, 'the writer is a separate method' );
 has_substring( '$this->persist_settings( wp_unslash( $_POST ) );', $pp_admin_class_src, 'the handler delegates to the writer' );
-has_substring( '$this->require_manage_options();', $pp_admin_class_src, 'the capability check still guards the handler' );
+has_substring( '$this->require_manage();', $pp_admin_class_src, 'the capability check still guards the handler' );
+
+
+// -----------------------------------------------------------------------------
+section( 'Translation and status labels' );
+
+test( 'the textdomain is loaded on init, not before' );
+$pp_boot = (string) file_get_contents( $plugin_dir . '/ceafsn-projects-publications.php' );
+has_substring( "add_action( 'init', 'ceafsn_pp_load_textdomain' );", $pp_boot, 'the loader waits for init' );
+ok( ! preg_match( "/add_action\\(\\s*'plugins_loaded'[^)]*load_textdomain/", $pp_boot ), 'WP 6.7 deprecated loading a textdomain earlier than init, so nothing registers it on plugins_loaded' );
+has_substring( "'ceafsn-pp',", $pp_boot, 'the domain string is ceafsn-pp' );
+
+test( 'every stored enum value has a translated label' );
+foreach ( array( 'draft', 'published', 'archived' ) as $pp_key ) {
+	$pp_label = CEAFSN_PP_DB::label( CEAFSN_PP_DB::status_labels(), $pp_key );
+	ok( '' !== $pp_label, 'status_labels() returns a non-empty label for "' . $pp_key . '"' );
+	ok( $pp_label !== $pp_key, 'and "' . $pp_key . '" is not shown as a raw machine key' );
+}
+foreach ( array( 'in_progress', 'completed', 'under_review', 'archived' ) as $pp_key ) {
+	$pp_label = CEAFSN_PP_DB::label( CEAFSN_PP_DB::project_status_labels(), $pp_key );
+	ok( '' !== $pp_label, 'project_status_labels() returns a non-empty label for "' . $pp_key . '"' );
+	ok( $pp_label !== $pp_key, 'and "' . $pp_key . '" is not shown as a raw machine key' );
+}
+foreach ( array( 'report', 'annual_report', 'policy_brief', 'working_paper', 'strategic_document', 'project' ) as $pp_key ) {
+	$pp_label = CEAFSN_PP_DB::label( CEAFSN_PP_DB::content_type_labels(), $pp_key );
+	ok( '' !== $pp_label, 'content_type_labels() returns a non-empty label for "' . $pp_key . '"' );
+	ok( $pp_label !== $pp_key, 'and "' . $pp_key . '" is not shown as a raw machine key' );
+}
+foreach ( array( 'public', 'members_only' ) as $pp_key ) {
+	$pp_label = CEAFSN_PP_DB::label( CEAFSN_PP_DB::access_level_labels(), $pp_key );
+	ok( '' !== $pp_label, 'access_level_labels() returns a non-empty label for "' . $pp_key . '"' );
+	ok( $pp_label !== $pp_key, 'and "' . $pp_key . '" is not shown as a raw machine key' );
+}
+
+test( 'each label map covers the schema exactly' );
+is_same( array( 'draft', 'published', 'archived' ), array_keys( CEAFSN_PP_DB::status_labels() ), 'status_labels() has one label per stored value, no more and no fewer' );
+is_same( array( 'in_progress', 'completed', 'under_review', 'archived' ), array_keys( CEAFSN_PP_DB::project_status_labels() ), 'project_status_labels() has one label per stored value, no more and no fewer' );
+is_same( array( 'report', 'annual_report', 'policy_brief', 'working_paper', 'strategic_document', 'project' ), array_keys( CEAFSN_PP_DB::content_type_labels() ), 'content_type_labels() has one label per stored value, no more and no fewer' );
+is_same( array( 'public', 'members_only' ), array_keys( CEAFSN_PP_DB::access_level_labels() ), 'access_level_labels() has one label per stored value, no more and no fewer' );
+
+test( 'an unrecognised key falls back to the key itself' );
+is_same( 'Draft', CEAFSN_PP_DB::label( CEAFSN_PP_DB::status_labels(), 'draft' ), 'a known key returns its translated label' );
+is_same( 'not_a_status', CEAFSN_PP_DB::label( CEAFSN_PP_DB::status_labels(), 'not_a_status' ), 'an unknown key is shown verbatim, so a missing label is obvious instead of silently English' );
+
+test( 'no partial renders a stored enum through ucfirst()' );
+$pp_seen = 0;
+foreach ( glob( $plugin_dir . '/admin/partials/*.php' ) ?: array() as $pp_partial ) {
+	$pp_seen++;
+	ok( ! str_contains( (string) file_get_contents( $pp_partial ), 'ucfirst(' ), basename( $pp_partial ) . ' does not title-case a stored value' );
+}
+foreach ( glob( $plugin_dir . '/public/partials/*.php' ) ?: array() as $pp_partial ) {
+	$pp_seen++;
+	ok( ! str_contains( (string) file_get_contents( $pp_partial ), 'ucfirst(' ), basename( $pp_partial ) . ' does not title-case a stored value' );
+}
+ok( $pp_seen > 0, 'the partials were actually scanned' );
+
+// -----------------------------------------------------------------------------
+section( 'Schema migration engine' );
+
+test( 'maybe_upgrade is a no-op when the stored version is current' );
+CEAFSN_PP_Test_State::reset();
+$GLOBALS['ceafsn_pp_dbdelta'] = array();
+update_option( 'ceafsn_pp_db_version', CEAFSN_PP_DB::SCHEMA_VERSION );
+is_same( false, CEAFSN_PP_DB::maybe_upgrade(), 'a current schema is left alone' );
+is_same( array(), (array) $GLOBALS['ceafsn_pp_dbdelta'], 'and no schema work runs, so admin_init stays cheap' );
+
+test( 'maybe_upgrade does nothing on a downgrade' );
+CEAFSN_PP_Test_State::reset();
+$GLOBALS['ceafsn_pp_dbdelta'] = array();
+update_option( 'ceafsn_pp_db_version', '99.0.0' );
+is_same( false, CEAFSN_PP_DB::maybe_upgrade(), 'a newer stored schema is never downgraded' );
+is_same( '99.0.0', get_option( 'ceafsn_pp_db_version' ), 'and the stored version is untouched' );
+
+test( 'maybe_upgrade applies dbDelta when the stored version is behind' );
+CEAFSN_PP_Test_State::reset();
+$GLOBALS['ceafsn_pp_dbdelta'] = array();
+is_same( false, get_option( 'ceafsn_pp_db_version', false ), 'no version is recorded on a site that never activated the plugin' );
+is_same( true, CEAFSN_PP_DB::maybe_upgrade(), 'a missing schema takes the upgrade path' );
+ok( ! empty( (array) $GLOBALS['ceafsn_pp_dbdelta'] ), 'the schema is created through dbDelta' );
+is_same( CEAFSN_PP_DB::SCHEMA_VERSION, get_option( 'ceafsn_pp_db_version' ), 'and the version option is brought up to date' );
+
+test( 'maybe_upgrade repairs an older installed version' );
+CEAFSN_PP_Test_State::reset();
+$GLOBALS['ceafsn_pp_dbdelta'] = array();
+update_option( 'ceafsn_pp_db_version', '0.9.0' );
+is_same( true, CEAFSN_PP_DB::maybe_upgrade(), 'a version bump is applied' );
+ok( ! empty( (array) $GLOBALS['ceafsn_pp_dbdelta'] ), 'dbDelta runs so missing columns and indexes are added' );
+is_same( CEAFSN_PP_DB::SCHEMA_VERSION, get_option( 'ceafsn_pp_db_version' ), 'and the option ends at the current version' );
+
+test( 'the migration is hooked to admin_init, not activation alone' );
+$med_bootstrap = (string) file_get_contents( $plugin_dir . '/ceafsn-projects-publications.php' );
+has_substring( "add_action( 'admin_init', array( 'CEAFSN_PP_DB', 'maybe_upgrade' ) );", $med_bootstrap, 'plugin updates reach existing sites because the hook is on admin_init' );
 
 $pass = $GLOBALS['ceafsn_pp_test_pass'];
 $fail = $GLOBALS['ceafsn_pp_test_fail'];

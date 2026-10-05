@@ -23,10 +23,28 @@ defined( 'ABSPATH' ) || exit;
 class CEAFSN_RF_DB {
 
 	/** @var string Current schema version stored in options. */
-	const SCHEMA_VERSION = '1.0.0';
+	const SCHEMA_VERSION = '1.1.0';
+
+	/**
+	 * Option that records the installed schema version.
+	 *
+	 * @var string
+	 */
+	const DB_VERSION_OPTION = 'ceafsn_rf_db_version';
 
 	/** @var string Table name without the site prefix. */
 	const TABLE_SUFFIX = 'ceafsn_rf_fellowships';
+
+	/**
+	 * Ceiling for an unpaginated read.
+	 *
+	 * Only used when a caller passes `paginate => false` so it can filter on a
+	 * derived value afterwards. It bounds memory, not the number of records an
+	 * administrator can create.
+	 *
+	 * @var int
+	 */
+	const MAX_UNPAGINATED_ROWS = 2000;
 
 	/**
 	 * Columns the front end is allowed to sort by.
@@ -44,6 +62,33 @@ class CEAFSN_RF_DB {
 	 */
 	public static function statuses(): array {
 		return array( 'draft', 'published', 'archived' );
+	}
+
+	/**
+	 * Translated labels for a record status.
+	 *
+	 * The derived opportunity status (open, upcoming, closed) has its own label
+	 * map in CEAFSN_RF_Status. This covers the stored record state.
+	 *
+	 * @return array<string,string> Status key => label.
+	 */
+	public static function status_labels(): array {
+		return array(
+			'draft'     => __( 'Draft', 'ceafsn-rf' ),
+			'published' => __( 'Published', 'ceafsn-rf' ),
+			'archived'  => __( 'Archived', 'ceafsn-rf' ),
+		);
+	}
+
+	/**
+	 * Translated label for one key, falling back to the key itself.
+	 *
+	 * @param array<string,string> $labels Label map.
+	 * @param string               $value  Raw key.
+	 * @return string
+	 */
+	public static function label( array $labels, string $value ): string {
+		return (string) ( $labels[ $value ] ?? $value );
 	}
 
 	// ---------------------------------------------------------------------------
@@ -93,6 +138,7 @@ class CEAFSN_RF_DB {
 			updated_at        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			updated_by        BIGINT UNSIGNED NOT NULL DEFAULT 0,
 			PRIMARY KEY (fellowship_id),
+			FULLTEXT KEY search_prose (title,track_domain,eligibility,host_supervisor),
 			KEY status (status),
 			KEY status_manual (status_manual),
 			KEY closing_date (closing_date),
@@ -101,7 +147,66 @@ class CEAFSN_RF_DB {
 
 		dbDelta( $sql );
 
-		update_option( 'ceafsn_rf_db_version', self::SCHEMA_VERSION );
+		update_option( self::DB_VERSION_OPTION, self::SCHEMA_VERSION );
+	}
+
+	/**
+	 * Ordered schema migrations keyed by the version that introduces them.
+	 *
+	 * Each callback brings a database from the previous version up to its own
+	 * version. They run in ascending order so a site that skipped several
+	 * releases still passes through every step and lands in a known state,
+	 * rather than jumping straight to the newest schema with steps missing.
+	 *
+	 * @return array<string,callable> Version => migration callback.
+	 */
+	private static function migrations(): array {
+		return array();
+	}
+
+	/**
+	 * Apply pending schema migrations.
+	 *
+	 * WordPress never runs the activation hook for a plugin *update*, so
+	 * activation alone cannot carry a schema change to an existing site: a new
+	 * column would silently not exist and every write to it would fail at
+	 * runtime. This runs on admin_init so an upgrade is applied the first time
+	 * anyone loads an admin screen after deploying it.
+	 *
+	 * Cheap when there is nothing to do: one option read and one comparison.
+	 *
+	 * @return bool True when a migration ran.
+	 */
+	public static function maybe_upgrade(): bool {
+		$installed = (string) get_option( self::DB_VERSION_OPTION, '0.0.0' );
+
+		if ( version_compare( $installed, self::SCHEMA_VERSION, '>=' ) ) {
+			return false;
+		}
+
+		// create_tables() runs dbDelta, which is idempotent: it adds missing
+		// columns and indexes and leaves existing rows and columns untouched, so
+		// a fresh install and an upgrade converge on the same schema.
+		self::create_tables();
+
+		// create_tables() records the target version. Restore the version we
+		// started from so an interrupted migration is retried on the next
+		// request instead of being marked complete.
+		update_option( self::DB_VERSION_OPTION, $installed, false );
+
+		foreach ( self::migrations() as $version => $migration ) {
+			if ( version_compare( $installed, (string) $version, '>=' ) ) {
+				continue;
+			}
+
+			$migration();
+
+			update_option( self::DB_VERSION_OPTION, (string) $version, false );
+		}
+
+		update_option( self::DB_VERSION_OPTION, self::SCHEMA_VERSION );
+
+		return true;
 	}
 
 	// ---------------------------------------------------------------------------
@@ -254,6 +359,11 @@ class CEAFSN_RF_DB {
 	/**
 	 * Get fellowship records with filtering, sorting, and pagination.
 	 *
+	 * Pass `paginate => false` to receive every matching row instead of one
+	 * SQL page. The front end needs that: it filters on a *derived* status that
+	 * the database cannot compute, so paging in SQL first would both under-fill
+	 * the page and make any SQL-side count a lie.
+	 *
 	 * @param array<string,mixed> $args Query arguments.
 	 * @return array{items: array<int,object>, total: int}
 	 */
@@ -281,16 +391,36 @@ class CEAFSN_RF_DB {
 			$where_values[] = $track;
 		}
 
-		// Free-text search across the fields a visitor would search by.
+		// Search filter. FULLTEXT keeps a word-anywhere match without the
+		// unindexable scan a leading-wildcard LIKE would force.
 		$search = sanitize_text_field( (string) ( $args['search'] ?? '' ) );
 		if ( '' !== $search ) {
-			$like           = '%' . $wpdb->esc_like( $search ) . '%';
-			$where_parts[]  = '(title LIKE %s OR track_domain LIKE %s OR eligibility LIKE %s OR host_supervisor LIKE %s)';
-			$where_values[] = $like;
-			$where_values[] = $like;
-			$where_values[] = $like;
-			$where_values[] = $like;
+			$fallback = self::searchable_columns( array( 'title', 'track_domain', 'eligibility', 'host_supervisor' ), array() );
+			$clause   = class_exists( 'CEAFSN_Search' )
+				? CEAFSN_Search::clause( array( 'title', 'track_domain', 'eligibility', 'host_supervisor' ), array(), $search )
+				: null;
+
+			// Without the shared library the search falls back to a prefix LIKE.
+			// That is narrower than a full-text match, but unlike the leading
+			// wildcard it can still use an index.
+			if ( null === $clause ) {
+				$like          = '%' . $wpdb->esc_like( $search ) . '%';
+				$where_parts[] = '(' . implode( ' OR ', array_map(
+					static function ( $column ) {
+						return $column . ' LIKE %s';
+					},
+					$fallback
+				) ) . ')';
+				$where_values = array_merge( $where_values, array_fill( 0, count( $fallback ), $like ) );
+			} else {
+				// A term of nothing but punctuation cannot form a query, so the
+				// builder returns null and no filter is applied rather than
+				// matching every row.
+				$where_parts[] = $clause[0];
+				$where_values  = array_merge( $where_values, $clause[1] );
+			}
 		}
+
 
 		// Sorting — the column is validated against a fixed allow list, so a
 		// crafted query string cannot reach the ORDER BY clause.
@@ -307,17 +437,35 @@ class CEAFSN_RF_DB {
 		$page     = max( 1, (int) ( $args['page'] ?? 1 ) );
 		$offset   = ( $page - 1 ) * $per_page;
 
-		$limit_values   = $where_values;
-		$limit_values[] = $per_page;
-		$limit_values[] = $offset;
+		$paginate = ! array_key_exists( 'paginate', $args ) || ! empty( $args['paginate'] );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $orderby is allow-listed, $order is a literal.
-		$items = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * FROM `{$table}` WHERE {$where} ORDER BY {$orderby} {$order}, fellowship_id ASC LIMIT %d OFFSET %d",
-				...$limit_values
-			)
-		) ?: array();
+		if ( $paginate ) {
+			$limit_values   = $where_values;
+			$limit_values[] = $per_page;
+			$limit_values[] = $offset;
+
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $orderby is allow-listed, $order is a literal.
+			$items = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM `{$table}` WHERE {$where} ORDER BY {$orderby} {$order}, fellowship_id ASC LIMIT %d OFFSET %d",
+					...$limit_values
+				)
+			) ?: array();
+		} else {
+			// Unpaginated read for callers that filter afterwards. The ceiling is a
+			// guard against a pathological dataset, not a product limit: a
+			// fellowship programme has hundreds of calls, not millions.
+			$limit_values   = $where_values;
+			$limit_values[] = max( 1, (int) ( $args['max_rows'] ?? self::MAX_UNPAGINATED_ROWS ) );
+
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $orderby is allow-listed, $order is a literal.
+			$items = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM `{$table}` WHERE {$where} ORDER BY {$orderby} {$order}, fellowship_id ASC LIMIT %d",
+					...$limit_values
+				)
+			) ?: array();
+		}
 
 		return array(
 			'items' => $items,
@@ -341,6 +489,22 @@ class CEAFSN_RF_DB {
 		);
 
 		return array_values( array_filter( array_map( 'strval', (array) $rows ) ) );
+	}
+
+	/**
+	 * Build the WHERE fragment for a free-text search.
+	 *
+	 * Prefers the shared builder, which searches prose columns with an indexed
+	 * FULLTEXT match. The shared library is optional, so when it is absent the
+	 * columns fall back to a prefix LIKE: still index-backed rather than the
+	 * unindexable leading wildcard this replaced.
+	 *
+	 * @param string[] $prose  Prose columns.
+	 * @param string[] $prefix Identifier columns.
+	 * @return string[] Columns a prefix LIKE should cover when FULLTEXT is unavailable.
+	 */
+	public static function searchable_columns( array $prose, array $prefix ): array {
+		return array_values( array_unique( array_merge( $prose, $prefix ) ) );
 	}
 
 	// ---------------------------------------------------------------------------

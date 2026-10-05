@@ -17,7 +17,82 @@ defined( 'ABSPATH' ) || exit;
 class CEAFSN_MED_DB {
 
 	/** @var string Current schema version stored in options. */
-	const SCHEMA_VERSION = '1.0.0';
+	const SCHEMA_VERSION = '1.1.0';
+
+	/**
+	 * Option that records the installed schema version.
+	 *
+	 * @var string
+	 */
+	const DB_VERSION_OPTION = 'ceafsn_med_db_version';
+
+	/**
+	 * Translated labels for a project status.
+	 *
+	 * The stored value is a machine key such as `active`. Rendering it directly
+	 * would put an untranslated token in front of an editor, so every display
+	 * path goes through this map.
+	 *
+	 * @return array<string,string> Status key => label.
+	 */
+	public static function project_status_labels(): array {
+		return array(
+			'active'    => __( 'Active', 'ceafsn-med' ),
+			'completed' => __( 'Completed', 'ceafsn-med' ),
+			'suspended' => __( 'Suspended', 'ceafsn-med' ),
+		);
+	}
+
+	/**
+	 * Translated labels for a verification status.
+	 *
+	 * @return array<string,string> Verification key => label.
+	 */
+	public static function verification_labels(): array {
+		return array(
+			'verified'   => __( 'Verified', 'ceafsn-med' ),
+			'pending'    => __( 'Pending', 'ceafsn-med' ),
+			'unverified' => __( 'Unverified', 'ceafsn-med' ),
+		);
+	}
+
+	/**
+	 * Translated labels for a demographic value type.
+	 *
+	 * @return array<string,string> Value type => label.
+	 */
+	public static function value_type_labels(): array {
+		return array(
+			'count'      => __( 'Count', 'ceafsn-med' ),
+			'percentage' => __( 'Percentage', 'ceafsn-med' ),
+		);
+	}
+
+	/**
+	 * Translated labels for a record visibility flag.
+	 *
+	 * @return array<string,string> Visibility => label.
+	 */
+	public static function visibility_labels(): array {
+		return array(
+			'public'  => __( 'Public', 'ceafsn-med' ),
+			'private' => __( 'Private', 'ceafsn-med' ),
+		);
+	}
+
+	/**
+	 * Translated label for one key, falling back to the key itself.
+	 *
+	 * An unmapped key is returned unchanged rather than title-cased: it stays
+	 * visibly a machine value instead of pretending to be a translated word.
+	 *
+	 * @param array<string,string> $labels Label map.
+	 * @param string               $value  Raw key.
+	 * @return string
+	 */
+	public static function label( array $labels, string $value ): string {
+		return (string) ( $labels[ $value ] ?? $value );
+	}
 
 	// ---------------------------------------------------------------------------
 	// Schema
@@ -48,7 +123,8 @@ class CEAFSN_MED_DB {
 			created_at     DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			updated_at     DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			updated_by     BIGINT UNSIGNED NOT NULL DEFAULT 0,
-			PRIMARY KEY (metric_id)
+			PRIMARY KEY (metric_id),
+			KEY visibility_reporting (visibility,reporting_period)
 		) {$charset_collate};";
 
 		// ---- Demographics ----
@@ -64,7 +140,8 @@ class CEAFSN_MED_DB {
 			created_at       DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			updated_at       DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			updated_by       BIGINT UNSIGNED NOT NULL DEFAULT 0,
-			PRIMARY KEY (group_id)
+			PRIMARY KEY (group_id),
+			KEY visibility_reporting (visibility,reporting_period)
 		) {$charset_collate};";
 
 		// ---- Projects ----
@@ -81,14 +158,76 @@ class CEAFSN_MED_DB {
 			created_at            DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			updated_at            DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			updated_by            BIGINT UNSIGNED NOT NULL DEFAULT 0,
-			PRIMARY KEY (project_id)
+			PRIMARY KEY (project_id),
+			FULLTEXT KEY search_prose (title,principal_investigator),
+			KEY status_verification (status,verification_status),
+			KEY last_updated (last_updated)
 		) {$charset_collate};";
 
 		dbDelta( $sql_metrics );
 		dbDelta( $sql_demo );
 		dbDelta( $sql_projects );
 
-		update_option( 'ceafsn_med_db_version', self::SCHEMA_VERSION );
+		update_option( self::DB_VERSION_OPTION, self::SCHEMA_VERSION );
+	}
+
+	/**
+	 * Ordered schema migrations keyed by the version that introduces them.
+	 *
+	 * Each callback brings a database from the previous version up to its own
+	 * version. They run in ascending order so a site that skipped several
+	 * releases still passes through every step and lands in a known state,
+	 * rather than jumping straight to the newest schema with steps missing.
+	 *
+	 * @return array<string,callable> Version => migration callback.
+	 */
+	private static function migrations(): array {
+		return array();
+	}
+
+	/**
+	 * Apply pending schema migrations.
+	 *
+	 * WordPress never runs the activation hook for a plugin *update*, so
+	 * activation alone cannot carry a schema change to an existing site: a new
+	 * column would silently not exist and every write to it would fail at
+	 * runtime. This runs on admin_init so an upgrade is applied the first time
+	 * anyone loads an admin screen after deploying it.
+	 *
+	 * Cheap when there is nothing to do: one option read and one comparison.
+	 *
+	 * @return bool True when a migration ran.
+	 */
+	public static function maybe_upgrade(): bool {
+		$installed = (string) get_option( self::DB_VERSION_OPTION, '0.0.0' );
+
+		if ( version_compare( $installed, self::SCHEMA_VERSION, '>=' ) ) {
+			return false;
+		}
+
+		// create_tables() runs dbDelta, which is idempotent: it adds missing
+		// columns and indexes and leaves existing rows and columns untouched, so
+		// a fresh install and an upgrade converge on the same schema.
+		self::create_tables();
+
+		// create_tables() records the target version. Restore the version we
+		// started from so an interrupted migration is retried on the next
+		// request instead of being marked complete.
+		update_option( self::DB_VERSION_OPTION, $installed, false );
+
+		foreach ( self::migrations() as $version => $migration ) {
+			if ( version_compare( $installed, (string) $version, '>=' ) ) {
+				continue;
+			}
+
+			$migration();
+
+			update_option( self::DB_VERSION_OPTION, (string) $version, false );
+		}
+
+		update_option( self::DB_VERSION_OPTION, self::SCHEMA_VERSION );
+
+		return true;
 	}
 
 	// ---------------------------------------------------------------------------
@@ -470,13 +609,36 @@ class CEAFSN_MED_DB {
 			$where_values[] = $args['verification'];
 		}
 
-		// Search filter.
-		if ( ! empty( $args['search'] ) ) {
-			$like           = '%' . $wpdb->esc_like( sanitize_text_field( $args['search'] ) ) . '%';
-			$where_parts[]  = '(title LIKE %s OR principal_investigator LIKE %s)';
-			$where_values[] = $like;
-			$where_values[] = $like;
+		// Search filter. FULLTEXT keeps a word-anywhere match without the
+		// unindexable scan a leading-wildcard LIKE would force.
+		$search = sanitize_text_field( (string) ( $args['search'] ?? '' ) );
+		if ( '' !== $search ) {
+			$fallback = self::searchable_columns( array( 'title', 'principal_investigator' ), array() );
+			$clause   = class_exists( 'CEAFSN_Search' )
+				? CEAFSN_Search::clause( array( 'title', 'principal_investigator' ), array(), $search )
+				: null;
+
+			// Without the shared library the search falls back to a prefix LIKE.
+			// That is narrower than a full-text match, but unlike the leading
+			// wildcard it can still use an index.
+			if ( null === $clause ) {
+				$like          = '%' . $wpdb->esc_like( $search ) . '%';
+				$where_parts[] = '(' . implode( ' OR ', array_map(
+					static function ( $column ) {
+						return $column . ' LIKE %s';
+					},
+					$fallback
+				) ) . ')';
+				$where_values = array_merge( $where_values, array_fill( 0, count( $fallback ), $like ) );
+			} else {
+				// A term of nothing but punctuation cannot form a query, so the
+				// builder returns null and no filter is applied rather than
+				// matching every row.
+				$where_parts[] = $clause[0];
+				$where_values  = array_merge( $where_values, $clause[1] );
+			}
 		}
+
 
 		$where = implode( ' AND ', $where_parts );
 
@@ -505,6 +667,22 @@ class CEAFSN_MED_DB {
 			'items' => $items,
 			'total' => $total,
 		);
+	}
+
+	/**
+	 * Build the WHERE fragment for a free-text search.
+	 *
+	 * Prefers the shared builder, which searches prose columns with an indexed
+	 * FULLTEXT match. The shared library is optional, so when it is absent the
+	 * columns fall back to a prefix LIKE: still index-backed rather than the
+	 * unindexable leading wildcard this replaced.
+	 *
+	 * @param string[] $prose  Prose columns.
+	 * @param string[] $prefix Identifier columns.
+	 * @return string[] Columns a prefix LIKE should cover when FULLTEXT is unavailable.
+	 */
+	public static function searchable_columns( array $prose, array $prefix ): array {
+		return array_values( array_unique( array_merge( $prose, $prefix ) ) );
 	}
 
 	// ---------------------------------------------------------------------------

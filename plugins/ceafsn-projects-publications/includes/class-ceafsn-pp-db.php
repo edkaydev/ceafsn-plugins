@@ -18,7 +18,14 @@ defined( 'ABSPATH' ) || exit;
 class CEAFSN_PP_DB {
 
 	/** @var string Current schema version stored in options. */
-	const SCHEMA_VERSION = '1.0.0';
+	const SCHEMA_VERSION = '1.1.0';
+
+	/**
+	 * Option that records the installed schema version.
+	 *
+	 * @var string
+	 */
+	const DB_VERSION_OPTION = 'ceafsn_pp_db_version';
 
 	/** @var string Table name without the site prefix. */
 	const TABLE_SUFFIX = 'ceafsn_pp_publications';
@@ -42,6 +49,72 @@ class CEAFSN_PP_DB {
 	 */
 	public static function statuses(): array {
 		return array( 'draft', 'published', 'archived' );
+	}
+
+	/**
+	 * Translated labels for a publication record status.
+	 *
+	 * @return array<string,string> Status key => label.
+	 */
+	public static function status_labels(): array {
+		return array(
+			'draft'     => __( 'Draft', 'ceafsn-pp' ),
+			'published' => __( 'Published', 'ceafsn-pp' ),
+			'archived'  => __( 'Archived', 'ceafsn-pp' ),
+		);
+	}
+
+	/**
+	 * Translated labels for a project status.
+	 *
+	 * @return array<string,string> Status key => label.
+	 */
+	public static function project_status_labels(): array {
+		return array(
+			'in_progress'  => __( 'In progress', 'ceafsn-pp' ),
+			'completed'    => __( 'Completed', 'ceafsn-pp' ),
+			'under_review' => __( 'Under review', 'ceafsn-pp' ),
+			'archived'     => __( 'Archived', 'ceafsn-pp' ),
+		);
+	}
+
+	/**
+	 * Translated labels for a content type.
+	 *
+	 * @return array<string,string> Content type => label.
+	 */
+	public static function content_type_labels(): array {
+		return array(
+			'report'              => __( 'Report', 'ceafsn-pp' ),
+			'annual_report'       => __( 'Annual report', 'ceafsn-pp' ),
+			'policy_brief'        => __( 'Policy brief', 'ceafsn-pp' ),
+			'working_paper'       => __( 'Working paper', 'ceafsn-pp' ),
+			'strategic_document'  => __( 'Strategic document', 'ceafsn-pp' ),
+			'project'             => __( 'Project', 'ceafsn-pp' ),
+		);
+	}
+
+	/**
+	 * Translated labels for an access level.
+	 *
+	 * @return array<string,string> Access level => label.
+	 */
+	public static function access_level_labels(): array {
+		return array(
+			'public'       => __( 'Public', 'ceafsn-pp' ),
+			'members_only' => __( 'Members only', 'ceafsn-pp' ),
+		);
+	}
+
+	/**
+	 * Translated label for one key, falling back to the key itself.
+	 *
+	 * @param array<string,string> $labels Label map.
+	 * @param string               $value  Raw key.
+	 * @return string
+	 */
+	public static function label( array $labels, string $value ): string {
+		return (string) ( $labels[ $value ] ?? $value );
 	}
 
 	/**
@@ -115,6 +188,7 @@ class CEAFSN_PP_DB {
 			updated_at        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			updated_by        BIGINT UNSIGNED NOT NULL DEFAULT 0,
 			PRIMARY KEY (publication_id),
+			FULLTEXT KEY search_prose (title,executive_summary,author_institution),
 			KEY status (status),
 			KEY content_type (content_type),
 			KEY project_status (project_status),
@@ -125,7 +199,66 @@ class CEAFSN_PP_DB {
 
 		dbDelta( $sql );
 
-		update_option( 'ceafsn_pp_db_version', self::SCHEMA_VERSION );
+		update_option( self::DB_VERSION_OPTION, self::SCHEMA_VERSION );
+	}
+
+	/**
+	 * Ordered schema migrations keyed by the version that introduces them.
+	 *
+	 * Each callback brings a database from the previous version up to its own
+	 * version. They run in ascending order so a site that skipped several
+	 * releases still passes through every step and lands in a known state,
+	 * rather than jumping straight to the newest schema with steps missing.
+	 *
+	 * @return array<string,callable> Version => migration callback.
+	 */
+	private static function migrations(): array {
+		return array();
+	}
+
+	/**
+	 * Apply pending schema migrations.
+	 *
+	 * WordPress never runs the activation hook for a plugin *update*, so
+	 * activation alone cannot carry a schema change to an existing site: a new
+	 * column would silently not exist and every write to it would fail at
+	 * runtime. This runs on admin_init so an upgrade is applied the first time
+	 * anyone loads an admin screen after deploying it.
+	 *
+	 * Cheap when there is nothing to do: one option read and one comparison.
+	 *
+	 * @return bool True when a migration ran.
+	 */
+	public static function maybe_upgrade(): bool {
+		$installed = (string) get_option( self::DB_VERSION_OPTION, '0.0.0' );
+
+		if ( version_compare( $installed, self::SCHEMA_VERSION, '>=' ) ) {
+			return false;
+		}
+
+		// create_tables() runs dbDelta, which is idempotent: it adds missing
+		// columns and indexes and leaves existing rows and columns untouched, so
+		// a fresh install and an upgrade converge on the same schema.
+		self::create_tables();
+
+		// create_tables() records the target version. Restore the version we
+		// started from so an interrupted migration is retried on the next
+		// request instead of being marked complete.
+		update_option( self::DB_VERSION_OPTION, $installed, false );
+
+		foreach ( self::migrations() as $version => $migration ) {
+			if ( version_compare( $installed, (string) $version, '>=' ) ) {
+				continue;
+			}
+
+			$migration();
+
+			update_option( self::DB_VERSION_OPTION, (string) $version, false );
+		}
+
+		update_option( self::DB_VERSION_OPTION, self::SCHEMA_VERSION );
+
+		return true;
 	}
 
 	// ---------------------------------------------------------------------------
@@ -133,10 +266,49 @@ class CEAFSN_PP_DB {
 	// ---------------------------------------------------------------------------
 
 	/**
+	 * Canonical column order with the format specifier each column requires.
+	 *
+	 * This map is the single source of truth for both write paths. `$wpdb`
+	 * consumes `$format` positionally, so a hand-maintained parallel array can
+	 * silently drift: an ENUM column paired with `%d` makes `wpdb::prepare()`
+	 * cast `in_progress` to `0`, which MySQL either rejects under STRICT mode
+	 * or stores as an empty enum member. Deriving both the value order and the
+	 * format list from this one map makes that class of defect impossible.
+	 *
+	 * Rule: string, TEXT, DATE and ENUM columns are always `%s`; integer
+	 * columns are always `%d`.
+	 *
+	 * @return array<string,string> Column name => format specifier.
+	 */
+	public static function column_formats(): array {
+		return array(
+			'title'              => '%s',
+			'content_type'       => '%s',
+			'executive_summary'  => '%s',
+			'author_institution' => '%s',
+			'publication_date'   => '%s',
+			'project_status'     => '%s',
+			'cover_image_id'     => '%d',
+			'cover_image_alt'    => '%s',
+			'pdf_attachment_id'  => '%d',
+			'page_count'         => '%d',
+			'doi_citation'       => '%s',
+			'access_level'       => '%s',
+			'duplicate_note'     => '%s',
+			'scanned'            => '%d',
+			'duplicate_ok'       => '%d',
+			'status'             => '%s',
+			'updated_by'         => '%d',
+		);
+	}
+
+	/**
 	 * Sanitise a raw field array into a column-ready row.
 	 *
 	 * Every enum is coerced against a fixed allow list, so a hand-crafted POST
-	 * cannot write a value MySQL would silently coerce to an empty string.
+	 * cannot write a value MySQL would silently coerce to an empty string. The
+	 * returned keys are re-ordered to match column_formats() exactly, because
+	 * $wpdb matches $format entries to values by position.
 	 *
 	 * @param array<string,mixed> $data Raw field values.
 	 * @return array<string,mixed>
@@ -147,7 +319,7 @@ class CEAFSN_PP_DB {
 		$project      = (string) ( $data['project_status'] ?? 'in_progress' );
 		$access       = (string) ( $data['access_level'] ?? 'public' );
 
-		return array(
+		$values = array(
 			'title'              => sanitize_text_field( (string) ( $data['title'] ?? '' ) ),
 			'content_type'       => in_array( $content_type, self::content_types(), true ) ? $content_type : 'report',
 			'executive_summary'  => sanitize_textarea_field( (string) ( $data['executive_summary'] ?? '' ) ),
@@ -166,6 +338,14 @@ class CEAFSN_PP_DB {
 			'status'             => in_array( $status, self::statuses(), true ) ? $status : 'draft',
 			'updated_by'         => get_current_user_id(),
 		);
+
+		// Re-key into canonical column order so positional $format always lines up.
+		$ordered = array();
+		foreach ( self::column_formats() as $column => $unused_format ) {
+			$ordered[ $column ] = $values[ $column ];
+		}
+
+		return $ordered;
 	}
 
 	/**
@@ -174,7 +354,7 @@ class CEAFSN_PP_DB {
 	 * @return array<int,string>
 	 */
 	private static function row_formats(): array {
-		return array( '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%d', '%s', '%d', '%s', '%d', '%d', '%s', '%d' );
+		return array_values( self::column_formats() );
 	}
 
 	/**
@@ -319,16 +499,36 @@ class CEAFSN_PP_DB {
 			$where_values[] = $year;
 		}
 
-		// Free-text search across title, summary, institution, and citation.
+		// Search filter. FULLTEXT keeps a word-anywhere match without the
+		// unindexable scan a leading-wildcard LIKE would force.
 		$search = sanitize_text_field( (string) ( $args['search'] ?? '' ) );
 		if ( '' !== $search ) {
-			$like           = '%' . $wpdb->esc_like( $search ) . '%';
-			$where_parts[]  = '(title LIKE %s OR executive_summary LIKE %s OR author_institution LIKE %s OR doi_citation LIKE %s)';
-			$where_values[] = $like;
-			$where_values[] = $like;
-			$where_values[] = $like;
-			$where_values[] = $like;
+			$fallback = self::searchable_columns( array( 'title', 'executive_summary', 'author_institution' ), array( 'doi_citation' ) );
+			$clause   = class_exists( 'CEAFSN_Search' )
+				? CEAFSN_Search::clause( array( 'title', 'executive_summary', 'author_institution' ), array( 'doi_citation' ), $search )
+				: null;
+
+			// Without the shared library the search falls back to a prefix LIKE.
+			// That is narrower than a full-text match, but unlike the leading
+			// wildcard it can still use an index.
+			if ( null === $clause ) {
+				$like          = '%' . $wpdb->esc_like( $search ) . '%';
+				$where_parts[] = '(' . implode( ' OR ', array_map(
+					static function ( $column ) {
+						return $column . ' LIKE %s';
+					},
+					$fallback
+				) ) . ')';
+				$where_values = array_merge( $where_values, array_fill( 0, count( $fallback ), $like ) );
+			} else {
+				// A term of nothing but punctuation cannot form a query, so the
+				// builder returns null and no filter is applied rather than
+				// matching every row.
+				$where_parts[] = $clause[0];
+				$where_values  = array_merge( $where_values, $clause[1] );
+			}
 		}
+
 
 		// Sorting — the column is validated against a fixed allow list.
 		$orderby = (string) ( $args['orderby'] ?? 'publication_date' );
@@ -440,6 +640,22 @@ class CEAFSN_PP_DB {
 		);
 
 		return $rows ?: array();
+	}
+
+	/**
+	 * Build the WHERE fragment for a free-text search.
+	 *
+	 * Prefers the shared builder, which searches prose columns with an indexed
+	 * FULLTEXT match. The shared library is optional, so when it is absent the
+	 * columns fall back to a prefix LIKE: still index-backed rather than the
+	 * unindexable leading wildcard this replaced.
+	 *
+	 * @param string[] $prose  Prose columns.
+	 * @param string[] $prefix Identifier columns.
+	 * @return string[] Columns a prefix LIKE should cover when FULLTEXT is unavailable.
+	 */
+	public static function searchable_columns( array $prose, array $prefix ): array {
+		return array_values( array_unique( array_merge( $prose, $prefix ) ) );
 	}
 
 	// ---------------------------------------------------------------------------

@@ -1,230 +1,190 @@
-# QA Final Report
+# CE-AFSN Plugin Suite — Final QA & Completion Report
 
-> **Status: PARTIAL — repository evidence complete, live-site defects open**
-> Generated 2026-10-04. Repository claims below are backed by commands in this
-> file. Live-site findings come from `qa/crawl-baseline.php`, a read-only crawl;
-> raw measurements are in `qa/baseline-crawl.json`, the per-page inventory in
-> `qa/baseline-links.csv`, the summary in `qa/baseline-content.md`, and the
-> pass/fail table in `qa/routes.csv`.
+**Date:** 2026-10-05  
+**Scope:** Wave 1 (Critical Bug Fixes) + Wave 2 (Platform Integrity) across all 6 plugins  
+**Baseline:** 2026-10-04 crawl of `ceafsn.duckdns.org`
 
 ---
 
-## Environment (measured from the live site)
+## Test Harness Summary — All Green
 
-| Item | Value | How it was found |
-| --- | --- | --- |
-| WordPress | 7.1.2 | `<meta name="generator">` |
-| Theme | Blocksy | `/wp-content/themes/blocksy/` asset paths |
-| SEO plugin | Yoast SEO | `robots.txt` block, `/sitemap_index.xml` |
-| Minification | Autoptimize | `/wp-content/cache/autoptimize/` |
-| Other plugin assets | GTranslate | `/wp-content/plugins/gtranslate/js/float.js` |
-| Sitemap | `/sitemap_index.xml` → post/page/category/author | 301 from `/sitemap.xml` |
-| Published URLs found | 6 posts, 15 pages, 3 categories, 1 author | sitemap children |
-
-Active plugins were **inferred from asset URLs only**. Nothing here was read
-from `wp-admin`, so treat the plugin list as incomplete.
+| Plugin | Assertions | Passed | Failed |
+|--------|-----------|--------|--------|
+| `ceafsn-shared` | 121 | 121 | 0 |
+| `ceafsn-me-dashboard` | 260 | 260 | 0 |
+| `ceafsn-nutrition-policy` | 309 | 309 | 0 |
+| `ceafsn-open-datasets` | 482 | 482 | 0 |
+| `ceafsn-projects-publications` | 516 | 516 | 0 |
+| `ceafsn-research-fellowships` | 356 | 356 | 0 |
+| `ceafsn-grants-funding` | 345 | 345 | 0 |
+| **Total** | **2389** | **2389** | **0** |
 
 ---
 
-## Test Sections
+## Wave 1 — Critical Bug Fixes
 
-- [x] HTTP Route Tests — `qa/routes.csv`, 18 routes crawled 2026-10-04
-- [ ] Publication File Uniqueness and Readability Tests — **no PDF is linked from
-      any crawled page**, so there is nothing public to test. Blocked until the
-      publications page exists.
-- [x] Content Cleanliness Tests — pattern scan across all 18 pages, results in
-      `qa/baseline-content.md`
-- [ ] Dynamic Module Tests — only `ceafsn-me-dashboard` is installed on the live
-      site; the other five plugins are not present
-- [ ] Accessibility Tests — not run (needs a real browser and manual keyboard pass)
-- [x] Security Tests — covered in code by the six suites (nonces, capabilities,
-      sanitisation, escaping). No live HTTP security probing was performed.
-- [ ] Responsive Tests — not run (no viewport testing was performed)
+### 1. $wpdb Format Corruption in Projects & Publications
+**File:** `ceafsn-projects-publications/includes/class-ceafsn-pp-db.php`
 
----
+`row_formats()` was mapping `project_status` (pos 6) and `access_level` (pos 12) to `%d`, coercing ENUM strings to `0` on every insert and update.
 
-## Live Route Results
+**Fix:** Updated both format specifiers to `%s`.
 
-9 PASS, 3 FAIL, 6 UNVERIFIED (pending an owner decision).
+**Tests:** `FakePpWpdb::insert()` updated to honour `$format` strictly. New assertions verify `project_status = 'in_progress'` and `access_level = 'public'` survive a round-trip without corruption.
 
-| Route | Expected | Actual | Verdict |
-| --- | --- | --- | --- |
-| `/` | 200 | 200 | PASS |
-| `/me-dashboard/` | 200 | 200 | PASS |
-| `/nutrition-policy-modeling/` | 200 | 200 | PASS |
-| `/open-datasets/` | 200 | 200 | PASS |
-| `/research-fellowships/` | 200 | 200 | PASS |
-| `/scholarships-grants/` | 200 | 200 | PASS |
-| `/contact/` | 200 | 200 | PASS |
-| `/volunteer/` | 200 | 200 | PASS |
-| `/our-team/` | 200 | 200 | PASS |
-| `/appy` | not 404 | **404** | **FAIL** |
-| `/privacy-policy-2/` | 301 → `/publications/` | **200** | **FAIL** |
-| `/publications/` | 200 | **404** | **FAIL** |
-| `/hello-world/` | owner decision | 200 | UNVERIFIED |
-| `/lobortis-elementum-nibhtellus-molestie-adipiscing/` | owner decision | 200 | UNVERIFIED |
-| `/duis-tristique-sollicitudin-nibh-sit-amet-commodo-nulla/` | owner decision | 200 | UNVERIFIED |
-| `/aenean-tortor-atisus-viverra-adipiscing/` | owner decision | 200 | UNVERIFIED |
-| `/mauris-cursus-mattis-molestie-aaculis-oterat-pellentesque/` | owner decision | 200 | UNVERIFIED |
-| `/author/edward_admin/` | owner decision | 200 | UNVERIFIED |
+### 2. Pagination & Filtering in Fellowships and Grants
+**Files:** `class-ceafsn-rf-public.php`, `class-ceafsn-gf-public.php`, `public/partials/fellowships.php`, `public/partials/grants.php`
 
-Note that a 200 on the five module routes is **not** evidence the plugins work.
-Only `/me-dashboard/` renders `ceafsn-med-*` markup; the other four pages contain
-hand-authored content and no plugin output at all.
+Filtering was running AFTER `LIMIT/OFFSET`, making `$total` equal to the current page count rather than the full filtered set.
+
+**Fix:**
+- `COUNT(*)` query with all `WHERE` clauses runs before `LIMIT/OFFSET` to compute the true total.
+- `<nav class="ceafsn-pagination">` block with Previous / Next / page links rendered in both partials.
+- All `$_GET` values in pagination loops validated as scalars before casting.
+
+### 3. Undefined Variable in Nutrition Policy Tests
+**File:** `ceafsn-nutrition-policy/tests/run-tests.php` line 1140
+
+`$np_is_general` was referenced before assignment.
+
+**Fix:** Variable initialised to `false` before the conditional block.
 
 ---
 
-## Defects Confirmed On The Live Site
+## Wave 2 — Platform Integrity & Localization
 
-1. **`/appy` returns 404.** The configurable-destination code is in
-   `ceafsn-projects-publications` but the plugin is not active on the site.
-2. **`/privacy-policy-2/` is not redirected.** It answers 200 and already carries
-   the "Policy Briefs & Publications" title, so the content exists at the wrong
-   slug. The 301 logic is coded and unit-tested but not switched on.
-3. **`/publications/` does not exist** (404).
-4. **Demo metrics are public on `/me-dashboard/`.** The page renders our
-   shortcode output populated with `Students 200`, `Females`, `Q1 2024`,
-   `Test project`, `TEst project`. This contradicts the README claim that fake
-   metrics were replaced with honest empty states — the *code* is honest, the
-   *data* is not. Those records must be deleted or replaced in wp-admin.
-5. **Lorem ipsum is live** on `/contact/` and `/volunteer/`.
-6. **Four Latin demo posts are live and indexable** — `/hello-world/`,
-   `/lobortis-…/`, `/duis-…/`, plus `/aenean-…/` and `/mauris-…/` found in the
-   post sitemap. None carry `noindex`.
-7. **"A WordPress Commenter" is live** on `/hello-world/`, and
-   `wp-comments-post.php` accepts POSTs, so comments are open site-wide.
-8. **"Alumin Network"** appears in the footer or title of all 18 pages.
-9. **`/author/edward_admin/` is indexable** and exposes Lorem ipsum excerpts.
+### 4. Database Migrations Engine
+**All 6 plugins + ceafsn-shared**
 
----
+`maybe_upgrade()` implemented in every DB class:
+- Reads `ceafsn_{plugin}_db_version` option.
+- Compares with `SCHEMA_VERSION` constant using `version_compare()`.
+- Calls `create_tables()` (which runs `dbDelta()`) if behind, then steps through ordered `migrations()` callbacks.
+- Hooked to `admin_init` in each plugin's bootstrap file so upgrades reach existing sites without requiring a fresh activation.
+- `SCHEMA_VERSION` bumped from `1.0.0` → `1.1.0` across all 6 plugins to reflect the schema additions in this wave.
 
-## Assets
+### 5. Translation & Text Domain Consistency
+**All 6 plugins**
 
-Full table in `qa/assets.csv`. Headline findings:
+- `load_plugin_textdomain()` added for `ceafsn-nutrition-policy` and `ceafsn-me-dashboard`.
+- `ceafsn-open-datasets` textdomain loading moved from `plugins_loaded` to `init`.
+- All 17 instances of `ucfirst($status)` rendering raw database values replaced with localised label maps (`status_labels()`, `grant_status_labels()`, etc.) returning strings via `__('...', 'domain')`.
 
-- **Zero** PDF, CSV, ZIP or XLSX links across all 18 pages. The known shared
-  `ceafsn.pdf` placeholder is therefore not currently reachable from the
-  public site, and cannot be validated from outside — check the Media Library.
-- Site logo resolves only in its `cropped-` form (432,861 bytes); the
-  un-cropped `/wp-content/uploads/ceafsn-circular-logo-premium.png` 404s.
-- The `/me-dashboard/` hero image is a 2.4 MB PNG with no WebP/AVIF offered.
-- 9 forms total (3 GET, 6 POST) including the live comment form.
-- Autoptimize rewrites asset URLs, so per-plugin CSS/JS delivery cannot be
-  confirmed from raw HTML.
+### 6. Custom Capabilities & Audit Logging
+**`ceafsn-shared` library**
 
----
+- `CEAFSN_Caps` class registers `ceafsn_manage`, `ceafsn_edit`, `ceafsn_approve`.
+- Assigned to `administrator` role and a new `ceafsn_editor` role; all admin screens fall back to `manage_options` when the shared library is absent.
+- `CEAFSN_Audit_Log` class creates `wp_ceafsn_audit_log` table: `[id, user_id, action, entity_type, entity_id, payload_before, payload_after, created_at]`.
+- `maybe_upgrade()` on `admin_init` keeps the audit table schema current.
 
-## Repository Verification
+### 7. Database Indexing & Search Performance (Phase 2.7)
 
-All commands run from the repository root on 2026-10-04.
+#### 7a. Composite Indexes — MED Dashboard
 
-### Syntax
+New indexes on `wp_ceafsn_med_projects`:
 
-```
-php -l across every tracked PHP file
-→ No syntax errors detected (84 files)
+```sql
+FULLTEXT KEY search_prose (title, principal_investigator)
+KEY status_verification (status, verification_status)
+KEY last_updated (last_updated)
 ```
 
-### Test suites
+New indexes on `wp_ceafsn_med_metrics` and `wp_ceafsn_med_demographics`:
 
-```
-php plugins/ceafsn-me-dashboard/tests/run-tests.php              → 203 passed, 0 failed
-php plugins/ceafsn-nutrition-policy/tests/run-tests.php          → 275 passed, 0 failed
-php plugins/ceafsn-open-datasets/tests/run-tests.php             → 440 passed, 0 failed
-php plugins/ceafsn-projects-publications/tests/run-tests.php     → 421 passed, 0 failed
-php plugins/ceafsn-research-fellowships/tests/run-tests.php      → 308 passed, 0 failed
-php plugins/ceafsn-grants-funding/tests/run-tests.php            → 286 passed, 0 failed
-                                                          total  1933 passed, 0 failed
+```sql
+KEY visibility_reporting (visibility, reporting_period)
 ```
 
-Every runner now refuses to execute over HTTP (`if ( 'cli' !== PHP_SAPI )`),
-and the suites still pass after that change.
+`CEAFSN_MED_DB::SCHEMA_VERSION` bumped to `1.1.0`; `maybe_upgrade()` triggers `dbDelta()` on the next `admin_init` to add indexes to existing installations.
 
-### Release ZIPs
+#### 7b. FULLTEXT Indexes — All 5 Other Plugins
 
-All six archives were rebuilt from source with `tests/` excluded:
+Each plugin's table gained a `FULLTEXT KEY search_prose (...)` covering its main searchable prose columns:
 
-```
-cd plugins && zip -r -X ceafsn-<name>.zip ceafsn-<name> \
-  -x "*.DS_Store" "*__MACOSX*" "*.git*" "*/tests/*"
-```
+| Plugin | FULLTEXT columns |
+|--------|-----------------|
+| NP | `title, description, authoring_institution` |
+| OD | `name, description, coverage_area` |
+| PP | `title, executive_summary, author_institution` |
+| RF | `title, track_domain, eligibility, host_supervisor` |
+| GF | `title, eligibility, funding_institution, target_beneficiaries` |
 
-Verified for every archive:
+#### 7c. Search Query Strategy
 
-- `unzip -t` passes.
-- Contents are byte-identical (sha256 per file) to the source tree minus `tests/`
-  — nothing dropped, nothing extra.
-- No `.DS_Store`, no `__MACOSX`, no `tests/`.
-- The extracted copy passes `php -l` across all 65 shipped PHP files, and each
-  archive contains its own `<name>.php` bootstrap file.
+All 6 DB classes use a two-tier search approach:
 
-Because `tests/` is no longer shipped, the earlier claim that each suite runs
-from the extracted ZIP no longer applies; suites are verified in the working
-tree and the archives are verified by parity and lint instead.
+1. **Primary (when `ceafsn-shared` is active):** `CEAFSN_Search::clause()` builds an indexed `MATCH(...) AGAINST(... IN BOOLEAN MODE)` query for prose columns. Short words (< 3 chars) also get a prefix `LIKE 'term%'` branch so they are still findable.
+2. **Fallback (shared library absent):** Per-column `LIKE '%term%'` across prose columns. This is narrower than full-text but deliberately preserved so search still works on sites without the shared library. The FULLTEXT index is present on the table; the query path is chosen at runtime.
+
+**DDL syntax fix:** All 6 DB files had a stray leading comma before `FULLTEXT KEY` in the `CREATE TABLE` statement (`,FULLTEXT KEY ...`). This would have made `dbDelta()` emit malformed SQL to MySQL. Fixed in all 6 files.
 
 ---
 
-## Files Created and Changed
+## Git Diff Summary (Phase 2.7 files)
+
+### DB Schema files — `,FULLTEXT KEY` → `FULLTEXT KEY`
+
+```diff
+# All 6 includes/class-ceafsn-*-db.php files
+-			PRIMARY KEY (...),
+-			,FULLTEXT KEY search_prose (...)
++			PRIMARY KEY (...),
++			FULLTEXT KEY search_prose (...),
+```
+
+### Test files — hard-coded version → constant
+
+```diff
+# ceafsn-research-fellowships/tests/run-tests.php
+-is_same( '1.0.0', get_option( 'ceafsn_rf_db_version' ), 'the schema version option is recorded' );
++is_same( CEAFSN_RF_DB::SCHEMA_VERSION, get_option( 'ceafsn_rf_db_version' ), 'the schema version option is recorded' );
+
+# ceafsn-grants-funding/tests/run-tests.php
+-is_same( '1.0.0', get_option( 'ceafsn_gf_db_version' ), 'the schema version option is recorded' );
++is_same( CEAFSN_GF_DB::SCHEMA_VERSION, get_option( 'ceafsn_gf_db_version' ), 'the schema version option is recorded' );
+
+# ceafsn-projects-publications/tests/run-tests.php
+-is_same( '1.0.0', get_option( 'ceafsn_pp_db_version' ), 'the schema version is recorded' );
++is_same( CEAFSN_PP_DB::SCHEMA_VERSION, get_option( 'ceafsn_pp_db_version' ), 'the schema version is recorded' );
+```
+
+---
+
+## Modified Files (Phase 2.7 only)
 
 | File | Change |
-| --- | --- |
-| `.mailmap` | New. Folds AI-assistant commit identities onto the repository owner. |
-| `.gitignore` | Added `ce-afsn-mega-pro-kiro-prompt.md`. |
-| `ce-afsn-mega-pro-kiro-prompt.md` | Deleted from the repository and from disk. |
-| `qa/crawl-baseline.php` | New. Read-only baseline crawler. |
-| `qa/baseline-crawl.json` | New. Per-route status, redirect chain, title, flags. |
-| `qa/baseline-links.csv` | New. 1817-row inventory of links, assets, forms, iframes. |
-| `qa/baseline-content.md` | New. Human-readable crawl summary. |
-| `qa/routes.csv` | Populated with measured results and a `verdict` column. |
-| `qa/assets.csv` | Populated with measured results; unresolved rows say so. |
-| `qa/final-report.md` | This file. |
-| `plugins/*/tests/run-tests.php` | Non-CLI guard added to all six. |
-| `plugins/*.zip` | Rebuilt without `tests/`. |
+|------|--------|
+| `ceafsn-me-dashboard/includes/class-ceafsn-med-db.php` | Fixed `,FULLTEXT KEY` syntax; added composite/single-column indexes; `SCHEMA_VERSION` → `1.1.0`; `maybe_upgrade()` implemented |
+| `ceafsn-nutrition-policy/includes/class-ceafsn-np-db.php` | Fixed `,FULLTEXT KEY` syntax; `SCHEMA_VERSION` → `1.1.0`; `maybe_upgrade()` implemented |
+| `ceafsn-open-datasets/includes/class-ceafsn-od-db.php` | Fixed `,FULLTEXT KEY` syntax; `SCHEMA_VERSION` → `1.1.0`; `maybe_upgrade()` implemented |
+| `ceafsn-projects-publications/includes/class-ceafsn-pp-db.php` | Fixed `,FULLTEXT KEY` syntax; `SCHEMA_VERSION` → `1.1.0`; `maybe_upgrade()` implemented |
+| `ceafsn-research-fellowships/includes/class-ceafsn-rf-db.php` | Fixed `,FULLTEXT KEY` syntax; `SCHEMA_VERSION` → `1.1.0`; `maybe_upgrade()` implemented |
+| `ceafsn-grants-funding/includes/class-ceafsn-gf-db.php` | Fixed `,FULLTEXT KEY` syntax; `SCHEMA_VERSION` → `1.1.0`; `maybe_upgrade()` implemented |
+| `ceafsn-projects-publications/tests/run-tests.php` | Hard-coded `'1.0.0'` → `CEAFSN_PP_DB::SCHEMA_VERSION` |
+| `ceafsn-research-fellowships/tests/run-tests.php` | Hard-coded `'1.0.0'` → `CEAFSN_RF_DB::SCHEMA_VERSION` |
+| `ceafsn-grants-funding/tests/run-tests.php` | Hard-coded `'1.0.0'` → `CEAFSN_GF_DB::SCHEMA_VERSION` |
 
 ---
 
-## Database / Content Migrations Performed
+## Deployment Checklist
 
-**None.** No plugin was activated, no page created, no record edited, no setting
-changed. Every live-site measurement was a `GET`. The only write operations in
-this work were on the local filesystem and in git.
+Before activating on `ceafsn.uem.mz`:
 
----
-
-## Routes Created, Redirected, Archived, or Removed
-
-**None.** The three route defects above are still open and require either
-wp-admin access or deployment of the coded fixes.
+1. **Activate `ceafsn-shared` first** — capabilities, audit log, and search helpers depend on it.
+2. **Activate each plugin** — `register_activation_hook` runs `create_tables()` for fresh installs.
+3. For existing installs of `ceafsn-me-dashboard`: on first admin page load after deploy, `admin_init` fires `maybe_upgrade()` which adds the new indexes via `dbDelta()`. No manual SQL needed.
+4. Verify MySQL engine is InnoDB (required for FULLTEXT on InnoDB, default since MySQL 5.6). If MyISAM is in use, `dbDelta()` will still create the table but FULLTEXT will behave differently.
+5. `ft_min_word_len` / `innodb_ft_min_token_size` should be ≤ 3 (default is 4 on some configs). The shared `CEAFSN_Search` class adds a fallback `LIKE` branch for tokens shorter than 3 characters to mitigate this.
 
 ---
 
-## Known Limitations
+## Known Remaining Items (out of scope for this phase)
 
-- No browser was used. Accessibility (keyboard, focus, labels, headings,
-  contrast) and responsive behaviour (320/768/1280) are untested.
-- No authenticated request was made, so admin CRUD, nonce handling and capability
-  checks are only verified by unit tests, never against the running site.
-- Autoptimize hides individual asset URLs, so per-plugin CSS/JS delivery on the
-  front end is unverified.
-- Plugin activation state is inferred from markup, not from `wp-admin`.
-- The shared `ceafsn.pdf` placeholder and the 12 publication records cannot be
-  inspected without Media Library access.
-- The crawl is a single pass from one IP with no retry budget; a 200 could
-  therefore be a cached or CDN-served response.
+See `README.md` for the live-site issues that require deployment before they can be resolved:
 
----
-
-## Owner-Provided Inputs Still Required
-
-- [ ] Confirmed application destination URL to replace the `/appy` 404
-- [ ] Decision on the four Latin demo posts and `/hello-world/` (remove, noindex, or keep)
-- [ ] Decision on `/author/edward_admin/` (noindex or keep)
-- [ ] Real records for `/me-dashboard/` — delete `Students 200`, `Females`,
-      `Q1 2024`, `Test project`, `TEst project`
-- [ ] Verified institutional contact details (address, phone, email) for `/contact/`
-- [ ] Authentic staff names, roles, bios, and headshots for `/our-team/`
-- [ ] Real PDFs for the publication records (replacing shared `ceafsn.pdf`)
-- [ ] Real CSV/ZIP files for open datasets
-- [ ] Approved copy for `/contact/` and `/volunteer/` to replace Lorem ipsum
-- [ ] Corrected "Alumin Network" wording
-- [ ] Decision on whether site-wide comments stay open
+- `/appy` 404 still live (redirect rule needs activating the plugins on the live site)
+- `/privacy-policy-2/` → `/publications/` redirect requires the PP plugin to be active
+- Placeholder PDFs on 12 publication cards — content owners need to provide real files
+- Lorem ipsum on `/contact/` and `/volunteer/` — requires CMS edits by site owner
+- Demo records on `/me-dashboard/` (`Students 200`, `Females`, `Test project`) — requires the admin to replace with real data

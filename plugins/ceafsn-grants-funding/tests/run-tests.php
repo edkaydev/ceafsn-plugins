@@ -707,7 +707,7 @@ $schema = implode( "\n", $GLOBALS['ceafsn_gf_dbdelta'] );
 has_substring( 'wp_ceafsn_gf_grants', $schema, 'the table name carries the prefix' );
 has_substring( "ENUM('draft','published','archived')", $schema, 'the record-state enum matches statuses()' );
 has_substring( "ENUM('open','closed','upcoming','archived')", $schema, 'the grant-status enum matches grant_statuses()' );
-is_same( '1.0.0', get_option( 'ceafsn_gf_db_version' ), 'the schema version option is recorded' );
+is_same( CEAFSN_GF_DB::SCHEMA_VERSION, get_option( 'ceafsn_gf_db_version' ), 'the schema version option is recorded' );
 
 test( 'an injection attempt in the sort column falls back to the default' );
 CEAFSN_GF_Test_State::reset();
@@ -885,8 +885,17 @@ call_admin( $admin_ref, 'persist_grant', grant_row_data(), 0 );
 has_substring( 'INSERT INTO', (string) $wpdb->queries[0], 'a record with no ID is inserted' );
 $wpdb->reset_state();
 call_admin( $admin_ref, 'persist_grant', grant_row_data(), 7 );
-has_substring( 'UPDATE', (string) $wpdb->queries[0], 'a record with an ID is updated' );
-has_substring( '"grant_id":7', (string) $wpdb->queries[0], 'the update is scoped to that record' );
+// The write is preceded by a read-back so the audit log can capture the
+// previous state, so the write is located by content rather than position.
+$gf_write = '';
+foreach ( (array) $wpdb->queries as $ceafsn_q ) {
+	if ( str_contains( (string) $ceafsn_q, 'UPDATE' ) ) {
+		$gf_write = (string) $ceafsn_q;
+		break;
+	}
+}
+has_substring( 'UPDATE', $gf_write, 'a record with an ID is updated' );
+has_substring( '"grant_id":7', $gf_write, 'the update is scoped to that record' );
 
 // -----------------------------------------------------------------------------
 section( 'Activator: scoped upload restriction' );
@@ -1039,6 +1048,146 @@ $public = new CEAFSN_GF_Public();
 $html   = $public->render_shortcode( array( 'view' => 'table' ) );
 has_substring( '<table class="ceafsn-gf-table">', $html, 'the table layout is used' );
 has_substring( 'aria-sort=', $html, 'sortable headers announce their state' );
+
+// -----------------------------------------------------------------------------
+// Regression: the closed-call filter is derived from the deadline and cannot be
+// expressed in SQL, so paging in the query under-filled every page and left
+// records 13+ unreachable behind an unlinked offset.
+// -----------------------------------------------------------------------------
+
+/**
+ * Build N distinct published, open calls.
+ *
+ * @param int $count How many rows to build.
+ * @return array<int,object>
+ */
+function gf_open_rows( int $count ): array {
+	$rows = array();
+	for ( $i = 1; $i <= $count; $i++ ) {
+		$rows[] = grant_row(
+			array(
+				'grant_id'     => $i,
+				'title'        => 'Funding Call ' . $i,
+				'grant_status' => 'open',
+			)
+		);
+	}
+	return $rows;
+}
+
+test( 'the visible total counts every reachable record, not one page' );
+CEAFSN_GF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( gf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'CE-AFSN Trust' ) );
+$public = new CEAFSN_GF_Public();
+$html   = $public->render_shortcode( array() );
+is_same( 12, substr_count( $html, 'ceafsn-gf-badge--status-open' ), 'page one holds a full twelve cards, not thirty' );
+has_substring( 'Page 1 of 3', $html, 'the record count reflects all thirty records' );
+has_substring( 'rel="next"', $html, 'a next control is offered' );
+lacks_substring( 'rel="prev"', $html, 'there is no previous control on page one' );
+
+test( 'page two is reachable and returns the next slice' );
+CEAFSN_GF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( gf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'CE-AFSN Trust' ) );
+$_GET['gf_page'] = '2';
+$public = new CEAFSN_GF_Public();
+$html   = $public->render_shortcode( array() );
+is_same( 12, substr_count( $html, 'ceafsn-gf-badge--status-open' ), 'page two is full' );
+has_substring( 'Page 2 of 3', $html, 'the current page is reported' );
+has_substring( 'rel="prev"', $html, 'page two links back' );
+has_substring( 'Funding Call 13', $html, 'page two starts at the thirteenth record' );
+unset( $_GET['gf_page'] );
+
+test( 'the last page holds the remainder, not a full page' );
+CEAFSN_GF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( gf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'CE-AFSN Trust' ) );
+$_GET['gf_page'] = '3';
+$public = new CEAFSN_GF_Public();
+$html   = $public->render_shortcode( array() );
+is_same( 6, substr_count( $html, 'ceafsn-gf-badge--status-open' ), 'thirty records across twelve per page leaves six on page three' );
+lacks_substring( 'rel="next"', $html, 'the last page has no next control' );
+unset( $_GET['gf_page'] );
+
+test( 'an out-of-range page clamps to the last page instead of showing nothing' );
+CEAFSN_GF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( gf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'CE-AFSN Trust' ) );
+$_GET['gf_page'] = '99';
+$public = new CEAFSN_GF_Public();
+$html   = $public->render_shortcode( array() );
+has_substring( 'Page 3 of 3', $html, 'a stale deep link lands on the final page' );
+is_same( 6, substr_count( $html, 'ceafsn-gf-badge--status-open' ), 'the final page still shows its records' );
+unset( $_GET['gf_page'] );
+
+test( 'no pagination control is rendered when everything fits on one page' );
+CEAFSN_GF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 3;
+$wpdb->results_queue = array( gf_open_rows( 3 ) );
+$wpdb->col_queue     = array( array( 'CE-AFSN Trust' ) );
+$public = new CEAFSN_GF_Public();
+$html   = $public->render_shortcode( array() );
+lacks_substring( 'ceafsn-pagination', $html, 'a single-page list is not given a pointless control' );
+
+test( 'closed calls are dropped before the count is taken' );
+CEAFSN_GF_Test_State::reset();
+attach( 11, $valid_pdf );
+// Closed calls hidden by default, so the visible set is only the open ones.
+CEAFSN_GF_Test_State::$options[ CEAFSN_GF_Activator::SHOW_CLOSED_OPTION ] = 0;
+$mixed = array_merge(
+	gf_open_rows( 20 ),
+	array(
+		grant_row( array( 'grant_id' => 90, 'title' => 'Closed Call A', 'grant_status' => 'closed' ) ),
+		grant_row( array( 'grant_id' => 91, 'title' => 'Closed Call B', 'grant_status' => 'closed' ) ),
+	)
+);
+$wpdb->var_result    = 22;
+$wpdb->results_queue = array( $mixed );
+$wpdb->col_queue     = array( array( 'CE-AFSN Trust' ) );
+$public = new CEAFSN_GF_Public();
+$html   = $public->render_shortcode( array() );
+is_same( 12, substr_count( $html, 'ceafsn-gf-badge--status-open' ), 'only the twenty open calls are counted and sliced' );
+has_substring( 'Page 1 of 2', $html, 'the total reflects the filtered set, not the raw row count' );
+lacks_substring( 'Closed Call A', $html, 'a hidden closed call never reaches the output' );
+lacks_substring( 'Closed Call B', $html, 'neither hidden closed call reaches the output' );
+unset( CEAFSN_GF_Test_State::$options[ CEAFSN_GF_Activator::SHOW_CLOSED_OPTION ] );
+
+test( 'the table view also paginates' );
+CEAFSN_GF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( gf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'CE-AFSN Trust' ) );
+$public = new CEAFSN_GF_Public();
+$html   = $public->render_shortcode( array( 'view' => 'table' ) );
+is_same( 13, substr_count( $html, '<tr>' ), 'the table shows one header row plus twelve records' );
+has_substring( 'ceafsn-pagination', $html, 'pagination is available in the table layout too' );
+
+test( 'array-valued query args are not cast into hidden inputs' );
+CEAFSN_GF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( gf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'CE-AFSN Trust' ) );
+$_GET['ceafsn-gf-filter'] = array( 'a', 'b' );
+$_GET['utm_source']       = 'newsletter';
+$carried = CEAFSN_GF_Public::passthrough_args( array( 'gf_page' ) );
+is_same( array( 'utm_source' => 'newsletter' ), $carried, 'only scalar args are carried through' );
+$public = new CEAFSN_GF_Public();
+$html   = $public->render_shortcode( array() );
+has_substring( 'name="utm_source" value="newsletter"', $html, 'the unrelated scalar arg survives the filter form' );
+lacks_substring( 'name="ceafsn-gf-filter"', $html, 'an array arg cannot become a hidden input' );
+unset( $_GET['ceafsn-gf-filter'], $_GET['utm_source'] );
 
 // -----------------------------------------------------------------------------
 section( 'Uninstall' );
@@ -1383,6 +1532,85 @@ $_GET = array();
 // -----------------------------------------------------------------------------
 // Summary
 // -----------------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------------
+section( 'Translation and status labels' );
+
+test( 'the textdomain is loaded on init, not before' );
+$gf_boot = (string) file_get_contents( $plugin_dir . '/ceafsn-grants-funding.php' );
+has_substring( "add_action( 'init', 'ceafsn_gf_load_textdomain' );", $gf_boot, 'the loader waits for init' );
+ok( ! preg_match( "/add_action\\(\\s*'plugins_loaded'[^)]*load_textdomain/", $gf_boot ), 'WP 6.7 deprecated loading a textdomain earlier than init, so nothing registers it on plugins_loaded' );
+has_substring( "'ceafsn-gf',", $gf_boot, 'the domain string is ceafsn-gf' );
+
+test( 'every stored enum value has a translated label' );
+foreach ( array( 'draft', 'published', 'archived' ) as $gf_key ) {
+	$gf_label = CEAFSN_GF_DB::label( CEAFSN_GF_DB::status_labels(), $gf_key );
+	ok( '' !== $gf_label, 'status_labels() returns a non-empty label for "' . $gf_key . '"' );
+	ok( $gf_label !== $gf_key, 'and "' . $gf_key . '" is not shown as a raw machine key' );
+}
+foreach ( array( 'open', 'closed', 'upcoming', 'archived' ) as $gf_key ) {
+	$gf_label = CEAFSN_GF_DB::label( CEAFSN_GF_DB::grant_status_labels(), $gf_key );
+	ok( '' !== $gf_label, 'grant_status_labels() returns a non-empty label for "' . $gf_key . '"' );
+	ok( $gf_label !== $gf_key, 'and "' . $gf_key . '" is not shown as a raw machine key' );
+}
+
+test( 'each label map covers the schema exactly' );
+is_same( array( 'draft', 'published', 'archived' ), array_keys( CEAFSN_GF_DB::status_labels() ), 'status_labels() has one label per stored value, no more and no fewer' );
+is_same( array( 'open', 'closed', 'upcoming', 'archived' ), array_keys( CEAFSN_GF_DB::grant_status_labels() ), 'grant_status_labels() has one label per stored value, no more and no fewer' );
+
+test( 'an unrecognised key falls back to the key itself' );
+is_same( 'Draft', CEAFSN_GF_DB::label( CEAFSN_GF_DB::status_labels(), 'draft' ), 'a known key returns its translated label' );
+is_same( 'not_a_status', CEAFSN_GF_DB::label( CEAFSN_GF_DB::status_labels(), 'not_a_status' ), 'an unknown key is shown verbatim, so a missing label is obvious instead of silently English' );
+
+test( 'no partial renders a stored enum through ucfirst()' );
+$gf_seen = 0;
+foreach ( glob( $plugin_dir . '/admin/partials/*.php' ) ?: array() as $gf_partial ) {
+	$gf_seen++;
+	ok( ! str_contains( (string) file_get_contents( $gf_partial ), 'ucfirst(' ), basename( $gf_partial ) . ' does not title-case a stored value' );
+}
+foreach ( glob( $plugin_dir . '/public/partials/*.php' ) ?: array() as $gf_partial ) {
+	$gf_seen++;
+	ok( ! str_contains( (string) file_get_contents( $gf_partial ), 'ucfirst(' ), basename( $gf_partial ) . ' does not title-case a stored value' );
+}
+ok( $gf_seen > 0, 'the partials were actually scanned' );
+
+// -----------------------------------------------------------------------------
+section( 'Schema migration engine' );
+
+test( 'maybe_upgrade is a no-op when the stored version is current' );
+CEAFSN_GF_Test_State::reset();
+$GLOBALS['ceafsn_gf_dbdelta'] = array();
+update_option( 'ceafsn_gf_db_version', CEAFSN_GF_DB::SCHEMA_VERSION );
+is_same( false, CEAFSN_GF_DB::maybe_upgrade(), 'a current schema is left alone' );
+is_same( array(), (array) $GLOBALS['ceafsn_gf_dbdelta'], 'and no schema work runs, so admin_init stays cheap' );
+
+test( 'maybe_upgrade does nothing on a downgrade' );
+CEAFSN_GF_Test_State::reset();
+$GLOBALS['ceafsn_gf_dbdelta'] = array();
+update_option( 'ceafsn_gf_db_version', '99.0.0' );
+is_same( false, CEAFSN_GF_DB::maybe_upgrade(), 'a newer stored schema is never downgraded' );
+is_same( '99.0.0', get_option( 'ceafsn_gf_db_version' ), 'and the stored version is untouched' );
+
+test( 'maybe_upgrade applies dbDelta when the stored version is behind' );
+CEAFSN_GF_Test_State::reset();
+$GLOBALS['ceafsn_gf_dbdelta'] = array();
+is_same( false, get_option( 'ceafsn_gf_db_version', false ), 'no version is recorded on a site that never activated the plugin' );
+is_same( true, CEAFSN_GF_DB::maybe_upgrade(), 'a missing schema takes the upgrade path' );
+ok( ! empty( (array) $GLOBALS['ceafsn_gf_dbdelta'] ), 'the schema is created through dbDelta' );
+is_same( CEAFSN_GF_DB::SCHEMA_VERSION, get_option( 'ceafsn_gf_db_version' ), 'and the version option is brought up to date' );
+
+test( 'maybe_upgrade repairs an older installed version' );
+CEAFSN_GF_Test_State::reset();
+$GLOBALS['ceafsn_gf_dbdelta'] = array();
+update_option( 'ceafsn_gf_db_version', '0.9.0' );
+is_same( true, CEAFSN_GF_DB::maybe_upgrade(), 'a version bump is applied' );
+ok( ! empty( (array) $GLOBALS['ceafsn_gf_dbdelta'] ), 'dbDelta runs so missing columns and indexes are added' );
+is_same( CEAFSN_GF_DB::SCHEMA_VERSION, get_option( 'ceafsn_gf_db_version' ), 'and the option ends at the current version' );
+
+test( 'the migration is hooked to admin_init, not activation alone' );
+$med_bootstrap = (string) file_get_contents( $plugin_dir . '/ceafsn-grants-funding.php' );
+has_substring( "add_action( 'admin_init', array( 'CEAFSN_GF_DB', 'maybe_upgrade' ) );", $med_bootstrap, 'plugin updates reach existing sites because the hook is on admin_init' );
 
 $pass = $GLOBALS['ceafsn_gf_test_pass'];
 $fail = $GLOBALS['ceafsn_gf_test_fail'];
