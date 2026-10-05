@@ -31,6 +31,12 @@ if ( ! empty( $_GET['ceafsn_np_error'] ) ) : ?>
 	<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Policy record saved.', 'ceafsn-np' ); ?></p></div>
 <?php endif; ?>
 
+<?php if ( ! empty( $_GET['published_blocked'] ) ) : ?>
+	<div class="notice notice-warning">
+		<p><?php esc_html_e( "Policy record saved as a draft: you do not have permission to publish. Ask an administrator to review and publish it.", 'ceafsn-np' ); ?></p>
+	</div>
+<?php endif; ?>
+
 <?php if ( ! empty( $_GET['deleted'] ) ) : ?>
 	<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Policy record deleted.', 'ceafsn-np' ); ?></p></div>
 <?php endif; ?>
@@ -144,7 +150,7 @@ $np_is_list  = 'list' === $action;
 									</td>
 									<td>
 										<span class="ceafsn-badge ceafsn-badge--status-<?php echo esc_attr( $np_item_status ); ?>">
-											<?php echo esc_html( ucfirst( $np_item_status ) ); ?>
+											<?php echo esc_html( CEAFSN_NP_DB::label( CEAFSN_NP_DB::status_labels(), (string) $np_item_status ) ); ?>
 										</span>
 									</td>
 									<td class="ceafsn-table__actions">
@@ -306,7 +312,7 @@ $np_is_list  = 'list' === $action;
 							<?php foreach ( $np_statuses as $status ) : ?>
 								<option value="<?php echo esc_attr( $status ); ?>"
 									<?php selected( $status, (string) ( $row->status ?? 'draft' ) ); ?>>
-									<?php echo esc_html( ucfirst( $status ) ); ?>
+									<?php echo esc_html( CEAFSN_NP_DB::label( CEAFSN_NP_DB::status_labels(), (string) $status ) ); ?>
 								</option>
 							<?php endforeach; ?>
 						</select>

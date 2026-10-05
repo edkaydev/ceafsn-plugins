@@ -17,6 +17,8 @@ class CEAFSN_MED_Activator {
 	 *
 	 * - Creates or upgrades database tables.
 	 * - Sets the stored schema version.
+	 * - Registers the CE-AFSN capabilities and research editor role.
+	 * - Creates the shared audit log table.
 	 * - Flushes rewrite rules so the shortcode page is immediately accessible.
 	 *
 	 * @return void
@@ -29,6 +31,18 @@ class CEAFSN_MED_Activator {
 
 		// Create / upgrade tables.
 		CEAFSN_MED_DB::create_tables();
+
+		// Register the CE-AFSN capabilities and the research editor role. The
+		// call is idempotent, so activating several CE-AFSN plugins in one
+		// request is harmless.
+		if ( class_exists( 'CEAFSN_Caps' ) ) {
+			CEAFSN_Caps::install();
+		}
+
+		// Create the shared audit log alongside this plugin's own tables.
+		if ( class_exists( 'CEAFSN_Audit_Log' ) ) {
+			CEAFSN_Audit_Log::create_table();
+		}
 
 		// Set default options only if they don't already exist.
 		if ( false === get_option( 'ceafsn_med_preview_mode' ) ) {

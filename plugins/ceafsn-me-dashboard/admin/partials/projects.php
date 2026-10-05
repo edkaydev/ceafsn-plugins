@@ -26,6 +26,12 @@ $med_is_edit = ( 'edit' === $action && $row instanceof stdClass );
 	<?php if ( ! empty( $_GET['saved'] ) ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Project saved.', 'ceafsn-med' ); ?></p></div>
 	<?php endif; ?>
+
+	<?php if ( ! empty( $_GET['published_blocked'] ) ) : ?>
+		<div class="notice notice-warning">
+			<p><?php esc_html_e( "Project saved as a draft: you do not have permission to publish. Ask an administrator to review and publish it.", 'ceafsn-med' ); ?></p>
+		</div>
+	<?php endif; ?>
 	<?php if ( ! empty( $_GET['deleted'] ) ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Project deleted.', 'ceafsn-med' ); ?></p></div>
 	<?php endif; ?>
@@ -204,7 +210,7 @@ $med_is_edit = ( 'edit' === $action && $row instanceof stdClass );
 									<td><?php echo esc_html( $item->target_region ); ?></td>
 									<td>
 										<span class="ceafsn-badge ceafsn-badge--status-<?php echo esc_attr( $item->status ); ?>">
-											<?php echo esc_html( ucfirst( $item->status ) ); ?>
+											<?php echo esc_html( CEAFSN_MED_DB::label( CEAFSN_MED_DB::project_status_labels(), (string) $item->status ) ); ?>
 										</span>
 									</td>
 									<td>

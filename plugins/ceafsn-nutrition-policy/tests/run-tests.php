@@ -1020,10 +1020,14 @@ ok( count( $handlers ) >= 4, 'all expected write handlers are present (' . count
 foreach ( $handlers as $handler ) {
 	preg_match( '/public function ' . preg_quote( $handler, '/' ) . '\(.*?\n\t\}/s', $admin_source, $body );
 	$body = (string) ( $body[0] ?? '' );
-	has_substring( 'require_manage_options()', $body, "{$handler} checks manage_options" );
+	$ceafsn_want = ( preg_match( '/handle_(save_settings|export|uninstall)/', $handler ) ) ? 'require_manage()' : 'require_edit()';
+	$ceafsn_have = ( false !== strpos( $body, 'require_manage();' ) ) ? 'require_manage()' : 'require_edit()';
+	is_same( $ceafsn_want, $ceafsn_have, "{$handler} is guarded by the capability that matches what it does" );
+	has_substring( $ceafsn_want, $body, "{$handler} checks {$ceafsn_want}" );
 	has_substring( 'check_admin_referer', $body, "{$handler} verifies a nonce" );
 }
-has_substring( "'manage_options'", $admin_source, 'manage_options is the required capability' );
+has_substring( "'manage_options'", $admin_source, 'manage_options is still accepted as a fallback capability' );
+has_substring( 'private const CAP_EDIT', $admin_source, 'the capability names are mirrored locally so a missing shared library cannot fatal' );
 
 test( 'publishing is gated on PDF validation in the handler' );
 has_substring( 'CEAFSN_NP_Validator::publish_blockers', $admin_source, 'the save handler consults the validator' );
@@ -1069,6 +1073,78 @@ foreach ( (array) glob( $fixture_dir . '/*' ) as $fixture_file ) {
 	}
 }
 rmdir( $fixture_dir );
+// -----------------------------------------------------------------------------
+section( 'Translation and status labels' );
+
+test( 'the textdomain is loaded on init, not before' );
+$np_boot = (string) file_get_contents( $plugin_dir . '/ceafsn-nutrition-policy.php' );
+has_substring( "add_action( 'init', 'ceafsn_np_load_textdomain' );", $np_boot, 'the loader waits for init' );
+ok( ! preg_match( "/add_action\\(\\s*'plugins_loaded'[^)]*load_textdomain/", $np_boot ), 'WP 6.7 deprecated loading a textdomain earlier than init, so nothing registers it on plugins_loaded' );
+has_substring( "'ceafsn-np',", $np_boot, 'the domain string is ceafsn-np' );
+
+test( 'every stored enum value has a translated label' );
+foreach ( array( 'draft', 'published', 'archived' ) as $np_key ) {
+	$np_label = CEAFSN_NP_DB::label( CEAFSN_NP_DB::status_labels(), $np_key );
+	ok( '' !== $np_label, 'status_labels() returns a non-empty label for "' . $np_key . '"' );
+	ok( $np_label !== $np_key, 'and "' . $np_key . '" is not shown as a raw machine key' );
+}
+
+test( 'each label map covers the schema exactly' );
+is_same( array( 'draft', 'published', 'archived' ), array_keys( CEAFSN_NP_DB::status_labels() ), 'status_labels() has one label per stored value, no more and no fewer' );
+
+test( 'an unrecognised key falls back to the key itself' );
+is_same( 'Draft', CEAFSN_NP_DB::label( CEAFSN_NP_DB::status_labels(), 'draft' ), 'a known key returns its translated label' );
+is_same( 'not_a_status', CEAFSN_NP_DB::label( CEAFSN_NP_DB::status_labels(), 'not_a_status' ), 'an unknown key is shown verbatim, so a missing label is obvious instead of silently English' );
+
+test( 'no partial renders a stored enum through ucfirst()' );
+$np_seen = 0;
+foreach ( glob( $plugin_dir . '/admin/partials/*.php' ) ?: array() as $np_partial ) {
+	$np_seen++;
+	ok( ! str_contains( (string) file_get_contents( $np_partial ), 'ucfirst(' ), basename( $np_partial ) . ' does not title-case a stored value' );
+}
+foreach ( glob( $plugin_dir . '/public/partials/*.php' ) ?: array() as $np_partial ) {
+	$np_seen++;
+	ok( ! str_contains( (string) file_get_contents( $np_partial ), 'ucfirst(' ), basename( $np_partial ) . ' does not title-case a stored value' );
+}
+ok( $np_seen > 0, 'the partials were actually scanned' );
+
+// -----------------------------------------------------------------------------
+section( 'Schema migration engine' );
+
+test( 'maybe_upgrade is a no-op when the stored version is current' );
+CEAFSN_NP_Test_State::reset();
+$GLOBALS['ceafsn_np_dbdelta'] = array();
+update_option( 'ceafsn_np_db_version', CEAFSN_NP_DB::SCHEMA_VERSION );
+is_same( false, CEAFSN_NP_DB::maybe_upgrade(), 'a current schema is left alone' );
+is_same( array(), (array) $GLOBALS['ceafsn_np_dbdelta'], 'and no schema work runs, so admin_init stays cheap' );
+
+test( 'maybe_upgrade does nothing on a downgrade' );
+CEAFSN_NP_Test_State::reset();
+$GLOBALS['ceafsn_np_dbdelta'] = array();
+update_option( 'ceafsn_np_db_version', '99.0.0' );
+is_same( false, CEAFSN_NP_DB::maybe_upgrade(), 'a newer stored schema is never downgraded' );
+is_same( '99.0.0', get_option( 'ceafsn_np_db_version' ), 'and the stored version is untouched' );
+
+test( 'maybe_upgrade applies dbDelta when the stored version is behind' );
+CEAFSN_NP_Test_State::reset();
+$GLOBALS['ceafsn_np_dbdelta'] = array();
+is_same( false, get_option( 'ceafsn_np_db_version', false ), 'no version is recorded on a site that never activated the plugin' );
+is_same( true, CEAFSN_NP_DB::maybe_upgrade(), 'a missing schema takes the upgrade path' );
+ok( ! empty( (array) $GLOBALS['ceafsn_np_dbdelta'] ), 'the schema is created through dbDelta' );
+is_same( CEAFSN_NP_DB::SCHEMA_VERSION, get_option( 'ceafsn_np_db_version' ), 'and the version option is brought up to date' );
+
+test( 'maybe_upgrade repairs an older installed version' );
+CEAFSN_NP_Test_State::reset();
+$GLOBALS['ceafsn_np_dbdelta'] = array();
+update_option( 'ceafsn_np_db_version', '0.9.0' );
+is_same( true, CEAFSN_NP_DB::maybe_upgrade(), 'a version bump is applied' );
+ok( ! empty( (array) $GLOBALS['ceafsn_np_dbdelta'] ), 'dbDelta runs so missing columns and indexes are added' );
+is_same( CEAFSN_NP_DB::SCHEMA_VERSION, get_option( 'ceafsn_np_db_version' ), 'and the option ends at the current version' );
+
+test( 'the migration is hooked to admin_init, not activation alone' );
+$med_bootstrap = (string) file_get_contents( $plugin_dir . '/ceafsn-nutrition-policy.php' );
+has_substring( "add_action( 'admin_init', array( 'CEAFSN_NP_DB', 'maybe_upgrade' ) );", $med_bootstrap, 'plugin updates reach existing sites because the hook is on admin_init' );
+
 unlink( $fake_wp_admin . '/upgrade.php' );
 rmdir( $fake_wp_admin );
 rmdir( dirname( $fake_wp_admin ) );
@@ -1137,13 +1213,16 @@ $np_set_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/set
 // NP posts one form for every editable tab, so the scope is decided by the tab
 // that is open rather than by the form itself.
 has_substring( 'name="ceafsn_np_settings_scope"', $np_set_partial, 'the settings form declares a scope' );
-has_substring( "$np_is_general ? 'general' : 'uninstall'", $np_set_partial, 'the scope follows the active tab' );
+// Single quotes: the assertion looks for that literal source expression in the
+// partial, so the variable name must not be interpolated here.
+has_substring( '$np_is_general ? \'general\' : \'uninstall\'', $np_set_partial, 'the scope follows the active tab' );
 has_substring( '<input type="checkbox" id="ceafsn-np-uninstall-delete"', $np_set_partial, 'the uninstall box still exists' );
 has_substring( 'id="ceafsn-np-placeholder-files"', $np_set_partial, 'the placeholder list still exists' );
 $np_admin_class = (string) file_get_contents( $plugin_dir . '/admin/class-ceafsn-np-admin.php' );
 has_substring( 'private function persist_settings( array $post ): void', $np_admin_class, 'the writer is a separate method' );
 has_substring( '$this->persist_settings( wp_unslash( $_POST ) );', $np_admin_class, 'the handler delegates to the writer' );
-has_substring( '$this->require_manage_options();', $np_admin_class, 'the capability check still guards the handler' );
+has_substring( '$this->require_manage();', $np_admin_class, 'the capability check still guards the handler' );
+
 
 $pass = $GLOBALS['ceafsn_np_test_pass'];
 $fail = $GLOBALS['ceafsn_np_test_fail'];

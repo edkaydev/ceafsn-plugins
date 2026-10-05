@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04T13:49:44+00:00\n"
+"POT-Creation-Date: 2026-10-05T11:40:10+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-od\n"
@@ -165,7 +165,7 @@ msgstr ""
 
 #: admin/partials/datasets.php:116
 #: admin/partials/datasets.php:299
-#: includes/class-ceafsn-od-db.php:65
+#: includes/class-ceafsn-od-db.php:72
 msgid "Published"
 msgstr ""
 
@@ -777,27 +777,27 @@ msgstr ""
 msgid "Export first"
 msgstr ""
 
-#: includes/class-ceafsn-od-db.php:50
+#: includes/class-ceafsn-od-db.php:57
 msgid "CSV"
 msgstr ""
 
-#: includes/class-ceafsn-od-db.php:51
+#: includes/class-ceafsn-od-db.php:58
 msgid "ZIP"
 msgstr ""
 
-#: includes/class-ceafsn-od-db.php:52
+#: includes/class-ceafsn-od-db.php:59
 msgid "XLSX"
 msgstr ""
 
-#: includes/class-ceafsn-od-db.php:53
+#: includes/class-ceafsn-od-db.php:60
 msgid "Other"
 msgstr ""
 
-#: includes/class-ceafsn-od-db.php:64
+#: includes/class-ceafsn-od-db.php:71
 msgid "Draft"
 msgstr ""
 
-#: includes/class-ceafsn-od-db.php:66
+#: includes/class-ceafsn-od-db.php:73
 msgid "Archived"
 msgstr ""
 

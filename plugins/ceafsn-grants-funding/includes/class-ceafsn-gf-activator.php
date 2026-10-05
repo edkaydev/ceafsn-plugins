@@ -37,6 +37,19 @@ class CEAFSN_GF_Activator {
 
 		CEAFSN_GF_DB::create_tables();
 
+		// Register the CE-AFSN capabilities and the research editor role. The
+		// call is idempotent, so activating several CE-AFSN plugins in one
+		// request is harmless.
+		if ( class_exists( 'CEAFSN_Caps' ) ) {
+			CEAFSN_Caps::install();
+		}
+
+		// Create the shared audit log alongside this plugin's own tables.
+		if ( class_exists( 'CEAFSN_Audit_Log' ) ) {
+			CEAFSN_Audit_Log::create_table();
+		}
+
+
 		// Seed the option that decides whether closed opportunities stay
 		// listed, but never overwrite a choice an administrator has made.
 		if ( null === get_option( self::SHOW_CLOSED_OPTION, null ) ) {

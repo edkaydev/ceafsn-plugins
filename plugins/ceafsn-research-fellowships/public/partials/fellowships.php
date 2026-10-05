@@ -3,8 +3,9 @@
  * Public partial: the shortcode output.
  *
  * Variables in scope (set by CEAFSN_RF_Public::render_shortcode()):
- *   @var array<int,array<string,mixed>> $rows         Card models
- *   @var int                          $total        Rows after filtering
+ *   @var array<int,array<string,mixed>> $rows         Card models for the current page
+ *   @var int                          $total        Rows matching the filters, across all pages
+ *   @var int                          $total_pages  Total pages, at least 1
  *   @var array<int,string>            $tracks       Known track/domain values
  *   @var array<int,string>            $present      Statuses present in the results
  *   @var array<int,string>            $sortable     Sortable column keys
@@ -54,12 +55,9 @@ foreach ( $present as $rf_status ) {
 		<?php
 		// Keep unrelated query args on the page URL so the form does not strip
 		// the WordPress page permalink arguments the server relies on.
-		$rf_hidden = array();
-		foreach ( $_GET as $rf_k => $rf_v ) {
-			if ( ! in_array( (string) $rf_k, array( 'rf_track', 'rf_status', 'rf_search', 'rf_view', 'rf_page', 'rf_sort', 'rf_order' ), true ) ) {
-				$rf_hidden[ (string) $rf_k ] = (string) $rf_v;
-			}
-		}
+		$rf_hidden = CEAFSN_RF_Public::passthrough_args(
+			array( 'rf_track', 'rf_status', 'rf_search', 'rf_view', 'rf_page', 'rf_sort', 'rf_order' )
+		);
 		foreach ( $rf_hidden as $rf_k => $rf_v ) :
 			?>
 			<input type="hidden" name="<?php echo esc_attr( $rf_k ); ?>" value="<?php echo esc_attr( $rf_v ); ?>" />
@@ -257,4 +255,16 @@ foreach ( $present as $rf_status ) {
 		</ul>
 
 	<?php endif; ?>
+
+	<?php
+	// Rendered for both the card grid and the table view: a visitor who filtered
+	// to a single track still needs a way to reach the rest of that track.
+	echo CEAFSN_RF_Public::render_pagination( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in render_pagination().
+		(int) $current_page,
+		(int) $total_pages,
+		(string) $base_url,
+		'rf_page',
+		__( 'Research fellowship pages', 'ceafsn-rf' )
+	);
+	?>
 </div>

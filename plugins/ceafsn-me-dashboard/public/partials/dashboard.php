@@ -22,16 +22,11 @@ $has_metrics      = ! empty( $metrics );
 $has_demographics = ! empty( $demographics );
 $has_projects     = ! empty( $projects );
 
-$status_labels = array(
-	'active'    => __( 'Active', 'ceafsn-med' ),
-	'completed' => __( 'Completed', 'ceafsn-med' ),
-	'suspended' => __( 'Suspended', 'ceafsn-med' ),
-);
-$verif_labels = array(
-	'verified'   => __( 'Verified', 'ceafsn-med' ),
-	'pending'    => __( 'Pending', 'ceafsn-med' ),
-	'unverified' => __( 'Unverified', 'ceafsn-med' ),
-);
+// Single source of truth for these labels is the DB class, so the filter
+// dropdown and the table cells can never drift apart or drift out of sync with
+// the .pot catalogue.
+$status_labels = CEAFSN_MED_DB::project_status_labels();
+$verif_labels  = CEAFSN_MED_DB::verification_labels();
 
 $total_pages  = $per_page > 0 ? (int) ceil( $total / $per_page ) : 1;
 $current_url  = get_permalink();
@@ -178,7 +173,7 @@ $current_url  = get_permalink();
 							<?php echo esc_html( number_format( (float) $demo->value, 2 ) ); ?>
 							<?php echo 'percentage' === $demo->value_type ? '%' : ''; ?>
 						</td>
-						<td><?php echo esc_html( ucfirst( $demo->value_type ) ); ?></td>
+						<td><?php echo esc_html( CEAFSN_MED_DB::label( CEAFSN_MED_DB::value_type_labels(), (string) $demo->value_type ) ); ?></td>
 						<td><?php echo esc_html( $demo->reporting_period ); ?></td>
 						<td><?php echo esc_html( $demo->source ); ?></td>
 					</tr>
@@ -268,13 +263,13 @@ $current_url  = get_permalink();
 						<td>
 							<span class="ceafsn-badge ceafsn-badge--status-<?php echo esc_attr( $project->status ); ?>"
 								aria-label="<?php echo esc_attr( __( 'Status:', 'ceafsn-med' ) . ' ' . ( $status_labels[ $project->status ] ?? $project->status ) ); ?>">
-								<?php echo esc_html( $status_labels[ $project->status ] ?? ucfirst( $project->status ) ); ?>
+								<?php echo esc_html( CEAFSN_MED_DB::label( CEAFSN_MED_DB::project_status_labels(), (string) $project->status ) ); ?>
 							</span>
 						</td>
 						<td>
 							<span class="ceafsn-badge ceafsn-badge--verif-<?php echo esc_attr( $project->verification_status ); ?>"
 								aria-label="<?php echo esc_attr( __( 'Verification:', 'ceafsn-med' ) . ' ' . ( $verif_labels[ $project->verification_status ] ?? $project->verification_status ) ); ?>">
-								<?php echo esc_html( $verif_labels[ $project->verification_status ] ?? ucfirst( $project->verification_status ) ); ?>
+								<?php echo esc_html( CEAFSN_MED_DB::label( CEAFSN_MED_DB::verification_labels(), (string) $project->verification_status ) ); ?>
 							</span>
 						</td>
 						<td>

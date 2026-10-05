@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04T13:49:25+00:00\n"
+"POT-Creation-Date: 2026-10-05T11:40:11+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-rf\n"
@@ -224,6 +224,7 @@ msgid "%1$s of %2$s show a real status"
 msgstr ""
 
 #: admin/partials/fellowships.php:291
+#: includes/class-ceafsn-rf-db.php:78
 msgid "Published"
 msgstr ""
 
@@ -297,7 +298,7 @@ msgid "Opportunities stay invisible on the public page until they are published 
 msgstr ""
 
 #: admin/partials/fellowships.php:426
-#: public/partials/fellowships.php:112
+#: public/partials/fellowships.php:110
 msgid "Research fellowship opportunities"
 msgstr ""
 
@@ -341,7 +342,7 @@ msgid "All tracks"
 msgstr ""
 
 #: admin/partials/fellowships.php:473
-#: public/partials/fellowships.php:176
+#: public/partials/fellowships.php:174
 msgid "Override"
 msgstr ""
 
@@ -466,8 +467,8 @@ msgid "Optional. Used by the public filter."
 msgstr ""
 
 #: admin/partials/fellowships.php:641
-#: public/partials/fellowships.php:121
-#: public/partials/fellowships.php:193
+#: public/partials/fellowships.php:119
+#: public/partials/fellowships.php:191
 msgid "Duration"
 msgstr ""
 
@@ -769,16 +770,21 @@ msgstr ""
 msgid "Attached PDFs stay in the Media Library either way — other pages may still link to them."
 msgstr ""
 
+#: includes/class-ceafsn-rf-db.php:77
+msgid "Draft"
+msgstr ""
+
+#: includes/class-ceafsn-rf-db.php:79
+#: includes/class-ceafsn-rf-status.php:218
+msgid "Archived"
+msgstr ""
+
 #: includes/class-ceafsn-rf-status.php:216
 msgid "Upcoming"
 msgstr ""
 
 #: includes/class-ceafsn-rf-status.php:217
 msgid "Closed"
-msgstr ""
-
-#: includes/class-ceafsn-rf-status.php:218
-msgid "Archived"
 msgstr ""
 
 #: includes/class-ceafsn-rf-status.php:237
@@ -871,137 +877,155 @@ msgstr ""
 msgid "A manual status of Open needs a closing date or a documented override. Until then the opportunity cannot be published as open."
 msgstr ""
 
-#: public/class-ceafsn-rf-public.php:181
+#: public/class-ceafsn-rf-public.php:198
 msgid "Call document currently unavailable"
 msgstr ""
 
-#: public/class-ceafsn-rf-public.php:182
+#: public/class-ceafsn-rf-public.php:199
 msgid "View the call document"
 msgstr ""
 
 #. translators: 1: formatted date, 2: site timezone name.
-#: public/class-ceafsn-rf-public.php:240
+#: public/class-ceafsn-rf-public.php:257
 #, php-format
 msgid "%1$s (%2$s time)"
 msgstr ""
 
-#: public/class-ceafsn-rf-public.php:301
+#: public/class-ceafsn-rf-public.php:318
 msgid "Apply now"
 msgstr ""
 
-#: public/class-ceafsn-rf-public.php:309
+#: public/class-ceafsn-rf-public.php:326
 msgid "Application details will be published shortly."
 msgstr ""
 
-#: public/class-ceafsn-rf-public.php:317
+#: public/class-ceafsn-rf-public.php:334
 msgid "Applications closed"
 msgstr ""
 
-#: public/class-ceafsn-rf-public.php:317
-#: public/partials/fellowships.php:142
+#: public/class-ceafsn-rf-public.php:334
+#: public/partials/fellowships.php:140
 msgid "Apply"
 msgstr ""
 
-#: public/partials/fellowships.php:35
-msgid "Skip to the opportunity list"
+#. translators: 1: current page number, 2: total number of pages.
+#: public/class-ceafsn-rf-public.php:407
+#, php-format
+msgid "Page %1$d of %2$d"
+msgstr ""
+
+#: public/class-ceafsn-rf-public.php:418
+msgid "Previous"
+msgstr ""
+
+#: public/class-ceafsn-rf-public.php:426
+msgid "Next"
 msgstr ""
 
 #: public/partials/fellowships.php:36
-msgid "Read the full eligibility criteria"
+msgid "Skip to the opportunity list"
 msgstr ""
 
 #: public/partials/fellowships.php:37
+msgid "Read the full eligibility criteria"
+msgstr ""
+
+#: public/partials/fellowships.php:38
 msgid "Show less"
 msgstr ""
 
 #. translators: 1: number of opportunities, 2: shortcode attribute, e.g. [ceafsn_fellowships].
-#: public/partials/fellowships.php:44
+#: public/partials/fellowships.php:45
 #, php-format
 msgid "%1$s opportunity shown."
 msgid_plural "%1$s opportunities shown."
 msgstr[0] ""
 msgstr[1] ""
 
-#: public/partials/fellowships.php:48
+#: public/partials/fellowships.php:49
 msgid "Clear filters"
 msgstr ""
 
-#: public/partials/fellowships.php:69
+#: public/partials/fellowships.php:67
 msgid "Search opportunities"
 msgstr ""
 
-#: public/partials/fellowships.php:72
+#: public/partials/fellowships.php:70
 msgid "Search titles and eligibility"
 msgstr ""
 
-#: public/partials/fellowships.php:74
+#: public/partials/fellowships.php:72
 msgid "Filter by track or domain"
 msgstr ""
 
-#: public/partials/fellowships.php:76
+#: public/partials/fellowships.php:74
 msgid "All tracks and domains"
 msgstr ""
 
-#: public/partials/fellowships.php:84
+#: public/partials/fellowships.php:82
 msgid "Filter by status"
 msgstr ""
 
-#: public/partials/fellowships.php:86
+#: public/partials/fellowships.php:84
 msgid "All statuses"
 msgstr ""
 
-#: public/partials/fellowships.php:98
+#: public/partials/fellowships.php:96
 msgid "Filter"
 msgstr ""
 
-#: public/partials/fellowships.php:106
+#: public/partials/fellowships.php:104
 msgid "There are no opportunities to show right now. Please check back soon."
 msgstr ""
 
-#: public/partials/fellowships.php:117
+#: public/partials/fellowships.php:115
 msgid "Opportunity"
 msgstr ""
 
-#: public/partials/fellowships.php:118
-#: public/partials/fellowships.php:186
+#: public/partials/fellowships.php:116
+#: public/partials/fellowships.php:184
 msgid "Track"
 msgstr ""
 
-#: public/partials/fellowships.php:119
+#: public/partials/fellowships.php:117
 msgid "Opens"
 msgstr ""
 
-#: public/partials/fellowships.php:120
-#: public/partials/fellowships.php:206
+#: public/partials/fellowships.php:118
+#: public/partials/fellowships.php:204
 msgid "Closes"
 msgstr ""
 
-#: public/partials/fellowships.php:134
+#: public/partials/fellowships.php:132
 msgid "(sort ascending)"
 msgstr ""
 
-#: public/partials/fellowships.php:135
+#: public/partials/fellowships.php:133
 msgid "(sort descending)"
 msgstr ""
 
-#: public/partials/fellowships.php:200
+#: public/partials/fellowships.php:198
 msgid "Host"
 msgstr ""
 
-#: public/partials/fellowships.php:213
+#: public/partials/fellowships.php:211
 msgid "No closing date recorded"
 msgstr ""
 
-#: public/partials/fellowships.php:220
+#: public/partials/fellowships.php:218
 msgid "Who can apply"
 msgstr ""
 
-#: public/partials/fellowships.php:226
+#: public/partials/fellowships.php:224
 msgid "Funding"
 msgstr ""
 
 #. translators: %s: contact email address.
-#: public/partials/fellowships.php:245
+#: public/partials/fellowships.php:243
 #, php-format
 msgid "Questions? Email %s"
+msgstr ""
+
+#: public/partials/fellowships.php:267
+msgid "Research fellowship pages"
 msgstr ""

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04T13:49:44+00:00\n"
+"POT-Creation-Date: 2026-10-05T11:40:10+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-np\n"
@@ -130,6 +130,7 @@ msgid "%1$s of %2$s"
 msgstr ""
 
 #: admin/partials/overview.php:71
+#: includes/class-ceafsn-np-db.php:55
 #: public/partials/policies.php:29
 #: public/partials/policies.php:124
 msgid "Published"
@@ -710,6 +711,14 @@ msgstr ""
 
 #: admin/partials/settings.php:193
 msgid "Save settings"
+msgstr ""
+
+#: includes/class-ceafsn-np-db.php:54
+msgid "Draft"
+msgstr ""
+
+#: includes/class-ceafsn-np-db.php:56
+msgid "Archived"
 msgstr ""
 
 #: includes/class-ceafsn-np-validator.php:42

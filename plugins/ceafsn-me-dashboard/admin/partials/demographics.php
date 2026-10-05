@@ -26,6 +26,7 @@ $med_is_edit = ( 'edit' === $action && $row instanceof stdClass );
 	<?php if ( ! empty( $_GET['saved'] ) ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Demographic group saved.', 'ceafsn-med' ); ?></p></div>
 	<?php endif; ?>
+
 	<?php if ( ! empty( $_GET['deleted'] ) ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Demographic group deleted.', 'ceafsn-med' ); ?></p></div>
 	<?php endif; ?>

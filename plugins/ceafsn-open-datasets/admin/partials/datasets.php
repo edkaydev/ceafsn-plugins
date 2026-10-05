@@ -62,6 +62,12 @@ $add_url    = add_query_arg( array( 'action' => 'add' ), $base_url );
 		</div>
 	<?php endif; ?>
 
+<?php if ( CEAFSN_OD_Request::has( 'published_blocked' ) ) : ?>
+	<div class="notice notice-warning">
+		<p><?php esc_html_e( "Dataset record saved as a draft: you do not have permission to publish. Ask an administrator to review and publish it.", 'ceafsn-od' ); ?></p>
+	</div>
+<?php endif; ?>
+
 	<?php if ( $notice_saved || $notice_deleted ) : ?>
 		<div class="ceafsn-alerts">
 			<div class="ceafsn-alert ceafsn-alert--ok" role="status">
@@ -415,7 +421,7 @@ $add_url    = add_query_arg( array( 'action' => 'add' ), $base_url );
 											</td>
 											<td>
 												<span class="ceafsn-badge ceafsn-badge--status-<?php echo esc_attr( $item_status ); ?>">
-													<?php echo esc_html( (string) ( CEAFSN_OD_DB::status_labels()[ $item_status ] ?? ucfirst( $item_status ) ) ); ?>
+													<?php echo esc_html( CEAFSN_OD_DB::label( CEAFSN_OD_DB::status_labels(), (string) $item_status ) ); ?>
 												</span>
 											</td>
 											<td class="ceafsn-table__actions">
@@ -728,7 +734,7 @@ $add_url    = add_query_arg( array( 'action' => 'add' ), $base_url );
 							<?php foreach ( $statuses as $status ) : ?>
 								<option value="<?php echo esc_attr( $status ); ?>"
 									<?php selected( $status, (string) ( $row->status ?? 'draft' ) ); ?>>
-									<?php echo esc_html( (string) ( CEAFSN_OD_DB::status_labels()[ $status ] ?? ucfirst( $status ) ) ); ?>
+									<?php echo esc_html( CEAFSN_OD_DB::label( CEAFSN_OD_DB::status_labels(), (string) $status ) ); ?>
 								</option>
 							<?php endforeach; ?>
 						</select>

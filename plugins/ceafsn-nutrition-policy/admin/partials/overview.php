@@ -383,7 +383,7 @@ foreach ( $np_steps as $np_index => $np_step ) {
 										</td>
 										<td>
 											<span class="ceafsn-badge ceafsn-badge--status-<?php echo esc_attr( $np_item['status'] ); ?>">
-												<?php echo esc_html( ucfirst( $np_item['status'] ) ); ?>
+												<?php echo esc_html( CEAFSN_NP_DB::label( CEAFSN_NP_DB::status_labels(), (string) $np_item['status'] ) ); ?>
 											</span>
 										</td>
 										<td><?php echo esc_html( $np_item['detail'] ); ?></td>

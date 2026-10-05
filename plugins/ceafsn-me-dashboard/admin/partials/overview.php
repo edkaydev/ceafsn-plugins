@@ -366,7 +366,7 @@ foreach ( $med_steps as $med_index => $med_step ) {
 										</td>
 										<td>
 											<span class="ceafsn-badge ceafsn-badge--status-<?php echo esc_attr( (string) $med_project->status ); ?>">
-												<?php echo esc_html( ucfirst( (string) $med_project->status ) ); ?>
+												<?php echo esc_html( CEAFSN_MED_DB::label( CEAFSN_MED_DB::project_status_labels(), (string) $med_project->status ) ); ?>
 											</span>
 										</td>
 										<td>

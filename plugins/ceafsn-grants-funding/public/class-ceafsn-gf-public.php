@@ -56,10 +56,18 @@ class CEAFSN_GF_Public {
 
 		$now_utc = gmdate( 'Y-m-d H:i:s' );
 
+		$requested_page = max( 1, absint( $_GET['gf_page'] ?? 1 ) );
+		$per_page       = self::clamp_per_page( $atts['per_page'] );
+
 		$args = array(
 			'published_only'      => true,
-			'per_page'            => self::clamp_per_page( $atts['per_page'] ),
-			'page'                => max( 1, absint( $_GET['gf_page'] ?? 1 ) ),
+			// The closed-call filter below is derived from the deadline and cannot
+			// be expressed in SQL, so the page is built here rather than in the
+			// query. Paging first would under-fill every page and hide records
+			// behind an unlinked offset.
+			'paginate'            => false,
+			'per_page'            => $per_page,
+			'page'                => $requested_page,
 			'funding_institution' => '' !== $query_institution ? $query_institution : (string) $atts['funding_institution'],
 			'search'              => sanitize_text_field( wp_unslash( $_GET['gf_search'] ?? '' ) ),
 			'orderby'             => sanitize_key( $_GET['gf_sort'] ?? 'deadline' ),
@@ -79,7 +87,7 @@ class CEAFSN_GF_Public {
 		// them specifically, in which case an explicit request wins.
 		$show_closed = self::show_closed_by_default();
 
-		$rows = array();
+		$all_rows = array();
 		foreach ( $data['items'] as $row ) {
 			$card = self::build_card( $row, $now_utc );
 
@@ -87,19 +95,29 @@ class CEAFSN_GF_Public {
 				continue;
 			}
 
-			$rows[] = $card;
+			$all_rows[] = $card;
 		}
+
+		// Pagination happens only now that the visible set is final, so the total
+		// counts what a visitor can actually reach. The page number is clamped to
+		// the last page so an out-of-range or stale link shows results instead of
+		// a bare "nothing here".
+		$total       = count( $all_rows );
+		$total_pages = max( 1, (int) ceil( $total / $per_page ) );
+		$page        = min( $requested_page, $total_pages );
+		$rows        = array_slice( $all_rows, ( $page - 1 ) * $per_page, $per_page );
 
 		$sortable = CEAFSN_GF_DB::sortable_columns();
 
 		$template_data = array(
 			'rows'               => $rows,
-			'total'              => count( $rows ),
+			'total'              => $total,
+			'total_pages'        => $total_pages,
 			'institutions'       => CEAFSN_GF_DB::get_institutions(),
 			'statuses'           => CEAFSN_GF_DB::grant_statuses(),
 			'sortable'           => $sortable,
-			'per_page'           => (int) $args['per_page'],
-			'current_page'       => (int) $args['page'],
+			'per_page'           => $per_page,
+			'current_page'       => $page,
 			'orderby'            => in_array( $args['orderby'], $sortable, true ) ? $args['orderby'] : 'deadline',
 			'order'              => 'desc' === $args['order'] ? 'desc' : 'asc',
 			'view'               => $view,
@@ -380,5 +398,87 @@ class CEAFSN_GF_Public {
 			'aria_sort' => $aria,
 			'next'      => $next,
 		);
+	}
+
+	/**
+	 * Collect the query args a filter form does not own.
+	 *
+	 * The filter form is a GET form targeting the current page. Anything the
+	 * form does not declare would be dropped on submit, so unrelated args are
+	 * round-tripped as hidden inputs. Non-scalar values are skipped: an array
+	 * arg such as `?foo[]=1` cannot be cast to string without emitting an
+	 * "Array to string conversion" warning, and a hidden input cannot carry it.
+	 *
+	 * @param array<int,string> $owned Argument names this plugin controls.
+	 * @return array<string,string> Safe scalar args to preserve.
+	 */
+	public static function passthrough_args( array $owned ): array {
+		$passthrough = array();
+
+		foreach ( $_GET as $gf_k => $gf_v ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only echo of unrelated query args.
+			$key = (string) $gf_k;
+
+			if ( in_array( $key, $owned, true ) || ! is_scalar( $gf_v ) ) {
+				continue;
+			}
+
+			$passthrough[ $key ] = (string) $gf_v;
+		}
+
+		return $passthrough;
+	}
+
+	/**
+	 * Render the public pagination navigation.
+	 *
+	 * Nothing is emitted when everything fits on one page, so a short list is
+	 * not cluttered with a single control. Out-of-range page numbers are clamped
+	 * by the caller, so `current_page` is always a real page.
+	 *
+	 * @param int    $current_page Current page, 1-based.
+	 * @param int    $total_pages  Total number of pages, at least 1.
+	 * @param string $base_url     Current page URL.
+	 * @param string $page_arg     Query argument that carries the page number.
+	 * @param string $label        Accessible name for the navigation landmark.
+	 * @return string HTML, or an empty string when there is nothing to page.
+	 */
+	public static function render_pagination( int $current_page, int $total_pages, string $base_url, string $page_arg, string $label ): string {
+		if ( $total_pages < 2 ) {
+			return '';
+		}
+
+		$current_page = max( 1, min( $current_page, $total_pages ) );
+
+		$html  = '<nav class="ceafsn-pagination" aria-label="' . esc_attr( $label ) . '">';
+		$html .= '<p class="ceafsn-pagination__status">';
+		$html .= esc_html(
+			sprintf(
+				/* translators: 1: current page number, 2: total number of pages. */
+				__( 'Page %1$d of %2$d', 'ceafsn-gf' ),
+				$current_page,
+				$total_pages
+			)
+		);
+		$html .= '</p>';
+
+		if ( $current_page > 1 ) {
+			$html .= sprintf(
+				'<a class="ceafsn-pagination__link ceafsn-pagination__link--prev" href="%1$s" rel="prev">%2$s</a>',
+				esc_url( self::page_url( $base_url, array( $page_arg => $current_page - 1 ) ) ),
+				esc_html__( 'Previous', 'ceafsn-gf' )
+			);
+		}
+
+		if ( $current_page < $total_pages ) {
+			$html .= sprintf(
+				'<a class="ceafsn-pagination__link ceafsn-pagination__link--next" href="%1$s" rel="next">%2$s</a>',
+				esc_url( self::page_url( $base_url, array( $page_arg => $current_page + 1 ) ) ),
+				esc_html__( 'Next', 'ceafsn-gf' )
+			);
+		}
+
+		$html .= '</nav>';
+
+		return $html;
 	}
 }

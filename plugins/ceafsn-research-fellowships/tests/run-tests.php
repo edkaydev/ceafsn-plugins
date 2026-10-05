@@ -800,7 +800,7 @@ $schema = implode( "\n", $GLOBALS['ceafsn_rf_dbdelta'] );
 has_substring( 'wp_ceafsn_rf_fellowships', $schema, 'the table name carries the prefix' );
 has_substring( "ENUM('draft','published','archived')", $schema, 'the record-state enum matches statuses()' );
 has_substring( "ENUM('open','upcoming','closed','archived')", $schema, 'the manual-status enum matches manual_values()' );
-is_same( '1.0.0', get_option( 'ceafsn_rf_db_version' ), 'the schema version option is recorded' );
+is_same( CEAFSN_RF_DB::SCHEMA_VERSION, get_option( 'ceafsn_rf_db_version' ), 'the schema version option is recorded' );
 
 test( 'an injection attempt in the sort column falls back to the default' );
 CEAFSN_RF_Test_State::reset();
@@ -972,8 +972,17 @@ call_admin( $admin_ref, 'persist_fellowship', fellowship_row_data(), 0 );
 has_substring( 'INSERT INTO', (string) $wpdb->queries[0], 'a record with no ID is inserted' );
 $wpdb->reset_state();
 call_admin( $admin_ref, 'persist_fellowship', fellowship_row_data(), 7 );
-has_substring( 'UPDATE', (string) $wpdb->queries[0], 'a record with an ID is updated' );
-has_substring( '"fellowship_id":7', (string) $wpdb->queries[0], 'the update is scoped to that record' );
+// The write is preceded by a read-back so the audit log can capture the
+// previous state, so the write is located by content rather than position.
+$gf_write = '';
+foreach ( (array) $wpdb->queries as $ceafsn_q ) {
+	if ( str_contains( (string) $ceafsn_q, 'UPDATE' ) ) {
+		$gf_write = (string) $ceafsn_q;
+		break;
+	}
+}
+has_substring( 'UPDATE', $gf_write, 'a record with an ID is updated' );
+has_substring( '"fellowship_id":7', $gf_write, 'the update is scoped to that record' );
 
 // -----------------------------------------------------------------------------
 section( 'Activator: scoped upload restriction' );
@@ -1153,6 +1162,134 @@ $public = new CEAFSN_RF_Public();
 $html   = $public->render_shortcode( array( 'view' => 'table' ) );
 has_substring( '<table class="ceafsn-rf-table">', $html, 'the table layout is used' );
 has_substring( 'aria-sort=', $html, 'sortable headers announce their state' );
+
+// -----------------------------------------------------------------------------
+// Regression: the derived status filter cannot be expressed in SQL, so paging
+// in the query made page one under-full and left records 13+ unreachable.
+// -----------------------------------------------------------------------------
+
+/**
+ * Build N distinct published, open opportunities.
+ *
+ * @param int $count How many rows to build.
+ * @return array<int,object>
+ */
+function rf_open_rows( int $count ): array {
+	$rows = array();
+	for ( $i = 1; $i <= $count; $i++ ) {
+		$rows[] = fellowship_row(
+			array(
+				'fellowship_id' => $i,
+				'title'         => 'Fellowship Opportunity ' . $i,
+			)
+		);
+	}
+	return $rows;
+}
+
+test( 'the visible total counts every reachable record, not one page' );
+CEAFSN_RF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( rf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'Nutrition' ) );
+$public = new CEAFSN_RF_Public();
+$html   = $public->render_shortcode( array() );
+is_same( 12, substr_count( $html, 'ceafsn-rf-card--open' ), 'page one holds a full twelve cards, not thirty' );
+has_substring( 'Page 1 of 3', $html, 'the record count reflects all thirty records' );
+has_substring( 'rel="next"', $html, 'a next control is offered' );
+lacks_substring( 'rel="prev"', $html, 'there is no previous control on page one' );
+
+test( 'page two is reachable and returns the next slice' );
+CEAFSN_RF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( rf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'Nutrition' ) );
+$_GET['rf_page'] = '2';
+$public = new CEAFSN_RF_Public();
+$html   = $public->render_shortcode( array() );
+is_same( 12, substr_count( $html, 'ceafsn-rf-card--open' ), 'page two is full' );
+has_substring( 'Page 2 of 3', $html, 'the current page is reported' );
+has_substring( 'rel="prev"', $html, 'page two links back' );
+has_substring( 'rel="next"', $html, 'page two links forward' );
+unset( $_GET['rf_page'] );
+
+test( 'the last page holds the remainder, not a full page' );
+CEAFSN_RF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( rf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'Nutrition' ) );
+$_GET['rf_page'] = '3';
+$public = new CEAFSN_RF_Public();
+$html   = $public->render_shortcode( array() );
+is_same( 6, substr_count( $html, 'ceafsn-rf-card--open' ), 'thirty records across twelve per page leaves six on page three' );
+lacks_substring( 'rel="next"', $html, 'the last page has no next control' );
+unset( $_GET['rf_page'] );
+
+test( 'an out-of-range page clamps to the last page instead of showing nothing' );
+CEAFSN_RF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( rf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'Nutrition' ) );
+$_GET['rf_page'] = '99';
+$public = new CEAFSN_RF_Public();
+$html   = $public->render_shortcode( array() );
+has_substring( 'Page 3 of 3', $html, 'a stale deep link lands on the final page' );
+is_same( 6, substr_count( $html, 'ceafsn-rf-card--open' ), 'the final page still shows its records' );
+unset( $_GET['rf_page'] );
+
+test( 'no pagination control is rendered when everything fits on one page' );
+CEAFSN_RF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 3;
+$wpdb->results_queue = array( rf_open_rows( 3 ) );
+$wpdb->col_queue     = array( array( 'Nutrition' ) );
+$public = new CEAFSN_RF_Public();
+$html   = $public->render_shortcode( array() );
+lacks_substring( 'ceafsn-pagination', $html, 'a single-page list is not given a pointless control' );
+
+test( 'the status filter narrows the count before paging' );
+CEAFSN_RF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( rf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'Nutrition' ) );
+$_GET['rf_status'] = 'upcoming';
+$public = new CEAFSN_RF_Public();
+$html   = $public->render_shortcode( array() );
+lacks_substring( 'ceafsn-rf-card--open', $html, 'open records are excluded by the upcoming filter' );
+lacks_substring( 'ceafsn-pagination', $html, 'an empty filtered result needs no pagination' );
+unset( $_GET['rf_status'] );
+
+test( 'the table view also paginates' );
+CEAFSN_RF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( rf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'Nutrition' ) );
+$public = new CEAFSN_RF_Public();
+$html   = $public->render_shortcode( array( 'view' => 'table' ) );
+is_same( 13, substr_count( $html, '<tr>' ), 'the table shows one header row plus twelve records' );
+has_substring( 'ceafsn-pagination', $html, 'pagination is available in the table layout too' );
+
+test( 'array-valued query args are not cast into hidden inputs' );
+CEAFSN_RF_Test_State::reset();
+attach( 11, $valid_pdf );
+$wpdb->var_result    = 30;
+$wpdb->results_queue = array( rf_open_rows( 30 ) );
+$wpdb->col_queue     = array( array( 'Nutrition' ) );
+$_GET['ceafsn-rf-filter'] = array( 'a', 'b' );
+$_GET['utm_source']       = 'newsletter';
+$public  = new CEAFSN_RF_Public();
+$html    = $public->render_shortcode( array() );
+$carried = CEAFSN_RF_Public::passthrough_args( array( 'rf_page' ) );
+is_same( array( 'utm_source' => 'newsletter' ), $carried, 'only scalar args are carried through' );
+has_substring( 'name="utm_source" value="newsletter"', $html, 'the unrelated scalar arg survives the filter form' );
+lacks_substring( 'name="ceafsn-rf-filter"', $html, 'an array arg cannot become a hidden input' );
+unset( $_GET['ceafsn-rf-filter'], $_GET['utm_source'] );
 
 // -----------------------------------------------------------------------------
 section( 'Uninstall' );
@@ -1410,6 +1547,79 @@ is_same( array(), array_values( array_diff( $rf_used, $rf_declared ) ), 'every c
 // -----------------------------------------------------------------------------
 // Summary
 // -----------------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------------
+section( 'Translation and status labels' );
+
+test( 'the textdomain is loaded on init, not before' );
+$rf_boot = (string) file_get_contents( $plugin_dir . '/ceafsn-research-fellowships.php' );
+has_substring( "add_action( 'init', 'ceafsn_rf_load_textdomain' );", $rf_boot, 'the loader waits for init' );
+ok( ! preg_match( "/add_action\\(\\s*'plugins_loaded'[^)]*load_textdomain/", $rf_boot ), 'WP 6.7 deprecated loading a textdomain earlier than init, so nothing registers it on plugins_loaded' );
+has_substring( "'ceafsn-rf',", $rf_boot, 'the domain string is ceafsn-rf' );
+
+test( 'every stored enum value has a translated label' );
+foreach ( array( 'draft', 'published', 'archived' ) as $rf_key ) {
+	$rf_label = CEAFSN_RF_DB::label( CEAFSN_RF_DB::status_labels(), $rf_key );
+	ok( '' !== $rf_label, 'status_labels() returns a non-empty label for "' . $rf_key . '"' );
+	ok( $rf_label !== $rf_key, 'and "' . $rf_key . '" is not shown as a raw machine key' );
+}
+
+test( 'each label map covers the schema exactly' );
+is_same( array( 'draft', 'published', 'archived' ), array_keys( CEAFSN_RF_DB::status_labels() ), 'status_labels() has one label per stored value, no more and no fewer' );
+
+test( 'an unrecognised key falls back to the key itself' );
+is_same( 'Draft', CEAFSN_RF_DB::label( CEAFSN_RF_DB::status_labels(), 'draft' ), 'a known key returns its translated label' );
+is_same( 'not_a_status', CEAFSN_RF_DB::label( CEAFSN_RF_DB::status_labels(), 'not_a_status' ), 'an unknown key is shown verbatim, so a missing label is obvious instead of silently English' );
+
+test( 'no partial renders a stored enum through ucfirst()' );
+$rf_seen = 0;
+foreach ( glob( $plugin_dir . '/admin/partials/*.php' ) ?: array() as $rf_partial ) {
+	$rf_seen++;
+	ok( ! str_contains( (string) file_get_contents( $rf_partial ), 'ucfirst(' ), basename( $rf_partial ) . ' does not title-case a stored value' );
+}
+foreach ( glob( $plugin_dir . '/public/partials/*.php' ) ?: array() as $rf_partial ) {
+	$rf_seen++;
+	ok( ! str_contains( (string) file_get_contents( $rf_partial ), 'ucfirst(' ), basename( $rf_partial ) . ' does not title-case a stored value' );
+}
+ok( $rf_seen > 0, 'the partials were actually scanned' );
+
+// -----------------------------------------------------------------------------
+section( 'Schema migration engine' );
+
+test( 'maybe_upgrade is a no-op when the stored version is current' );
+CEAFSN_RF_Test_State::reset();
+$GLOBALS['ceafsn_rf_dbdelta'] = array();
+update_option( 'ceafsn_rf_db_version', CEAFSN_RF_DB::SCHEMA_VERSION );
+is_same( false, CEAFSN_RF_DB::maybe_upgrade(), 'a current schema is left alone' );
+is_same( array(), (array) $GLOBALS['ceafsn_rf_dbdelta'], 'and no schema work runs, so admin_init stays cheap' );
+
+test( 'maybe_upgrade does nothing on a downgrade' );
+CEAFSN_RF_Test_State::reset();
+$GLOBALS['ceafsn_rf_dbdelta'] = array();
+update_option( 'ceafsn_rf_db_version', '99.0.0' );
+is_same( false, CEAFSN_RF_DB::maybe_upgrade(), 'a newer stored schema is never downgraded' );
+is_same( '99.0.0', get_option( 'ceafsn_rf_db_version' ), 'and the stored version is untouched' );
+
+test( 'maybe_upgrade applies dbDelta when the stored version is behind' );
+CEAFSN_RF_Test_State::reset();
+$GLOBALS['ceafsn_rf_dbdelta'] = array();
+is_same( false, get_option( 'ceafsn_rf_db_version', false ), 'no version is recorded on a site that never activated the plugin' );
+is_same( true, CEAFSN_RF_DB::maybe_upgrade(), 'a missing schema takes the upgrade path' );
+ok( ! empty( (array) $GLOBALS['ceafsn_rf_dbdelta'] ), 'the schema is created through dbDelta' );
+is_same( CEAFSN_RF_DB::SCHEMA_VERSION, get_option( 'ceafsn_rf_db_version' ), 'and the version option is brought up to date' );
+
+test( 'maybe_upgrade repairs an older installed version' );
+CEAFSN_RF_Test_State::reset();
+$GLOBALS['ceafsn_rf_dbdelta'] = array();
+update_option( 'ceafsn_rf_db_version', '0.9.0' );
+is_same( true, CEAFSN_RF_DB::maybe_upgrade(), 'a version bump is applied' );
+ok( ! empty( (array) $GLOBALS['ceafsn_rf_dbdelta'] ), 'dbDelta runs so missing columns and indexes are added' );
+is_same( CEAFSN_RF_DB::SCHEMA_VERSION, get_option( 'ceafsn_rf_db_version' ), 'and the option ends at the current version' );
+
+test( 'the migration is hooked to admin_init, not activation alone' );
+$med_bootstrap = (string) file_get_contents( $plugin_dir . '/ceafsn-research-fellowships.php' );
+has_substring( "add_action( 'admin_init', array( 'CEAFSN_RF_DB', 'maybe_upgrade' ) );", $med_bootstrap, 'plugin updates reach existing sites because the hook is on admin_init' );
 
 $pass = $GLOBALS['ceafsn_rf_test_pass'];
 $fail = $GLOBALS['ceafsn_rf_test_fail'];

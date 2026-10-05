@@ -158,7 +158,7 @@ class CEAFSN_MED_Admin {
 	 * data; nothing is estimated or invented.
 	 */
 	public function page_overview(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 
 		$metrics      = CEAFSN_MED_DB::get_metrics( false );
 		$demographics = CEAFSN_MED_DB::get_demographics( false );
@@ -203,7 +203,7 @@ class CEAFSN_MED_Admin {
 	 * Metrics list / add / edit page.
 	 */
 	public function page_metrics(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		$action = sanitize_key( $_GET['action'] ?? 'list' );
 		$id     = absint( $_GET['id'] ?? 0 );
 
@@ -220,7 +220,7 @@ class CEAFSN_MED_Admin {
 	 * Demographics list / add / edit page.
 	 */
 	public function page_demographics(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		$action = sanitize_key( $_GET['action'] ?? 'list' );
 		$id     = absint( $_GET['id'] ?? 0 );
 
@@ -237,7 +237,7 @@ class CEAFSN_MED_Admin {
 	 * Projects list / add / edit page.
 	 */
 	public function page_projects(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		$action = sanitize_key( $_GET['action'] ?? 'list' );
 		$id     = absint( $_GET['id'] ?? 0 );
 
@@ -255,7 +255,7 @@ class CEAFSN_MED_Admin {
 	 * Settings page (preview mode toggle + export + uninstall).
 	 */
 	public function page_settings(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		require CEAFSN_MED_PLUGIN_DIR . 'admin/partials/settings.php';
 	}
 
@@ -267,7 +267,7 @@ class CEAFSN_MED_Admin {
 	 * Handle save (add/edit) for a metric.
 	 */
 	public function handle_save_metric(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		check_admin_referer( 'ceafsn_med_metric_nonce', 'ceafsn_med_nonce' );
 
 		$id   = absint( $_POST['metric_id'] ?? 0 );
@@ -279,15 +279,28 @@ class CEAFSN_MED_Admin {
 			return;
 		}
 
+		// Publishing is an approval action, distinct from editing the record. A
+		// user who may edit but not approve has the record stored as a draft
+		// rather than meeting a hard failure, so their work is never discarded
+		// and the reason travels with the redirect.
+		$ceafsn_blocked_publish = false;
+		if ( 'published' === (string) ( $data['status'] ?? '' ) && ! $this->can( self::CAP_APPROVE ) ) {
+			$data['status'] = 'draft';
+			$ceafsn_blocked_publish = true;
+		}
+
 		if ( $id > 0 ) {
+			$ceafsn_before = CEAFSN_MED_DB::get_metric( $id );
 			CEAFSN_MED_DB::update_metric( $id, $data );
+			$this->audit( 'update', 'metric', $id, $ceafsn_before, CEAFSN_MED_DB::get_metric( $id ) );
 		} else {
-			CEAFSN_MED_DB::insert_metric( $data );
+			$ceafsn_new = CEAFSN_MED_DB::insert_metric( $data );
+			$this->audit( 'create', 'metric', (int) $ceafsn_new, null, CEAFSN_MED_DB::get_metric( (int) $ceafsn_new ) );
 		}
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => self::PAGE_METRICS, 'saved' => '1' ),
+				array( 'page' => self::PAGE_METRICS, 'saved' => '1', 'published_blocked' => $ceafsn_blocked_publish ? '1' : '0' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -298,12 +311,14 @@ class CEAFSN_MED_Admin {
 	 * Handle delete for a metric.
 	 */
 	public function handle_delete_metric(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		$id = absint( $_GET['id'] ?? 0 );
 		check_admin_referer( 'ceafsn_med_delete_metric_' . $id );
 
 		if ( $id > 0 ) {
+			$ceafsn_before = CEAFSN_MED_DB::get_metric( $id );
 			CEAFSN_MED_DB::delete_metric( $id );
+			$this->audit( 'delete', 'metric', $id, $ceafsn_before, null );
 		}
 
 		wp_safe_redirect(
@@ -323,7 +338,7 @@ class CEAFSN_MED_Admin {
 	 * Handle save (add/edit) for a demographic group.
 	 */
 	public function handle_save_demographic(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		check_admin_referer( 'ceafsn_med_demo_nonce', 'ceafsn_med_nonce' );
 
 		$id   = absint( $_POST['group_id'] ?? 0 );
@@ -335,15 +350,28 @@ class CEAFSN_MED_Admin {
 			return;
 		}
 
+		// Publishing is an approval action, distinct from editing the record. A
+		// user who may edit but not approve has the record stored as a draft
+		// rather than meeting a hard failure, so their work is never discarded
+		// and the reason travels with the redirect.
+		$ceafsn_blocked_publish = false;
+		if ( 'published' === (string) ( $data['status'] ?? '' ) && ! $this->can( self::CAP_APPROVE ) ) {
+			$data['status'] = 'draft';
+			$ceafsn_blocked_publish = true;
+		}
+
 		if ( $id > 0 ) {
+			$ceafsn_before = CEAFSN_MED_DB::get_demographic( $id );
 			CEAFSN_MED_DB::update_demographic( $id, $data );
+			$this->audit( 'update', 'demographic', $id, $ceafsn_before, CEAFSN_MED_DB::get_demographic( $id ) );
 		} else {
-			CEAFSN_MED_DB::insert_demographic( $data );
+			$ceafsn_new = CEAFSN_MED_DB::insert_demographic( $data );
+			$this->audit( 'create', 'demographic', (int) $ceafsn_new, null, CEAFSN_MED_DB::get_demographic( (int) $ceafsn_new ) );
 		}
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => self::PAGE_DEMOGRAPHICS, 'saved' => '1' ),
+				array( 'page' => self::PAGE_DEMOGRAPHICS, 'saved' => '1', 'published_blocked' => $ceafsn_blocked_publish ? '1' : '0' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -354,12 +382,14 @@ class CEAFSN_MED_Admin {
 	 * Handle delete for a demographic group.
 	 */
 	public function handle_delete_demographic(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		$id = absint( $_GET['id'] ?? 0 );
 		check_admin_referer( 'ceafsn_med_delete_demo_' . $id );
 
 		if ( $id > 0 ) {
+			$ceafsn_before = CEAFSN_MED_DB::get_demographic( $id );
 			CEAFSN_MED_DB::delete_demographic( $id );
+			$this->audit( 'delete', 'demographic', $id, $ceafsn_before, null );
 		}
 
 		wp_safe_redirect(
@@ -379,7 +409,7 @@ class CEAFSN_MED_Admin {
 	 * Handle save (add/edit) for a project.
 	 */
 	public function handle_save_project(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		check_admin_referer( 'ceafsn_med_project_nonce', 'ceafsn_med_nonce' );
 
 		$id   = absint( $_POST['project_id'] ?? 0 );
@@ -391,15 +421,28 @@ class CEAFSN_MED_Admin {
 			return;
 		}
 
+		// Publishing is an approval action, distinct from editing the record. A
+		// user who may edit but not approve has the record stored as a draft
+		// rather than meeting a hard failure, so their work is never discarded
+		// and the reason travels with the redirect.
+		$ceafsn_blocked_publish = false;
+		if ( 'published' === (string) ( $data['status'] ?? '' ) && ! $this->can( self::CAP_APPROVE ) ) {
+			$data['status'] = 'draft';
+			$ceafsn_blocked_publish = true;
+		}
+
 		if ( $id > 0 ) {
+			$ceafsn_before = CEAFSN_MED_DB::get_project( $id );
 			CEAFSN_MED_DB::update_project( $id, $data );
+			$this->audit( 'update', 'project', $id, $ceafsn_before, CEAFSN_MED_DB::get_project( $id ) );
 		} else {
-			CEAFSN_MED_DB::insert_project( $data );
+			$ceafsn_new = CEAFSN_MED_DB::insert_project( $data );
+			$this->audit( 'create', 'project', (int) $ceafsn_new, null, CEAFSN_MED_DB::get_project( (int) $ceafsn_new ) );
 		}
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => self::PAGE_PROJECTS, 'saved' => '1' ),
+				array( 'page' => self::PAGE_PROJECTS, 'saved' => '1', 'published_blocked' => $ceafsn_blocked_publish ? '1' : '0' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -410,12 +453,14 @@ class CEAFSN_MED_Admin {
 	 * Handle delete for a project.
 	 */
 	public function handle_delete_project(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		$id = absint( $_GET['id'] ?? 0 );
 		check_admin_referer( 'ceafsn_med_delete_project_' . $id );
 
 		if ( $id > 0 ) {
+			$ceafsn_before = CEAFSN_MED_DB::get_project( $id );
 			CEAFSN_MED_DB::delete_project( $id );
+			$this->audit( 'delete', 'project', $id, $ceafsn_before, null );
 		}
 
 		wp_safe_redirect(
@@ -466,7 +511,7 @@ class CEAFSN_MED_Admin {
 	 * @return void
 	 */
 	public function handle_save_settings(): void {
-		$this->require_manage_options();
+		$this->require_manage();
 		check_admin_referer( 'ceafsn_med_settings_nonce', 'ceafsn_med_nonce' );
 
 		$this->persist_settings( wp_unslash( $_POST ) );
@@ -488,7 +533,7 @@ class CEAFSN_MED_Admin {
 	 * Stream a JSON export of all plugin data.
 	 */
 	public function handle_export(): void {
-		$this->require_manage_options();
+		$this->require_manage();
 		check_admin_referer( 'ceafsn_med_export_nonce', 'ceafsn_med_nonce' );
 
 		$data     = CEAFSN_MED_DB::export_all();
@@ -658,8 +703,83 @@ class CEAFSN_MED_Admin {
 	/**
 	 * Abort with a 403 if the current user cannot manage options.
 	 */
-	private function require_manage_options(): void {
-		if ( ! current_user_can( 'manage_options' ) ) {
+	/**
+	 * Capability names, mirrored here so this class never has to reference
+	 * CEAFSN_Caps. Referencing the shared constant in an argument list would
+	 * fatal when the optional library is absent, which would defeat the very
+	 * fallback that keeps the plugin working on its own.
+	 */
+	private const CAP_EDIT    = 'ceafsn_edit';
+	private const CAP_APPROVE = 'ceafsn_approve';
+	private const CAP_MANAGE  = 'ceafsn_manage';
+
+	/**
+	 * Record a write in the shared audit log.
+	 *
+	 * A no-op when the shared library is absent, so this plugin stays usable on
+	 * its own. Reducing the pair to a redacted diff happens inside the log class,
+	 * which keeps that rule in one place instead of at every call site.
+	 *
+	 * @param string                $action      create, update, or delete.
+	 * @param string                $entity_type Record type.
+	 * @param int                   $entity_id   Record id.
+	 * @param array<string,mixed>|object|null $before Previous row.
+	 * @param array<string,mixed>|object|null $after  New row.
+	 * @return void
+	 */
+	private function audit( string $action, string $entity_type, int $entity_id, array|object|null $before, array|object|null $after ): void {
+		if ( ! class_exists( 'CEAFSN_Audit_Log' ) ) {
+			return;
+		}
+
+		CEAFSN_Audit_Log::record( $action, $entity_type, $entity_id, $before, $after );
+	}
+
+	/**
+	 * Whether the current user holds a CE-AFSN capability.
+	 *
+	 * `manage_options` remains a fallback, and is used on its own when the
+	 * shared library is not installed, so no administrator loses access to data
+	 * they could previously reach.
+	 *
+	 * @param string $cap Capability name.
+	 * @return bool True when allowed.
+	 */
+	private function can( string $cap ): bool {
+		if ( class_exists( 'CEAFSN_Caps' ) ) {
+			return CEAFSN_Caps::can( $cap );
+		}
+
+		return current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * Abort with a 403 unless the user may work with research records.
+	 *
+	 * Reading and editing the admin screens used to need `manage_options`,
+	 * which is a site-administration capability and left an editor unable to
+	 * maintain the research data they were hired to maintain.
+	 */
+	private function require_edit(): void {
+		if ( ! $this->can( self::CAP_EDIT ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'ceafsn-med' ), 403 );
+		}
+	}
+
+	/**
+	 * Abort with a 403 unless the user may publish or verify a record.
+	 */
+	private function require_approve(): void {
+		if ( ! $this->can( self::CAP_APPROVE ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'ceafsn-med' ), 403 );
+		}
+	}
+
+	/**
+	 * Abort with a 403 unless the user may change site-wide settings.
+	 */
+	private function require_manage(): void {
+		if ( ! $this->can( self::CAP_MANAGE ) ) {
 			wp_die( esc_html__( 'You do not have permission to perform this action.', 'ceafsn-med' ), 403 );
 		}
 	}

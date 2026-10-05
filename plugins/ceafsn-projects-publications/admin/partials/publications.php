@@ -96,6 +96,12 @@ $pdf_attachment_id = (int) ( $row->pdf_attachment_id ?? 0 );
 		</div>
 	<?php endif; ?>
 
+	<?php if ( ! empty( $_GET['published_blocked'] ) ) : ?>
+		<div class="notice notice-warning">
+			<p><?php esc_html_e( "Record saved as a draft: you do not have permission to publish. Ask an administrator to review and publish it.", 'ceafsn-pp' ); ?></p>
+		</div>
+	<?php endif; ?>
+
 	<?php if ( $is_list ) : ?>
 
 		<?php
@@ -487,7 +493,7 @@ $pdf_attachment_id = (int) ( $row->pdf_attachment_id ?? 0 );
 											</td>
 											<td>
 												<span class="ceafsn-badge ceafsn-badge--status-<?php echo esc_attr( $item_status ); ?>">
-													<?php echo esc_html( ucfirst( $item_status ) ); ?>
+													<?php echo esc_html( CEAFSN_PP_DB::label( CEAFSN_PP_DB::status_labels(), (string) $item_status ) ); ?>
 												</span>
 											</td>
 											<td class="ceafsn-table__actions">
@@ -824,7 +830,7 @@ $pdf_attachment_id = (int) ( $row->pdf_attachment_id ?? 0 );
 							<?php foreach ( $statuses as $status_value ) : ?>
 								<option value="<?php echo esc_attr( $status_value ); ?>"
 									<?php selected( $status_value, (string) ( $row->status ?? 'draft' ) ); ?>>
-									<?php echo esc_html( ucfirst( $status_value ) ); ?>
+									<?php echo esc_html( CEAFSN_PP_DB::label( CEAFSN_PP_DB::status_labels(), (string) $status_value ) ); ?>
 								</option>
 							<?php endforeach; ?>
 						</select>

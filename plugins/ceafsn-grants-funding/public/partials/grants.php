@@ -3,8 +3,9 @@
  * Public partial: the shortcode output.
  *
  * Variables in scope (set by CEAFSN_GF_Public::render_shortcode()):
- *   @var array<int,array<string,mixed>> $rows               Card models
- *   @var int                          $total                Rows after filtering
+* @var array<int,array<string,mixed>> $rows               Card models for the current page
+ *   @var int                          $total                Rows matching the filters, across all pages
+ *   @var int                          $total_pages          Total pages, at least 1
  *   @var array<int,string>            $institutions         Known funding institutions
  *   @var array<int,string>            $statuses             All grant status keys
  *   @var array<int,string>            $sortable             Sortable column keys
@@ -48,12 +49,9 @@ defined( 'ABSPATH' ) || exit;
 		<?php
 		// Keep unrelated query args on the page URL so the form does not strip
 		// the WordPress page permalink arguments the server relies on.
-		$gf_hidden = array();
-		foreach ( $_GET as $gf_k => $gf_v ) {
-			if ( ! in_array( (string) $gf_k, array( 'gf_institution', 'gf_status', 'gf_search', 'gf_view', 'gf_page', 'gf_sort', 'gf_order' ), true ) ) {
-				$gf_hidden[ (string) $gf_k ] = (string) $gf_v;
-			}
-		}
+		$gf_hidden = CEAFSN_GF_Public::passthrough_args(
+			array( 'gf_institution', 'gf_status', 'gf_search', 'gf_view', 'gf_page', 'gf_sort', 'gf_order' )
+		);
 		foreach ( $gf_hidden as $gf_k => $gf_v ) :
 			?>
 			<input type="hidden" name="<?php echo esc_attr( $gf_k ); ?>" value="<?php echo esc_attr( $gf_v ); ?>" />
@@ -244,4 +242,16 @@ defined( 'ABSPATH' ) || exit;
 		</ul>
 
 	<?php endif; ?>
+
+	<?php
+	// Rendered for both the card grid and the table view: a visitor who filtered
+	// to one funder still needs a way to reach the rest of that funder's calls.
+	echo CEAFSN_GF_Public::render_pagination( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in render_pagination().
+		(int) $current_page,
+		(int) $total_pages,
+		(string) $base_url,
+		'gf_page',
+		__( 'Grant opportunity pages', 'ceafsn-gf' )
+	);
+	?>
 </div>

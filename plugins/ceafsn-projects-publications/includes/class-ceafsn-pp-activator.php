@@ -47,6 +47,19 @@ class CEAFSN_PP_Activator {
 		// Create / upgrade the table.
 		CEAFSN_PP_DB::create_tables();
 
+		// Register the CE-AFSN capabilities and the research editor role. The
+		// call is idempotent, so activating several CE-AFSN plugins in one
+		// request is harmless.
+		if ( class_exists( 'CEAFSN_Caps' ) ) {
+			CEAFSN_Caps::install();
+		}
+
+		// Create the shared audit log alongside this plugin's own tables.
+		if ( class_exists( 'CEAFSN_Audit_Log' ) ) {
+			CEAFSN_Audit_Log::create_table();
+		}
+
+
 		// Seed the placeholder list, but never overwrite an existing one.
 		if ( false === get_option( CEAFSN_PP_Validator::PLACEHOLDER_OPTION ) ) {
 			add_option( CEAFSN_PP_Validator::PLACEHOLDER_OPTION, array( 'ceafsn.pdf' ) );

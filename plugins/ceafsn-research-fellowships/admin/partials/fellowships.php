@@ -139,6 +139,12 @@ foreach ( $items as $rf_item ) {
 		</div>
 	<?php endif; ?>
 
+	<?php if ( ! empty( $_GET['published_blocked'] ) ) : ?>
+		<div class="notice notice-warning">
+			<p><?php esc_html_e( "Fellowship record saved as a draft: you do not have permission to publish. Ask an administrator to review and publish it.", 'ceafsn-rf' ); ?></p>
+		</div>
+	<?php endif; ?>
+
 	<?php if ( $is_list ) : ?>
 
 		<div class="ceafsn-app">
@@ -483,7 +489,7 @@ foreach ( $items as $rf_item ) {
 											</td>
 											<td>
 												<span class="ceafsn-badge ceafsn-badge--status-<?php echo esc_attr( (string) $item->status ); ?>">
-													<?php echo esc_html( ucfirst( (string) $item->status ) ); ?>
+													<?php echo esc_html( CEAFSN_RF_DB::label( CEAFSN_RF_DB::status_labels(), (string) $item->status ) ); ?>
 												</span>
 											</td>
 											<td class="ceafsn-table__actions">
@@ -876,7 +882,7 @@ foreach ( $items as $rf_item ) {
 										<?php foreach ( $statuses as $value ) : ?>
 											<option value="<?php echo esc_attr( $value ); ?>"
 												<?php selected( $value, (string) ( $row->status ?? 'draft' ) ); ?>>
-												<?php echo esc_html( ucfirst( $value ) ); ?>
+												<?php echo esc_html( CEAFSN_RF_DB::label( CEAFSN_RF_DB::status_labels(), (string) $value ) ); ?>
 											</option>
 										<?php endforeach; ?>
 									</select>

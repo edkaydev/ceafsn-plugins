@@ -108,7 +108,7 @@ class CEAFSN_PP_Admin {
 	 * Publications list / add / edit page.
 	 */
 	public function page_publications(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 
 		$action = sanitize_key( $_GET['action'] ?? 'list' );
 		$id     = absint( $_GET['id'] ?? 0 );
@@ -145,7 +145,7 @@ class CEAFSN_PP_Admin {
 	 * Settings page (placeholders, redirect, export, uninstall).
 	 */
 	public function page_settings(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		require CEAFSN_PP_PLUGIN_DIR . 'admin/partials/settings.php';
 	}
 
@@ -161,7 +161,7 @@ class CEAFSN_PP_Admin {
 	 * record to draft and reports why, rather than silently failing.
 	 */
 	public function handle_save_publication(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		check_admin_referer( 'ceafsn_pp_publication_nonce', 'ceafsn_pp_nonce' );
 
 		$id   = absint( $_POST['publication_id'] ?? 0 );
@@ -175,6 +175,16 @@ class CEAFSN_PP_Admin {
 		if ( ! empty( $errors ) ) {
 			$this->redirect_back_with_error( implode( ' ', $errors ) );
 			return;
+		}
+
+		// Publishing is an approval action, distinct from editing the record. A
+		// user who may edit but not approve has the record stored as a draft
+		// rather than meeting a hard failure, so their work is never discarded
+		// and the reason travels with the redirect.
+		$ceafsn_blocked_publish = false;
+		if ( 'published' === (string) ( $data['status'] ?? '' ) && ! $this->can( self::CAP_APPROVE ) ) {
+			$data['status'] = 'draft';
+			$ceafsn_blocked_publish = true;
 		}
 
 		// The page count is read from the document, never from the form alone, so
@@ -202,7 +212,7 @@ class CEAFSN_PP_Admin {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => self::MENU_SLUG, 'saved' => '1' ),
+				array( 'page' => self::MENU_SLUG, 'saved' => '1', 'published_blocked' => $ceafsn_blocked_publish ? '1' : '0' ),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -213,12 +223,14 @@ class CEAFSN_PP_Admin {
 	 * Handle delete for a publication record.
 	 */
 	public function handle_delete_publication(): void {
-		$this->require_manage_options();
+		$this->require_edit();
 		$id = absint( $_GET['id'] ?? 0 );
 		check_admin_referer( 'ceafsn_pp_delete_publication_' . $id );
 
 		if ( $id > 0 ) {
+			$ceafsn_before = CEAFSN_PP_DB::get_publication( $id );
 			CEAFSN_PP_DB::delete_publication( $id );
+			$this->audit( 'delete', 'publication', $id, $ceafsn_before, null );
 		}
 
 		wp_safe_redirect(
@@ -277,7 +289,7 @@ class CEAFSN_PP_Admin {
 	 * @return void
 	 */
 	public function handle_save_settings(): void {
-		$this->require_manage_options();
+		$this->require_manage();
 		check_admin_referer( 'ceafsn_pp_settings_nonce', 'ceafsn_pp_nonce' );
 
 		$this->persist_settings( wp_unslash( $_POST ) );
@@ -295,7 +307,7 @@ class CEAFSN_PP_Admin {
 	 * Stream a JSON export of all publication records.
 	 */
 	public function handle_export(): void {
-		$this->require_manage_options();
+		$this->require_manage();
 		check_admin_referer( 'ceafsn_pp_export_nonce', 'ceafsn_pp_nonce' );
 
 		$data     = CEAFSN_PP_DB::export_all();
@@ -364,9 +376,20 @@ class CEAFSN_PP_Admin {
 	 * @return int|false Result of the write.
 	 */
 	private function persist_publication( array $data, int $id ) {
-		return $id > 0
+		$ceafsn_before = $id > 0 ? CEAFSN_PP_DB::get_publication( $id ) : null;
+		$ceafsn_saved  = $id > 0
 			? CEAFSN_PP_DB::update_publication( $id, $data )
 			: CEAFSN_PP_DB::insert_publication( $data );
+
+		$this->audit(
+			$id > 0 ? 'update' : 'create',
+			'publication',
+			(int) $ceafsn_saved,
+			$ceafsn_before,
+			CEAFSN_PP_DB::get_publication( (int) $ceafsn_saved )
+		);
+
+		return $ceafsn_saved;
 	}
 
 	/**
@@ -464,8 +487,83 @@ class CEAFSN_PP_Admin {
 	/**
 	 * Abort with a 403 if the current user cannot manage options.
 	 */
-	private function require_manage_options(): void {
-		if ( ! current_user_can( 'manage_options' ) ) {
+	/**
+	 * Capability names, mirrored here so this class never has to reference
+	 * CEAFSN_Caps. Referencing the shared constant in an argument list would
+	 * fatal when the optional library is absent, which would defeat the very
+	 * fallback that keeps the plugin working on its own.
+	 */
+	private const CAP_EDIT    = 'ceafsn_edit';
+	private const CAP_APPROVE = 'ceafsn_approve';
+	private const CAP_MANAGE  = 'ceafsn_manage';
+
+	/**
+	 * Record a write in the shared audit log.
+	 *
+	 * A no-op when the shared library is absent, so this plugin stays usable on
+	 * its own. Reducing the pair to a redacted diff happens inside the log class,
+	 * which keeps that rule in one place instead of at every call site.
+	 *
+	 * @param string                $action      create, update, or delete.
+	 * @param string                $entity_type Record type.
+	 * @param int                   $entity_id   Record id.
+	 * @param array<string,mixed>|object|null $before Previous row.
+	 * @param array<string,mixed>|object|null $after  New row.
+	 * @return void
+	 */
+	private function audit( string $action, string $entity_type, int $entity_id, array|object|null $before, array|object|null $after ): void {
+		if ( ! class_exists( 'CEAFSN_Audit_Log' ) ) {
+			return;
+		}
+
+		CEAFSN_Audit_Log::record( $action, $entity_type, $entity_id, $before, $after );
+	}
+
+	/**
+	 * Whether the current user holds a CE-AFSN capability.
+	 *
+	 * `manage_options` remains a fallback, and is used on its own when the
+	 * shared library is not installed, so no administrator loses access to data
+	 * they could previously reach.
+	 *
+	 * @param string $cap Capability name.
+	 * @return bool True when allowed.
+	 */
+	private function can( string $cap ): bool {
+		if ( class_exists( 'CEAFSN_Caps' ) ) {
+			return CEAFSN_Caps::can( $cap );
+		}
+
+		return current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * Abort with a 403 unless the user may work with research records.
+	 *
+	 * Reading and editing the admin screens used to need `manage_options`,
+	 * which is a site-administration capability and left an editor unable to
+	 * maintain the research data they were hired to maintain.
+	 */
+	private function require_edit(): void {
+		if ( ! $this->can( self::CAP_EDIT ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'ceafsn-pp' ), 403 );
+		}
+	}
+
+	/**
+	 * Abort with a 403 unless the user may publish or verify a record.
+	 */
+	private function require_approve(): void {
+		if ( ! $this->can( self::CAP_APPROVE ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'ceafsn-pp' ), 403 );
+		}
+	}
+
+	/**
+	 * Abort with a 403 unless the user may change site-wide settings.
+	 */
+	private function require_manage(): void {
+		if ( ! $this->can( self::CAP_MANAGE ) ) {
 			wp_die( esc_html__( 'You do not have permission to perform this action.', 'ceafsn-pp' ), 403 );
 		}
 	}

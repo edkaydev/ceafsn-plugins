@@ -31,6 +31,12 @@ if ( ! empty( $_GET['ceafsn_gf_error'] ) ) : ?>
 	<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Grant saved.', 'ceafsn-gf' ); ?></p></div>
 <?php endif; ?>
 
+<?php if ( ! empty( $_GET['published_blocked'] ) ) : ?>
+	<div class="notice notice-warning">
+		<p><?php esc_html_e( "Grant saved as a draft: you do not have permission to publish. Ask an administrator to review and publish it.", 'ceafsn-gf' ); ?></p>
+	</div>
+<?php endif; ?>
+
 <?php if ( ! empty( $_GET['deleted'] ) ) : ?>
 	<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Grant deleted.', 'ceafsn-gf' ); ?></p></div>
 <?php endif; ?>
@@ -333,7 +339,7 @@ $deadline_input = CEAFSN_GF_DB::utc_to_local_input( (string) ( $row->deadline ??
 											</td>
 											<td>
 												<span class="ceafsn-badge ceafsn-badge--state-<?php echo esc_attr( (string) $item->status ); ?>">
-													<?php echo esc_html( ucfirst( (string) $item->status ) ); ?>
+													<?php echo esc_html( CEAFSN_GF_DB::label( CEAFSN_GF_DB::status_labels(), (string) $item->status ) ); ?>
 												</span>
 											</td>
 											<td class="ceafsn-table__actions">
@@ -704,7 +710,7 @@ $deadline_input = CEAFSN_GF_DB::utc_to_local_input( (string) ( $row->deadline ??
 								<?php foreach ( $statuses as $value ) : ?>
 									<option value="<?php echo esc_attr( $value ); ?>"
 										<?php selected( $value, (string) ( $row->status ?? 'draft' ) ); ?>>
-										<?php echo esc_html( ucfirst( $value ) ); ?>
+										<?php echo esc_html( CEAFSN_GF_DB::label( CEAFSN_GF_DB::status_labels(), (string) $value ) ); ?>
 									</option>
 								<?php endforeach; ?>
 							</select>
