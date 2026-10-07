@@ -2,11 +2,16 @@
 /**
  * xAI Grok provider adapter.
  *
- * Grok's API is OpenAI-compatible, so the endpoints follow the same shape.
- * Uses grok-beta for completions. For embeddings Grok does not yet have a
- * public embeddings endpoint, so when Grok is selected as the active provider
- * the plugin automatically falls back to OpenAI embeddings if an OpenAI key
- * is also configured, or uses a simple TF-IDF fallback otherwise.
+ * Grok's API is OpenAI-compatible, so the endpoint and response shape follow
+ * the same pattern. xAI has no public embeddings endpoint, so when Grok is the
+ * active provider the registry resolves embeddings from OpenAI first and
+ * Gemini second — see CEAFSN_AI_Providers::embeddings(). Nothing else in the
+ * plugin changes.
+ *
+ * The Chat Completions endpoint is marked deprecated by xAI in favour of the
+ * Responses API but is still served and still documented, so it is used here
+ * because it is the one shape shared with the OpenAI adapter. The model
+ * identifier itself is overridable from the settings screen.
  *
  * @package CEAFSN_AI
  */
@@ -21,12 +26,21 @@ class CEAFSN_AI_Provider_Grok extends CEAFSN_AI_Provider {
 	/** @var string Chat completions endpoint. */
 	const CHAT_ENDPOINT = 'https://api.x.ai/v1/chat/completions';
 
-	/** @var string Completion model. */
-	const CHAT_MODEL = 'grok-beta';
+	/** @var string Fallback completion model. See CEAFSN_AI_Providers::DEFAULT_MODELS. */
+	const CHAT_MODEL = 'grok-4.5';
+
+	/**
+	 * Chat model actually used, after any saved override.
+	 *
+	 * @return string
+	 */
+	private function chat_model(): string {
+		return CEAFSN_AI_Providers::chat_model( $this->key() );
+	}
 
 	/** {@inheritdoc} */
 	public function name(): string {
-		return 'xAI Grok (grok-beta)';
+		return 'xAI Grok';
 	}
 
 	/** {@inheritdoc} */
@@ -60,7 +74,7 @@ class CEAFSN_AI_Provider_Grok extends CEAFSN_AI_Provider {
 		$response = $this->http_post(
 			self::CHAT_ENDPOINT,
 			array(
-				'model'       => self::CHAT_MODEL,
+				'model'       => $this->chat_model(),
 				'messages'    => array(
 					array( 'role' => 'system', 'content' => $system_prompt ),
 					array( 'role' => 'user',   'content' => $user_message ),

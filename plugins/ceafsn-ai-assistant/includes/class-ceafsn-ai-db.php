@@ -235,6 +235,32 @@ class CEAFSN_AI_DB {
 	}
 
 	/**
+	 * Chunk counts grouped by the embeddings provider that produced them.
+	 *
+	 * Embeddings from two vendors are not comparable — the dimensions and the
+	 * meaning of each axis differ — so a query only ever scores chunks from a
+	 * single provider. When a site switches provider, the old rows become
+	 * invisible rather than wrong, and this count is what tells the operator
+	 * to rebuild instead of leaving them wondering why answers stopped.
+	 *
+	 * @return array<string,int> Provider key => chunk count.
+	 */
+	public static function provider_breakdown(): array {
+		global $wpdb;
+
+		$rows = $wpdb->get_results(
+			"SELECT provider, COUNT(*) AS n FROM `{$wpdb->prefix}ceafsn_ai_chunks` GROUP BY provider"
+		) ?: array();
+
+		$out = array();
+		foreach ( $rows as $row ) {
+			$out[ (string) $row->provider ] = (int) $row->n;
+		}
+
+		return $out;
+	}
+
+	/**
 	 * Total number of indexed chunks.
 	 *
 	 * @return int

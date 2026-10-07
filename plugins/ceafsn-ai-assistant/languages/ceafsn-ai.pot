@@ -1,0 +1,814 @@
+# Copyright (C) 2026 edkaydev
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: CE-AFSN AI Assistant 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ceafsn-ai-assistant\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-06T13:32:47+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: ceafsn-ai\n"
+
+#. Plugin Name of the plugin
+#: ceafsn-ai-assistant.php
+#: admin/class-ceafsn-ai-admin.php:76
+#: public/partials/assistant.php:23
+msgid "CE-AFSN AI Assistant"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: ceafsn-ai-assistant.php
+msgid "https://ceafsn.duckdns.org/ai-assistant/"
+msgstr ""
+
+#. Description of the plugin
+#: ceafsn-ai-assistant.php
+msgid "AI-powered question-and-answer assistant for CE-AFSN content. Answers questions about research, fellowships, grants, datasets, and publications in English and Portuguese. Shortcode: [ceafsn_ai_assistant]"
+msgstr ""
+
+#. Author of the plugin
+#: ceafsn-ai-assistant.php
+msgid "edkaydev"
+msgstr ""
+
+#. Author URI of the plugin
+#: ceafsn-ai-assistant.php
+msgid "https://www.linkedin.com/in/edkaydev"
+msgstr ""
+
+#: admin/class-ceafsn-ai-admin.php:77
+#: admin/partials/overview.php:197
+msgid "AI Assistant"
+msgstr ""
+
+#: admin/class-ceafsn-ai-admin.php:87
+#: admin/class-ceafsn-ai-admin.php:88
+msgid "Overview"
+msgstr ""
+
+#: admin/class-ceafsn-ai-admin.php:96
+#: admin/class-ceafsn-ai-admin.php:97
+#: admin/partials/settings.php:80
+msgid "Settings"
+msgstr ""
+
+#. translators: 1: indexed chunks, 2: skipped, 3: errors.
+#: admin/class-ceafsn-ai-admin.php:377
+#, php-format
+msgid "Indexing paused after reaching its time budget — indexed %1$d chunks, skipped %2$d, errors %3$d. Run it again to continue from where it stopped."
+msgstr ""
+
+#. translators: 1: indexed chunks, 2: skipped, 3: errors.
+#: admin/class-ceafsn-ai-admin.php:389
+#, php-format
+msgid "Indexing complete. Indexed: %1$d chunks, skipped %2$d, errors %3$d."
+msgstr ""
+
+#: admin/class-ceafsn-ai-admin.php:409
+msgid "Index cleared. Run indexing again to rebuild."
+msgstr ""
+
+#: admin/class-ceafsn-ai-admin.php:494
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: admin/partials/overview.php:40
+msgid "No chat provider is configured, so no question can be answered."
+msgstr ""
+
+#: admin/partials/overview.php:43
+msgid "No embeddings provider is configured, so nothing can be looked up."
+msgstr ""
+
+#: admin/partials/overview.php:46
+msgid "The knowledge base is empty, so there is nothing to look up."
+msgstr ""
+
+#. translators: %s: number of chunks.
+#: admin/partials/overview.php:51
+#, php-format
+msgid "%s chunk was built with a different embeddings provider and will never match a new question."
+msgid_plural "%s chunks were built with a different embeddings provider and will never match a new question."
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/partials/overview.php:56
+msgid "Every indexed chunk is missing its vector, so none of them can be found."
+msgstr ""
+
+#: admin/partials/overview.php:66
+msgid "Ready"
+msgstr ""
+
+#. translators: %s: number of blocking issues.
+#: admin/partials/overview.php:69
+#, php-format
+msgid "%s issue"
+msgid_plural "%s issues"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/partials/overview.php:81
+msgid "Provider configured"
+msgstr ""
+
+#: admin/partials/overview.php:83
+msgid "An API key is needed for both answering and looking up"
+msgstr ""
+
+#. translators: %s: name of the active provider.
+#: admin/partials/overview.php:86
+#, php-format
+msgid "Answering with %s"
+msgstr ""
+
+#: admin/partials/overview.php:92
+msgid "Knowledge base built"
+msgstr ""
+
+#: admin/partials/overview.php:94
+msgid "Nothing indexed yet"
+msgstr ""
+
+#. translators: 1: indexed chunks, 2: chunks with vectors.
+#: admin/partials/overview.php:97
+#, php-format
+msgid "%1$s chunks, %2$s with vectors"
+msgstr ""
+
+#: admin/partials/overview.php:106
+msgid "Shown on a page"
+msgstr ""
+
+#: admin/partials/overview.php:108
+msgid "The shortcode is not on any published page"
+msgstr ""
+
+#. translators: %s: number of published items using the shortcode.
+#: admin/partials/overview.php:111
+#, php-format
+msgid "Live on %s published item"
+msgid_plural "Live on %s published items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/partials/overview.php:133
+msgid "Skip to dashboard content"
+msgstr ""
+
+#: admin/partials/overview.php:165
+msgid "The assistant answers only when all three steps are done"
+msgstr ""
+
+#: admin/partials/overview.php:167
+msgid "Add an API key, build the index, then put the shortcode on a page. Until then every question is refused rather than answered from a half-built index."
+msgstr ""
+
+#: admin/partials/overview.php:168
+msgid "Open provider settings"
+msgstr ""
+
+#: admin/partials/overview.php:178
+msgid "Some indexed chunks are missing their vector"
+msgstr ""
+
+#. translators: 1: chunks without a vector, 2: total chunks.
+#: admin/partials/overview.php:183
+#, php-format
+msgid "%1$s of %2$s chunks cannot be found until they are embedded. Run indexing again to fill the gaps."
+msgstr ""
+
+#: admin/partials/overview.php:188
+#: admin/partials/overview.php:203
+msgid "Run indexing"
+msgstr ""
+
+#: admin/partials/overview.php:196
+msgid "CE-AFSN"
+msgstr ""
+
+#: admin/partials/overview.php:199
+msgid "A question from a visitor is embedded, matched against the indexed CE-AFSN content, and answered only from what those chunks actually say."
+msgstr ""
+
+#: admin/partials/overview.php:206
+msgid "Providers"
+msgstr ""
+
+#. translators: %s: number of indexed chunks.
+#: admin/partials/overview.php:214
+#, php-format
+msgid "<strong>%s</strong> chunks"
+msgstr ""
+
+#. translators: %s: number of chunks with vectors.
+#: admin/partials/overview.php:223
+#, php-format
+msgid "<strong>%s</strong> embedded"
+msgstr ""
+
+#. translators: %s: name of the chat provider, or Not configured.
+#: admin/partials/overview.php:232
+#, php-format
+msgid "<strong>%s</strong> answering"
+msgstr ""
+
+#: admin/partials/overview.php:233
+#: admin/partials/overview.php:444
+#: admin/partials/overview.php:454
+msgid "Not configured"
+msgstr ""
+
+#. translators: %s: number of published items using the shortcode.
+#: admin/partials/overview.php:241
+#, php-format
+msgid "<strong>%s</strong> on the site"
+msgstr ""
+
+#: admin/partials/overview.php:253
+msgid "Chunks"
+msgstr ""
+
+#. translators: 1: chunks with vectors, 2: chunks without.
+#: admin/partials/overview.php:260
+#, php-format
+msgid "%1$s with a vector · %2$s without"
+msgstr ""
+
+#: admin/partials/overview.php:271
+#: admin/partials/overview.php:428
+msgid "Last indexed"
+msgstr ""
+
+#: admin/partials/overview.php:278
+#: admin/partials/overview.php:434
+msgid "Never"
+msgstr ""
+
+#: admin/partials/overview.php:285
+msgid "No embeddings provider yet"
+msgstr ""
+
+#. translators: %s: name of the embeddings provider.
+#: admin/partials/overview.php:289
+#, php-format
+msgid "Vectors from %s"
+msgstr ""
+
+#: admin/partials/overview.php:300
+msgid "On the site"
+msgstr ""
+
+#: admin/partials/overview.php:304
+msgid "Published pages and posts with the shortcode"
+msgstr ""
+
+#: admin/partials/overview.php:311
+msgid "Blocking issues"
+msgstr ""
+
+#: admin/partials/overview.php:317
+msgid "Questions are refused until these are resolved"
+msgstr ""
+
+#: admin/partials/overview.php:319
+msgid "The assistant can answer a question now"
+msgstr ""
+
+#: admin/partials/overview.php:329
+#: admin/partials/settings.php:101
+msgid "Display the assistant"
+msgstr ""
+
+#: admin/partials/overview.php:330
+msgid "Nothing appears to visitors until this shortcode is on a published page."
+msgstr ""
+
+#: admin/partials/overview.php:333
+msgid "Attributes"
+msgstr ""
+
+#: admin/partials/overview.php:338
+msgid "Paste into the page that should offer the assistant"
+msgstr ""
+
+#: admin/partials/overview.php:342
+msgid "It takes optional placeholder_en and placeholder_pt attributes — open Display in settings for the full list."
+msgstr ""
+
+#: admin/partials/overview.php:350
+msgid "Setup progress"
+msgstr ""
+
+#: admin/partials/overview.php:351
+msgid "Counted from your configuration and your published content. A step is only complete when the numbers prove it."
+msgstr ""
+
+#: admin/partials/overview.php:373
+msgid "Current step:"
+msgstr ""
+
+#: admin/partials/overview.php:379
+msgid "All steps complete"
+msgstr ""
+
+#: admin/partials/overview.php:390
+msgid "Knowledge base"
+msgstr ""
+
+#: admin/partials/overview.php:391
+msgid "Reads the published CE-AFSN records plus WordPress pages and posts, splits them into chunks, and stores a vector for each one."
+msgstr ""
+
+#: admin/partials/overview.php:398
+msgid "Index status"
+msgstr ""
+
+#: admin/partials/overview.php:401
+msgid "Measure"
+msgstr ""
+
+#: admin/partials/overview.php:402
+msgid "Value"
+msgstr ""
+
+#: admin/partials/overview.php:407
+msgid "Total chunks"
+msgstr ""
+
+#: admin/partials/overview.php:411
+msgid "Chunks with vectors"
+msgstr ""
+
+#. translators: %s: number of chunks from another provider.
+#: admin/partials/overview.php:419
+#, php-format
+msgid "%s of them belong to a different provider"
+msgstr ""
+
+#: admin/partials/overview.php:440
+msgid "Embeddings via"
+msgstr ""
+
+#: admin/partials/overview.php:450
+msgid "Answering via"
+msgstr ""
+
+#: admin/partials/overview.php:473
+msgid "Full rebuild (delete the existing index first)"
+msgstr ""
+
+#: admin/partials/overview.php:476
+msgid "Use this after switching embeddings provider, or when a chunk was edited and did not pick up the change."
+msgstr ""
+
+#: admin/partials/overview.php:483
+msgid "Run indexing now"
+msgstr ""
+
+#: admin/partials/overview.php:488
+msgid "Each content item costs one API call, so the first run can take a few minutes. A run that reaches its time budget stops cleanly and can be continued by pressing the button again."
+msgstr ""
+
+#: admin/partials/overview.php:492
+msgid "Indexing is disabled until an OpenAI or Gemini API key is added."
+msgstr ""
+
+#: admin/partials/overview.php:501
+msgid "Delete the entire AI index? This cannot be undone."
+msgstr ""
+
+#: admin/partials/overview.php:506
+msgid "Clear index"
+msgstr ""
+
+#: admin/partials/overview.php:519
+msgid "Get started"
+msgstr ""
+
+#: admin/partials/overview.php:524
+msgid "Add an API key"
+msgstr ""
+
+#: admin/partials/overview.php:525
+msgid "Review providers"
+msgstr ""
+
+#: admin/partials/overview.php:533
+msgid "One key answers the question, a second one builds the vectors. OpenAI and Gemini can do both on a single key."
+msgstr ""
+
+#: admin/partials/overview.php:534
+msgid "Change which model answers, or pin a newer one when a vendor retires the default."
+msgstr ""
+
+#: admin/partials/overview.php:539
+msgid "+ Add an API key"
+msgstr ""
+
+#: admin/partials/overview.php:539
+msgid "Open providers"
+msgstr ""
+
+#: admin/partials/overview.php:544
+msgid "How it answers"
+msgstr ""
+
+#: admin/partials/overview.php:545
+msgid "Rules the assistant keeps"
+msgstr ""
+
+#: admin/partials/overview.php:547
+msgid "Only indexed content is used — never the open web."
+msgstr ""
+
+#: admin/partials/overview.php:548
+msgid "A question with no close match is refused, not guessed."
+msgstr ""
+
+#: admin/partials/overview.php:549
+msgid "Sources are shown with every answer so it can be checked."
+msgstr ""
+
+#: admin/partials/overview.php:550
+msgid "API keys are never printed to visitors or to page source."
+msgstr ""
+
+#: admin/partials/overview.php:551
+msgid "Twenty questions per visitor per minute, then a short wait."
+msgstr ""
+
+#: admin/partials/overview.php:556
+msgid "Placement"
+msgstr ""
+
+#: admin/partials/overview.php:557
+msgid "Put it on a page"
+msgstr ""
+
+#: admin/partials/overview.php:559
+msgid "Drop the shortcode into any page or post. The assistant loads its script only on pages that carry it."
+msgstr ""
+
+#: admin/partials/overview.php:562
+msgid "Open Display"
+msgstr ""
+
+#: admin/partials/overview.php:570
+msgid "Jump to how the assistant answers"
+msgstr ""
+
+#: admin/partials/settings.php:56
+msgid "Settings saved."
+msgstr ""
+
+#: admin/partials/settings.php:71
+msgid "No embeddings provider is configured. The assistant cannot look anything up until an OpenAI or Gemini API key is set below."
+msgstr ""
+
+#: admin/partials/settings.php:79
+msgid "CE-AFSN · AI Assistant"
+msgstr ""
+
+#: admin/partials/settings.php:82
+msgid "Where the assistant appears, which model answers, and what happens to the index when the plugin is removed."
+msgstr ""
+
+#: admin/partials/settings.php:86
+msgid "Settings sections"
+msgstr ""
+
+#: admin/partials/settings.php:102
+msgid "Nothing appears to visitors until this shortcode is on a published page, and the assistant cannot answer until the index has been built."
+msgstr ""
+
+#: admin/partials/settings.php:108
+msgid "Paste this shortcode into the page that should offer the assistant"
+msgstr ""
+
+#: admin/partials/settings.php:113
+msgid "It goes in the page content, in a Code / Preformatted block, or anywhere the block editor accepts HTML."
+msgstr ""
+
+#: admin/partials/settings.php:117
+msgid "Optional attributes"
+msgstr ""
+
+#: admin/partials/settings.php:120
+msgid "Attribute"
+msgstr ""
+
+#: admin/partials/settings.php:121
+msgid "Default"
+msgstr ""
+
+#: admin/partials/settings.php:122
+msgid "What it does"
+msgstr ""
+
+#: admin/partials/settings.php:128
+#: public/class-ceafsn-ai-public.php:48
+msgid "Ask a question about CE-AFSN research, fellowships, grants…"
+msgstr ""
+
+#: admin/partials/settings.php:129
+msgid "Placeholder shown before the visitor has typed anything, while the text still reads as English."
+msgstr ""
+
+#: admin/partials/settings.php:133
+#: public/class-ceafsn-ai-public.php:52
+msgid "Faça uma pergunta sobre pesquisa, bolsas, financiamentos da CE-AFSN…"
+msgstr ""
+
+#: admin/partials/settings.php:134
+msgid "Placeholder used once the visitor starts typing in Portuguese."
+msgstr ""
+
+#: admin/partials/settings.php:140
+msgid "Example: [ceafsn_ai_assistant placeholder_en=\"Ask about fellowships\" placeholder_pt=\"Pergunte sobre bolsas\"]"
+msgstr ""
+
+#: admin/partials/settings.php:146
+msgid "The placeholder switches as the visitor types"
+msgstr ""
+
+#: admin/partials/settings.php:148
+msgid "Language is guessed from the words already typed, so the choice is made on the visitor’s machine and no page reload happens. Both attributes should therefore be filled in whenever the site serves readers in the two languages."
+msgstr ""
+
+#: admin/partials/settings.php:161
+msgid "Data removal on uninstall"
+msgstr ""
+
+#: admin/partials/settings.php:162
+msgid "Deleting the plugin is the only thing that can remove the index, and only when you ask for it here."
+msgstr ""
+
+#: admin/partials/settings.php:173
+msgid "Deactivating the plugin never deletes anything. Tick the box below only if you intend to delete the plugin and permanently remove the knowledge base, the stored API keys, and the model overrides."
+msgstr ""
+
+#: admin/partials/settings.php:181
+msgid "Delete the knowledge base, stored API keys, and model overrides when the plugin is deleted"
+msgstr ""
+
+#: admin/partials/settings.php:184
+msgid "Off by default, so removing the plugin never destroys a month of indexing — or a key another tool still uses — by surprise. A few bookkeeping options are always removed either way, and your own pages and posts are never touched."
+msgstr ""
+
+#: admin/partials/settings.php:191
+#: admin/partials/settings.php:309
+msgid "Save settings"
+msgstr ""
+
+#: admin/partials/settings.php:204
+msgid "Providers and models"
+msgstr ""
+
+#: admin/partials/settings.php:205
+msgid "One provider answers the question, a second one builds the vectors. OpenAI and Gemini do both on a single key."
+msgstr ""
+
+#: admin/partials/settings.php:216
+msgid "Active AI provider"
+msgstr ""
+
+#: admin/partials/settings.php:225
+msgid "Grok and Claude have no embeddings API. When either is selected, vectors are built by OpenAI if a key is set, then Gemini."
+msgstr ""
+
+#: admin/partials/settings.php:242
+msgid "Key set"
+msgstr ""
+
+#: admin/partials/settings.php:242
+msgid "No key"
+msgstr ""
+
+#: admin/partials/settings.php:247
+msgid "API key"
+msgstr ""
+
+#: admin/partials/settings.php:257
+msgid "Leave blank to keep the key already stored. Enter a new value to replace it."
+msgstr ""
+
+#: admin/partials/settings.php:262
+msgid "Chat model"
+msgstr ""
+
+#. translators: 1: default chat model identifier, 2: what filling the field does.
+#: admin/partials/settings.php:275
+#, php-format
+msgid "Leave empty to use the built-in default, %s. Fill this in when a vendor retires it and the assistant stops responding."
+msgstr ""
+
+#: admin/partials/settings.php:284
+msgid "Embeddings model"
+msgstr ""
+
+#. translators: %s: default embeddings model identifier.
+#: admin/partials/settings.php:297
+#, php-format
+msgid "Leave empty to use the built-in default, %s. Changing this invalidates the existing index — run a full rebuild afterwards."
+msgstr ""
+
+#: admin/partials/settings.php:317
+msgid "Changing the embeddings model empties the index in practice"
+msgstr ""
+
+#: admin/partials/settings.php:319
+msgid "Vectors from one model cannot be compared with vectors from another, so the assistant will report a provider mismatch until you run a full rebuild from the Overview."
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:58
+msgid "No embeddings provider configured — add an API key."
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:284
+#: includes/class-ceafsn-ai-indexer.php:297
+#: includes/class-ceafsn-ai-indexer.php:309
+#: includes/class-ceafsn-ai-indexer.php:332
+#: includes/class-ceafsn-ai-indexer.php:343
+msgid "Title"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:285
+#: includes/class-ceafsn-ai-indexer.php:299
+#: includes/class-ceafsn-ai-indexer.php:322
+#: includes/class-ceafsn-ai-indexer.php:333
+msgid "Description"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:286
+#: includes/class-ceafsn-ai-indexer.php:300
+msgid "Eligibility"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:287
+msgid "Funding institution"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:288
+msgid "Target beneficiaries"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:289
+#: includes/class-ceafsn-ai-indexer.php:346
+msgid "Status"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:290
+msgid "Deadline"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:298
+msgid "Research track"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:301
+msgid "Host / Supervisor"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:302
+msgid "Duration"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:310
+msgid "Summary"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:311
+msgid "Authors / Institution"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:312
+msgid "Type"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:313
+#: includes/class-ceafsn-ai-indexer.php:336
+msgid "Publication date"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:314
+msgid "DOI / Citation"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:321
+msgid "Name"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:323
+msgid "Coverage area"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:324
+msgid "Category"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:325
+msgid "License"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:334
+msgid "Authoring institution"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:335
+msgid "Topic"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:344
+msgid "Principal investigator"
+msgstr ""
+
+#: includes/class-ceafsn-ai-indexer.php:345
+msgid "Target region"
+msgstr ""
+
+#: includes/class-ceafsn-ai-providers.php:84
+msgid "OpenAI"
+msgstr ""
+
+#: includes/class-ceafsn-ai-providers.php:85
+msgid "Google Gemini"
+msgstr ""
+
+#: includes/class-ceafsn-ai-providers.php:86
+msgid "xAI Grok"
+msgstr ""
+
+#: includes/class-ceafsn-ai-providers.php:87
+msgid "Anthropic Claude"
+msgstr ""
+
+#: includes/class-ceafsn-ai-query.php:67
+msgid "Please enter a question."
+msgstr ""
+
+#: includes/class-ceafsn-ai-query.php:78
+msgid "The AI assistant is not configured yet. Please add an API key in the admin settings."
+msgstr ""
+
+#: includes/class-ceafsn-ai-query.php:85
+msgid "No embeddings provider is available. Please configure an OpenAI or Gemini API key."
+msgstr ""
+
+#: includes/class-ceafsn-ai-query.php:95
+msgid "Could not process your question. Please try again in a moment."
+msgstr ""
+
+#: includes/class-ceafsn-ai-query.php:112
+msgid "The knowledge base is empty. Please run the index from the admin settings."
+msgstr ""
+
+#: includes/class-ceafsn-ai-query.php:118
+msgid "The knowledge base was built with a different embeddings provider. Run a full rebuild in the admin settings."
+msgstr ""
+
+#: includes/class-ceafsn-ai-query.php:148
+msgid "No relevant content found. Try rephrasing your question."
+msgstr ""
+
+#: includes/class-ceafsn-ai-query.php:183
+msgid "The AI model did not respond. Please try again."
+msgstr ""
+
+#: public/class-ceafsn-ai-public.php:118
+msgid "Too many requests. Please wait a moment before asking again."
+msgstr ""
+
+#: public/partials/assistant.php:35
+msgid "CE-AFSN Knowledge Assistant"
+msgstr ""
+
+#: public/partials/assistant.php:38
+msgid "Ask anything about our research, fellowships, grants, datasets and publications — in English or Portuguese."
+msgstr ""
+
+#: public/partials/assistant.php:40
+msgid "Faça perguntas em inglês ou português sobre pesquisa, bolsas, financiamentos e publicações."
+msgstr ""
+
+#: public/partials/assistant.php:47
+msgid "Your question"
+msgstr ""
+
+#: public/partials/assistant.php:60
+#: public/partials/assistant.php:62
+msgid "Ask"
+msgstr ""
+
+#: public/partials/assistant.php:68
+msgid "Answers are generated from CE-AFSN's published content only."
+msgstr ""
+
+#: public/partials/assistant.php:76
+msgid "Sources"
+msgstr ""

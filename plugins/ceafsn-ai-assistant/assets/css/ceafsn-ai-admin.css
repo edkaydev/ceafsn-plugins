@@ -1,0 +1,1456 @@
+/**
+ * CE-AFSN AI Assistant — Admin Styles
+ *
+ * Branded admin UI. Every rule is scoped to .ceafsn-ai-wrap so nothing here
+ * can leak into the rest of wp-admin or a front-end theme.
+ *
+ * Palette is taken from the live CE-AFSN site (Blocksy theme customisations):
+ *   gold   #d4af37  — accent: rules, active states, step highlights
+ *   green  #1e4d2b  — primary: hero band, headings, primary buttons
+ *   sage   #365951  — secondary text and links
+ *   cream  #fbf6ed  — subtle surface tint
+ *
+ * Layout is a two-column app grid inside the WordPress admin: a main canvas
+ * plus a narrower right rail for calls to action and guidance. The WordPress
+ * admin menu already provides the left navigation, so the three columns of
+ * the design (nav / canvas / rail) are all present.
+ *
+ * Surfaces are white cards on the pale wp-admin canvas, separated by 1px
+ * borders and a faint shadow. Rounded corners throughout; status pills and
+ * indicator dots are fully rounded.
+ *
+ * Contrast notes (WCAG 2.1 AA):
+ *   white on #1e4d2b ....... 9.1:1  (hero band, safe for all text)
+ *   #d4af37 on #1e4d2b .... 4.7:1  (accent text on dark, safe)
+ *   #1e4d2b on white ....... 9.1:1  (headings, emphasis)
+ *   #5c6770 on white ....... 5.4:1  (muted text — never #86919a, which is
+ *                               only 3.0:1 and fails AA at small sizes)
+ * Gold is never used for small text on white; it is a fill or a large accent
+ * paired with dark ink.
+ */
+
+/* --------------------------------------------------------------------------
+ * Tokens
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap {
+	--ceafsn-gold: #d4af37;
+	--ceafsn-gold-dark: #a8871f;
+	--ceafsn-gold-tint: #fbf6ed;
+	--ceafsn-green: #1e4d2b;
+	--ceafsn-green-dark: #163a20;
+	--ceafsn-sage: #365951;
+	--ceafsn-ink: #111518;
+	--ceafsn-body: #2b2b2b;
+	--ceafsn-muted: #5c6770;
+	--ceafsn-line: #d5dade;
+	--ceafsn-line-soft: #e6e9eb;
+	--ceafsn-surface: #f2f4f5;
+	--ceafsn-white: #fff;
+	--ceafsn-danger: #8a1c1c;
+	--ceafsn-danger-line: #d9a5a5;
+	--ceafsn-danger-tint: #fdf3f3;
+	--ceafsn-warn-tint: #fdf8ec;
+	--ceafsn-success-tint: #f1f7f2;
+
+	--ceafsn-radius: 6px;
+	--ceafsn-radius-sm: 4px;
+	--ceafsn-radius-lg: 10px;
+	--ceafsn-radius-pill: 999px;
+
+	/* Faint separation shadows. Two layers: a tight contact shadow plus a
+	   softer lift. Kept deliberately faint so cards read as raised paper
+	   rather than as glossy panels. */
+	--ceafsn-shadow-sm: 0 1px 2px rgba(17, 21, 24, .06);
+	--ceafsn-shadow: 0 1px 2px rgba(17, 21, 24, .05), 0 4px 12px rgba(17, 21, 24, .06);
+	--ceafsn-shadow-lg: 0 2px 4px rgba(17, 21, 24, .06), 0 12px 28px rgba(17, 21, 24, .1);
+	--ceafsn-ring: 0 0 0 3px rgba(30, 77, 43, .28);
+
+	max-width: 1240px;
+	margin-right: 24px;
+	color: var(--ceafsn-body);
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.ceafsn-ai-wrap *,
+.ceafsn-ai-wrap *::before,
+.ceafsn-ai-wrap *::after {
+	box-sizing: border-box;
+}
+
+.ceafsn-ai-wrap h1,
+.ceafsn-ai-wrap h2,
+.ceafsn-ai-wrap h3,
+.ceafsn-ai-wrap h4,
+.ceafsn-ai-wrap p {
+	margin: 0 0 12px;
+}
+
+.ceafsn-ai-wrap h1,
+.ceafsn-ai-wrap h2,
+.ceafsn-ai-wrap h3,
+.ceafsn-ai-wrap h4 {
+	color: var(--ceafsn-ink);
+	line-height: 1.25;
+}
+
+.ceafsn-ai-wrap h1 {
+	font-size: 26px;
+	font-weight: 700;
+}
+
+.ceafsn-ai-wrap h2 {
+	font-size: 17px;
+	font-weight: 700;
+}
+
+.ceafsn-ai-wrap h3 {
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.ceafsn-ai-wrap a {
+	color: var(--ceafsn-sage);
+}
+
+.ceafsn-ai-wrap a:hover,
+.ceafsn-ai-wrap a:focus {
+	color: var(--ceafsn-green);
+}
+
+/* Visible, solid focus on every interactive element. */
+.ceafsn-ai-wrap a:focus,
+.ceafsn-ai-wrap button:focus,
+.ceafsn-ai-wrap input:focus,
+.ceafsn-ai-wrap select:focus,
+.ceafsn-ai-wrap textarea:focus {
+	outline: 2px solid var(--ceafsn-green);
+	outline-offset: 1px;
+	box-shadow: none;
+}
+
+/* Screen-reader-only text. */
+.ceafsn-ai-wrap .ceafsn-sr {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* --------------------------------------------------------------------------
+ * App grid — main canvas plus right rail
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-app {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 300px;
+	gap: 20px;
+	align-items: start;
+	margin-top: 20px;
+}
+
+.ceafsn-ai-wrap .ceafsn-app__main {
+	min-width: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-app__rail {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	position: sticky;
+	top: 46px;
+}
+
+/* --------------------------------------------------------------------------
+ * Alert banners
+ *
+ * Full-width strips above the canvas: icon, message, optional text action,
+ * and a close control in the top-right corner.
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-alerts {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin: 0 0 4px;
+}
+
+.ceafsn-ai-wrap .ceafsn-alert {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 13px 14px;
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius);
+	background: var(--ceafsn-white);
+	box-shadow: var(--ceafsn-shadow-sm);
+	font-size: 13px;
+}
+
+.ceafsn-ai-wrap .ceafsn-alert__icon {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-surface);
+	color: var(--ceafsn-ink);
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.ceafsn-ai-wrap .ceafsn-alert__body {
+	flex: 1 1 auto;
+	min-width: 0;
+	color: var(--ceafsn-body);
+}
+
+.ceafsn-ai-wrap .ceafsn-alert__title {
+	font-weight: 700;
+	color: var(--ceafsn-ink);
+}
+
+.ceafsn-ai-wrap .ceafsn-alert__text {
+	margin: 2px 0 0;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-ai-wrap .ceafsn-alert__action {
+	margin-left: 6px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.ceafsn-ai-wrap .ceafsn-alert--warn {
+	border-color: #e6d3a3;
+	background: var(--ceafsn-warn-tint);
+}
+
+.ceafsn-ai-wrap .ceafsn-alert--warn .ceafsn-alert__icon {
+	background: var(--ceafsn-gold);
+	color: #3d2f05;
+}
+
+.ceafsn-ai-wrap .ceafsn-alert--danger {
+	border-color: var(--ceafsn-danger-line);
+	background: var(--ceafsn-danger-tint);
+}
+
+.ceafsn-ai-wrap .ceafsn-alert--danger .ceafsn-alert__icon {
+	background: var(--ceafsn-danger);
+	color: #fff;
+}
+
+.ceafsn-ai-wrap .ceafsn-alert--ok {
+	border-color: #b9d0be;
+	background: var(--ceafsn-success-tint);
+}
+
+.ceafsn-ai-wrap .ceafsn-alert--ok .ceafsn-alert__icon {
+	background: var(--ceafsn-green);
+	color: #fff;
+}
+
+.ceafsn-ai-wrap .ceafsn-alert__list {
+	margin: 6px 0 0;
+	padding-left: 18px;
+	font-size: 13px;
+}
+
+/* --------------------------------------------------------------------------
+ * Hero — broad welcome module
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-hero {
+	position: relative;
+	overflow: hidden;
+	padding: 30px 32px 32px;
+	border-radius: var(--ceafsn-radius-lg);
+	background: var(--ceafsn-green);
+	box-shadow: var(--ceafsn-shadow-lg);
+	color: #fff;
+}
+
+.ceafsn-ai-wrap .ceafsn-hero__eyebrow {
+	margin: 0 0 6px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: var(--ceafsn-gold);
+}
+
+.ceafsn-ai-wrap .ceafsn-hero__title {
+	margin: 0 0 10px;
+	font-size: 30px;
+	font-weight: 700;
+	color: #fff;
+}
+
+.ceafsn-ai-wrap .ceafsn-hero__text {
+	max-width: 62ch;
+	margin: 0 0 20px;
+	font-size: 15px;
+	color: #e8efe9;
+}
+
+.ceafsn-ai-wrap .ceafsn-hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+}
+
+.ceafsn-ai-wrap .ceafsn-hero__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 18px;
+	margin-top: 22px;
+	padding-top: 18px;
+	border-top: 1px solid rgba(255, 255, 255, .22);
+	font-size: 13px;
+	color: #dfe8e1;
+}
+
+.ceafsn-ai-wrap .ceafsn-hero__meta strong {
+	color: #fff;
+	font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+ * Buttons
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 9px 18px;
+	border: 1px solid transparent;
+	border-radius: var(--ceafsn-radius-pill);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.4;
+	text-decoration: none;
+	cursor: pointer;
+	box-shadow: var(--ceafsn-shadow-sm);
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--primary {
+	background: var(--ceafsn-green);
+	border-color: var(--ceafsn-green);
+	color: #fff;
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--primary:hover,
+.ceafsn-ai-wrap .ceafsn-btn--primary:focus {
+	background: var(--ceafsn-green-dark);
+	border-color: var(--ceafsn-green-dark);
+	color: #fff;
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--gold {
+	background: var(--ceafsn-gold);
+	border-color: var(--ceafsn-gold);
+	color: #2b2205;
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--gold:hover,
+.ceafsn-ai-wrap .ceafsn-btn--gold:focus {
+	background: var(--ceafsn-gold-dark);
+	border-color: var(--ceafsn-gold-dark);
+	color: #fff;
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--ghost {
+	background: var(--ceafsn-white);
+	border-color: var(--ceafsn-line);
+	color: var(--ceafsn-ink);
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--ghost:hover,
+.ceafsn-ai-wrap .ceafsn-btn--ghost:focus {
+	border-color: var(--ceafsn-sage);
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--quiet {
+	padding: 6px 13px;
+	background: none;
+	border-color: transparent;
+	box-shadow: none;
+	color: var(--ceafsn-sage);
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--quiet:hover,
+.ceafsn-ai-wrap .ceafsn-btn--quiet:focus {
+	background: var(--ceafsn-surface);
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--block {
+	display: flex;
+	width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+ * Cards
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-card {
+	margin: 0 0 20px;
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius-lg);
+	background: var(--ceafsn-white);
+	box-shadow: var(--ceafsn-shadow);
+}
+
+.ceafsn-ai-wrap .ceafsn-card:last-child {
+	margin-bottom: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-card__head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 16px 20px;
+	border-bottom: 1px solid var(--ceafsn-line-soft);
+	background: var(--ceafsn-white);
+	border-radius: var(--ceafsn-radius-lg) var(--ceafsn-radius-lg) 0 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-card__head > div {
+	min-width: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-card__title {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.ceafsn-ai-wrap .ceafsn-card__hint {
+	margin: 4px 0 0;
+	font-size: 13px;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-ai-wrap .ceafsn-card__body {
+	padding: 20px;
+}
+
+.ceafsn-ai-wrap .ceafsn-card__body > :last-child {
+	margin-bottom: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-card__body--tight {
+	padding: 0 20px 20px;
+}
+
+/* --------------------------------------------------------------------------
+ * Progress stepper
+ *
+ * A horizontal workflow joined by thin connector lines.
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-stepper {
+	display: flex;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: ceafsn-step;
+}
+
+.ceafsn-ai-wrap .ceafsn-step {
+	position: relative;
+	flex: 1 1 0;
+	min-width: 0;
+	padding: 0 14px 0 0;
+	text-align: center;
+}
+
+/* Connector line to the next step. */
+.ceafsn-ai-wrap .ceafsn-step::after {
+	content: "";
+	position: absolute;
+	top: 15px;
+	left: calc(50% + 20px);
+	right: -14px;
+	height: 2px;
+	background: var(--ceafsn-line);
+}
+
+.ceafsn-ai-wrap .ceafsn-step:last-child {
+	padding-right: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-step:last-child::after {
+	display: none;
+}
+
+.ceafsn-ai-wrap .ceafsn-step__dot {
+	position: relative;
+	z-index: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: var(--ceafsn-radius-pill);
+	border: 2px solid var(--ceafsn-line);
+	background: var(--ceafsn-white);
+	color: var(--ceafsn-muted);
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.ceafsn-ai-wrap .ceafsn-step__label {
+	display: block;
+	margin-top: 9px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--ceafsn-ink);
+}
+
+.ceafsn-ai-wrap .ceafsn-step__meta {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
+	color: var(--ceafsn-muted);
+}
+
+/* Completed step. */
+.ceafsn-ai-wrap .ceafsn-step.is-done .ceafsn-step__dot {
+	border-color: var(--ceafsn-green);
+	background: var(--ceafsn-green);
+	color: #fff;
+}
+
+.ceafsn-ai-wrap .ceafsn-step.is-done::after {
+	background: var(--ceafsn-green);
+}
+
+/* Current step. */
+.ceafsn-ai-wrap .ceafsn-step.is-current .ceafsn-step__dot {
+	border-color: var(--ceafsn-gold);
+	background: var(--ceafsn-gold);
+	color: #2b2205;
+	box-shadow: 0 0 0 4px var(--ceafsn-gold-tint);
+}
+
+.ceafsn-ai-wrap .ceafsn-step.is-current .ceafsn-step__label {
+	color: var(--ceafsn-green);
+}
+
+/* --------------------------------------------------------------------------
+ * KPI tiles
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-kpi-row {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+	gap: 16px;
+	margin: 0 0 20px;
+}
+
+.ceafsn-ai-wrap .ceafsn-kpi {
+	position: relative;
+	padding: 17px 18px;
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius-lg);
+	background: var(--ceafsn-white);
+	box-shadow: var(--ceafsn-shadow-sm);
+}
+
+.ceafsn-ai-wrap .ceafsn-kpi__label {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: .02em;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-ai-wrap .ceafsn-kpi__value {
+	display: block;
+	margin: 8px 0 4px;
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 1.1;
+	color: var(--ceafsn-ink);
+}
+
+.ceafsn-ai-wrap .ceafsn-kpi__meta {
+	display: block;
+	font-size: 12px;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-ai-wrap .ceafsn-kpi--accent {
+	border-color: var(--ceafsn-green);
+	background: var(--ceafsn-green);
+}
+
+.ceafsn-ai-wrap .ceafsn-kpi--accent .ceafsn-kpi__label,
+.ceafsn-ai-wrap .ceafsn-kpi--accent .ceafsn-kpi__meta {
+	color: #d8e5dc;
+}
+
+.ceafsn-ai-wrap .ceafsn-kpi--accent .ceafsn-kpi__value {
+	color: #fff;
+}
+
+.ceafsn-ai-wrap .ceafsn-kpi--alert {
+	border-color: #e6d3a3;
+	background: var(--ceafsn-warn-tint);
+}
+
+.ceafsn-ai-wrap .ceafsn-kpi--alert .ceafsn-kpi__value {
+	color: #6b4f04;
+}
+
+/* --------------------------------------------------------------------------
+ * Status dots, pills, badges
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-dot {
+	display: inline-block;
+	width: 9px;
+	height: 9px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-line);
+	flex: 0 0 auto;
+}
+
+.ceafsn-ai-wrap .ceafsn-dot--green { background: var(--ceafsn-green); }
+.ceafsn-ai-wrap .ceafsn-dot--gold { background: var(--ceafsn-gold); }
+.ceafsn-ai-wrap .ceafsn-dot--danger { background: var(--ceafsn-danger); }
+.ceafsn-ai-wrap .ceafsn-dot--grey { background: #9aa3a9; }
+
+.ceafsn-ai-wrap .ceafsn-pill {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 22px;
+	padding: 1px 8px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-surface);
+	border: 1px solid var(--ceafsn-line);
+	color: var(--ceafsn-ink);
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.6;
+}
+
+.ceafsn-ai-wrap .ceafsn-pill--green {
+	background: var(--ceafsn-success-tint);
+	border-color: #b9d0be;
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-ai-wrap .ceafsn-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 2px 10px;
+	border: 1px solid transparent;
+	border-radius: var(--ceafsn-radius-pill);
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.7;
+	white-space: nowrap;
+}
+
+/* The knowledge base has three states an operator needs to tell apart at a
+   glance. "Empty" means the table has never been filled; "stale" means it has
+   content but it was built with a different embeddings provider than the one
+   configured now, so none of it will match a new query; "ready" is the only
+   state in which the assistant can actually answer. */
+.ceafsn-ai-wrap .ceafsn-badge--ready {
+	background: var(--ceafsn-success-tint);
+	border-color: #b9d0be;
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-ai-wrap .ceafsn-badge--stale {
+	background: var(--ceafsn-warn-tint);
+	border-color: #e6d3a3;
+	color: #6b4f04;
+}
+
+.ceafsn-ai-wrap .ceafsn-badge--empty {
+	background: var(--ceafsn-surface);
+	border-color: var(--ceafsn-line);
+	color: #41484e;
+}
+
+.ceafsn-ai-wrap .ceafsn-badge--ok {
+	background: var(--ceafsn-success-tint);
+	border-color: #b9d0be;
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-ai-wrap .ceafsn-badge--warn {
+	background: var(--ceafsn-danger-tint);
+	border-color: var(--ceafsn-danger-line);
+	color: var(--ceafsn-danger);
+}
+
+/* Whether the provider behind a row holds a usable API key. */
+.ceafsn-ai-wrap .ceafsn-badge--key-set {
+	background: var(--ceafsn-success-tint);
+	border-color: #b9d0be;
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-ai-wrap .ceafsn-badge--key-missing {
+	background: var(--ceafsn-surface);
+	border-color: var(--ceafsn-line);
+	color: #41484e;
+}
+
+/* An inline warning inside a field: the index is unusable even though the
+   numbers above it look non-zero. */
+.ceafsn-ai-wrap .ceafsn-ai-flag {
+	display: block;
+	margin: 6px 0 0;
+	padding: 6px 9px;
+	border-left: 3px solid var(--ceafsn-gold);
+	border-radius: var(--ceafsn-radius-sm);
+	background: var(--ceafsn-gold-tint);
+	color: #6b4f04;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+ * Tables
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-table-wrap {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.ceafsn-ai-wrap .ceafsn-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.ceafsn-ai-wrap .ceafsn-table th,
+.ceafsn-ai-wrap .ceafsn-table td {
+	padding: 11px 14px;
+	text-align: left;
+	vertical-align: middle;
+	border-bottom: 1px solid var(--ceafsn-line-soft);
+}
+
+.ceafsn-ai-wrap .ceafsn-table th {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .05em;
+	text-transform: uppercase;
+	color: var(--ceafsn-muted);
+	background: var(--ceafsn-surface);
+	white-space: nowrap;
+}
+
+.ceafsn-ai-wrap .ceafsn-table tbody tr:nth-child(even) {
+	background: #fafbfb;
+}
+
+.ceafsn-ai-wrap .ceafsn-table tbody tr:hover {
+	background: var(--ceafsn-gold-tint);
+}
+
+.ceafsn-ai-wrap .ceafsn-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-table__title {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	font-weight: 700;
+	color: var(--ceafsn-ink);
+}
+
+.ceafsn-ai-wrap .ceafsn-table__meta {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
+	font-weight: 400;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-ai-wrap .ceafsn-table__actions {
+	text-align: right;
+	white-space: nowrap;
+}
+
+.ceafsn-ai-wrap .ceafsn-table__actions a {
+	margin-left: 12px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.ceafsn-ai-wrap .ceafsn-table__actions a:hover,
+.ceafsn-ai-wrap .ceafsn-table__actions a:focus {
+	text-decoration: underline;
+}
+
+.ceafsn-ai-wrap .ceafsn-table__actions .ceafsn-ai-delete-link {
+	color: var(--ceafsn-danger);
+}
+
+.ceafsn-ai-wrap .ceafsn-table__actions .ceafsn-ai-delete-link:hover,
+.ceafsn-ai-wrap .ceafsn-table__actions .ceafsn-ai-delete-link:focus {
+	color: #6d1414;
+}
+
+/* --------------------------------------------------------------------------
+ * Lists
+ * -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+ * Check-marked guidance list (rail)
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-ticks {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ceafsn-ai-wrap .ceafsn-ticks li {
+	position: relative;
+	padding: 0 0 12px 26px;
+	font-size: 13px;
+	color: var(--ceafsn-body);
+}
+
+.ceafsn-ai-wrap .ceafsn-ticks li:last-child {
+	padding-bottom: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-ticks li::before {
+	content: "\2713";
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 17px;
+	height: 17px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-success-tint);
+	border: 1px solid #b9d0be;
+	color: var(--ceafsn-green);
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+ * Promotional callout (rail)
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-cta {
+	position: relative;
+	overflow: hidden;
+	padding: 22px 20px;
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius-lg);
+	background: var(--ceafsn-white);
+	box-shadow: var(--ceafsn-shadow);
+}
+
+.ceafsn-ai-wrap .ceafsn-cta::before {
+	content: "";
+	position: absolute;
+	inset: 0 0 auto;
+	height: 4px;
+	background: var(--ceafsn-gold);
+}
+
+.ceafsn-ai-wrap .ceafsn-cta__eyebrow {
+	margin: 6px 0 6px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	color: var(--ceafsn-gold-dark);
+}
+
+.ceafsn-ai-wrap .ceafsn-cta__title {
+	margin: 0 0 8px;
+	font-size: 17px;
+	font-weight: 700;
+}
+
+.ceafsn-ai-wrap .ceafsn-cta__text {
+	margin: 0 0 14px;
+	font-size: 13px;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-ai-wrap .ceafsn-cta .ceafsn-btn {
+	margin-top: 16px;
+}
+
+/* --------------------------------------------------------------------------
+ * Circular help badge
+ *
+ * Anchors to the on-page guidance card so it always leads somewhere real.
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-help {
+	position: fixed;
+	right: 26px;
+	bottom: 26px;
+	z-index: 20;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-green);
+	color: #fff;
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 1;
+	text-decoration: none;
+	box-shadow: var(--ceafsn-shadow-lg);
+}
+
+.ceafsn-ai-wrap .ceafsn-help:hover,
+.ceafsn-ai-wrap .ceafsn-help:focus {
+	background: var(--ceafsn-green-dark);
+	color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+ * Forms
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-form {
+	max-width: 780px;
+}
+
+.ceafsn-ai-wrap .ceafsn-field {
+	margin-bottom: 20px;
+}
+
+.ceafsn-ai-wrap .ceafsn-field:last-child {
+	margin-bottom: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-field > label {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--ceafsn-ink);
+}
+
+.ceafsn-ai-wrap .ceafsn-field .required {
+	color: var(--ceafsn-danger);
+	font-weight: 700;
+}
+
+.ceafsn-ai-wrap .ceafsn-field input[type="text"],
+.ceafsn-ai-wrap .ceafsn-field input[type="password"],
+.ceafsn-ai-wrap .ceafsn-field input[type="url"],
+.ceafsn-ai-wrap .ceafsn-field input[type="email"],
+.ceafsn-ai-wrap .ceafsn-field input[type="number"],
+.ceafsn-ai-wrap .ceafsn-field input[type="date"],
+.ceafsn-ai-wrap .ceafsn-field select,
+.ceafsn-ai-wrap .ceafsn-field textarea {
+	width: 100%;
+	max-width: 100%;
+	padding: 9px 12px;
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius);
+	background: var(--ceafsn-white);
+	color: var(--ceafsn-ink);
+	font-size: 14px;
+	line-height: 1.5;
+	box-shadow: inset 0 1px 2px rgba(17, 21, 24, .04);
+	appearance: none;
+}
+
+.ceafsn-ai-wrap .ceafsn-field textarea {
+	min-height: 92px;
+	resize: vertical;
+}
+
+/* Selector with a stacked-chevron affordance on the right. */
+.ceafsn-ai-wrap .ceafsn-field select {
+	padding-right: 34px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%235c6770' d='M1.4 0 6 4.6 10.6 0 12 1.4 6 7.4 0 1.4z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 12px center;
+	cursor: pointer;
+}
+
+.ceafsn-ai-wrap .ceafsn-field input:focus,
+.ceafsn-ai-wrap .ceafsn-field select:focus,
+.ceafsn-ai-wrap .ceafsn-field textarea:focus {
+	border-color: var(--ceafsn-green);
+	box-shadow: var(--ceafsn-ring);
+}
+
+.ceafsn-ai-wrap .ceafsn-field__hint {
+	margin: 6px 0 0;
+	font-size: 12px;
+	color: var(--ceafsn-muted);
+}
+
+/* Monospace input for file names. */
+.ceafsn-ai-wrap .ceafsn-field__mono {
+	font-family: Menlo, Consolas, monaco, monospace;
+	font-size: 13px;
+	line-height: 1.7;
+}
+
+/* Destructive action. */
+.ceafsn-ai-wrap .ceafsn-btn--danger {
+	background: var(--ceafsn-white);
+	border-color: var(--ceafsn-danger-line);
+	color: var(--ceafsn-danger);
+}
+
+.ceafsn-ai-wrap .ceafsn-btn--danger:hover,
+.ceafsn-ai-wrap .ceafsn-btn--danger:focus {
+	background: var(--ceafsn-danger-tint);
+	border-color: var(--ceafsn-danger);
+	color: var(--ceafsn-danger);
+}
+
+/* Standalone form that is not inside .ceafsn-card__body. */
+.ceafsn-ai-wrap .ceafsn-form__spaced {
+	margin-top: 18px;
+}
+
+/* Lead paragraph at the top of a card body. */
+.ceafsn-ai-wrap .ceafsn-lead {
+	margin-top: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-form__actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: 24px;
+	padding-top: 20px;
+	border-top: 1px solid var(--ceafsn-line-soft);
+}
+
+/* --------------------------------------------------------------------------
+ * Inline checkbox rows
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-check {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	padding: 14px 16px;
+	margin: 0 0 12px;
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius);
+	background: #fafbfb;
+}
+
+.ceafsn-ai-wrap .ceafsn-check:last-child {
+	margin-bottom: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-check input[type="checkbox"] {
+	flex: 0 0 auto;
+	margin: 2px 0 0;
+	width: 16px;
+	height: 16px;
+}
+
+.ceafsn-ai-wrap .ceafsn-check__body {
+	min-width: 0;
+}
+
+.ceafsn-ai-wrap .ceafsn-check__title {
+	display: block;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--ceafsn-ink);
+	cursor: pointer;
+}
+
+.ceafsn-ai-wrap .ceafsn-check__hint {
+	display: block;
+	margin: 3px 0 0;
+	font-size: 12px;
+	color: var(--ceafsn-muted);
+}
+
+/* --------------------------------------------------------------------------
+ * Empty states — honest, never fake data
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-empty {
+	padding: 34px 24px;
+	text-align: center;
+}
+
+.ceafsn-ai-wrap .ceafsn-empty__mark {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	margin-bottom: 12px;
+	border-radius: var(--ceafsn-radius-pill);
+	background: var(--ceafsn-surface);
+	color: var(--ceafsn-muted);
+	font-size: 18px;
+}
+
+.ceafsn-ai-wrap .ceafsn-empty__title {
+	margin: 0 0 6px;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.ceafsn-ai-wrap .ceafsn-empty__text {
+	max-width: 52ch;
+	margin: 0 auto 16px;
+	font-size: 13px;
+	color: var(--ceafsn-muted);
+}
+
+.ceafsn-ai-wrap .ceafsn-empty__action {
+	margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+ * Settings — danger zone
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-danger {
+	border-color: var(--ceafsn-danger-line);
+}
+
+.ceafsn-ai-wrap .ceafsn-danger .ceafsn-card__head {
+	background: var(--ceafsn-danger-tint);
+	border-bottom-color: var(--ceafsn-danger-line);
+}
+
+.ceafsn-ai-wrap .ceafsn-danger .ceafsn-card__title {
+	color: var(--ceafsn-danger);
+}
+
+/* --------------------------------------------------------------------------
+ * Back link
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-back {
+	display: inline-block;
+	margin: 14px 0 4px;
+	font-size: 13px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.ceafsn-ai-wrap .ceafsn-back:hover,
+.ceafsn-ai-wrap .ceafsn-back:focus {
+	text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+ * Settings tabs
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin: 18px 0 0;
+	border-bottom: 1px solid var(--ceafsn-line);
+}
+
+.ceafsn-ai-wrap .ceafsn-tabs__tab {
+	padding: 10px 16px;
+	border: 1px solid transparent;
+	border-bottom: 0;
+	border-radius: var(--ceafsn-radius) var(--ceafsn-radius) 0 0;
+	margin-bottom: -1px;
+	color: var(--ceafsn-muted);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.ceafsn-ai-wrap .ceafsn-tabs__tab:hover,
+.ceafsn-ai-wrap .ceafsn-tabs__tab:focus {
+	color: var(--ceafsn-green);
+	background: var(--ceafsn-surface);
+}
+
+.ceafsn-ai-wrap .ceafsn-tabs__tab--active,
+.ceafsn-ai-wrap .ceafsn-tabs__tab--active:hover,
+.ceafsn-ai-wrap .ceafsn-tabs__tab--active:focus {
+	background: var(--ceafsn-white);
+	border-color: var(--ceafsn-line);
+	color: var(--ceafsn-green);
+	box-shadow: var(--ceafsn-shadow-sm);
+}
+
+/* --------------------------------------------------------------------------
+ * Shortcode embed
+ *
+ * The exact shortcode an administrator has to paste onto a page, shown as
+ * selectable monospace text rather than an image, plus the attributes it
+ * accepts. Kept plain so it can be copied with a normal text selection.
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-embed {
+	margin: 0 0 12px;
+	padding: 14px 16px;
+	background: var(--ceafsn-surface);
+	border: 1px solid var(--ceafsn-line);
+	border-left: 3px solid var(--ceafsn-green);
+	border-radius: var(--ceafsn-radius-sm);
+}
+
+.ceafsn-ai-wrap .ceafsn-embed__label {
+	margin: 0 0 8px;
+	color: var(--ceafsn-muted);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+
+.ceafsn-ai-wrap .ceafsn-embed__code {
+	display: block;
+	padding: 10px 12px;
+	background: var(--ceafsn-white);
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius-sm);
+	color: var(--ceafsn-ink);
+	font-family: Menlo, Consolas, "Andale Mono", monospace;
+	font-size: 15px;
+	overflow-wrap: anywhere;
+	user-select: all;
+}
+
+.ceafsn-ai-wrap .ceafsn-embed__table {
+	width: 100%;
+	margin: 14px 0 0;
+	border-collapse: collapse;
+	background: var(--ceafsn-white);
+	border: 1px solid var(--ceafsn-line);
+	font-size: 13px;
+}
+
+.ceafsn-ai-wrap .ceafsn-embed__caption {
+	padding: 8px 12px;
+	background: var(--ceafsn-surface);
+	border: 1px solid var(--ceafsn-line);
+	border-bottom: 0;
+	color: var(--ceafsn-muted);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .04em;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+.ceafsn-ai-wrap .ceafsn-embed__table th,
+.ceafsn-ai-wrap .ceafsn-embed__table td {
+	padding: 8px 12px;
+	border: 1px solid var(--ceafsn-line);
+	text-align: left;
+	vertical-align: top;
+}
+
+.ceafsn-ai-wrap .ceafsn-embed__table th {
+	background: var(--ceafsn-surface);
+	font-size: 12px;
+}
+
+.ceafsn-ai-wrap .ceafsn-embed__table code,
+.ceafsn-ai-wrap .ceafsn-embed__code {
+	word-break: break-word;
+}
+
+/* One-line lists an administrator edits directly. */
+.ceafsn-ai-wrap .ceafsn-code {
+	font-family: Menlo, Consolas, "Andale Mono", monospace;
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+ * Media picker row
+ *
+ * The hidden attachment ID, the readonly filename box, and the two buttons are
+ * wired together by assets/js/ceafsn-ai-admin.js. The IDs below are part of
+ * that contract and must not be renamed.
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-ai-media {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.ceafsn-ai-wrap .ceafsn-ai-media__name {
+	flex: 1 1 260px;
+	min-width: 0;
+	padding: 9px 12px;
+	border: 1px solid var(--ceafsn-line);
+	border-radius: var(--ceafsn-radius);
+	background: var(--ceafsn-surface);
+	color: var(--ceafsn-ink);
+	font-size: 14px;
+	cursor: default;
+}
+
+.ceafsn-ai-wrap .ceafsn-ai-media__clear {
+	padding: 0;
+	border: 0;
+	background: none;
+	font-size: 12px;
+	font-weight: 600;
+	text-decoration: underline;
+	color: var(--ceafsn-danger);
+	cursor: pointer;
+}
+
+.ceafsn-ai-wrap .ceafsn-ai-media__clear:hover,
+.ceafsn-ai-wrap .ceafsn-ai-media__clear:focus {
+	color: #6d1414;
+}
+
+/* --------------------------------------------------------------------------
+ * PDF validation result line
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-ai-validation {
+	margin: 18px 0 0;
+	padding: 11px 14px;
+	border: 1px solid var(--ceafsn-line);
+	border-left-width: 4px;
+	border-radius: var(--ceafsn-radius);
+	background: var(--ceafsn-surface);
+	font-size: 13px;
+}
+
+.ceafsn-ai-wrap .ceafsn-ai-validation--ok {
+	border-color: #b9d0be;
+	border-left-color: var(--ceafsn-green);
+	background: var(--ceafsn-success-tint);
+	color: var(--ceafsn-green);
+}
+
+.ceafsn-ai-wrap .ceafsn-ai-validation--fail {
+	border-color: var(--ceafsn-danger-line);
+	border-left-color: var(--ceafsn-danger);
+	background: var(--ceafsn-danger-tint);
+	color: var(--ceafsn-danger);
+}
+
+/* --------------------------------------------------------------------------
+ * Records sharing the same call PDF
+ *
+ * Listed inside the duplicate warning so the administrator can jump straight to
+ * the other record and judge whether the sharing is genuine.
+ * -------------------------------------------------------------------------- */
+
+.ceafsn-ai-wrap .ceafsn-ai-shared-list {
+	margin: 8px 0 0;
+	padding-left: 18px;
+	font-size: 13px;
+}
+
+.ceafsn-ai-wrap .ceafsn-ai-shared-list li + li {
+	margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+ * Small screens
+ * -------------------------------------------------------------------------- */
+
+@media screen and (max-width: 1100px) {
+	.ceafsn-ai-wrap .ceafsn-app {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.ceafsn-ai-wrap .ceafsn-app__rail {
+		position: static;
+	}
+
+	.ceafsn-ai-wrap .ceafsn-help {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.ceafsn-ai-wrap {
+		margin-right: 12px;
+	}
+
+	.ceafsn-ai-wrap .ceafsn-hero {
+		padding: 22px 20px 24px;
+	}
+
+	.ceafsn-ai-wrap .ceafsn-hero__title {
+		font-size: 22px;
+	}
+
+	.ceafsn-ai-wrap .ceafsn-kpi__value {
+		font-size: 24px;
+	}
+
+	.ceafsn-ai-wrap .ceafsn-stepper {
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.ceafsn-ai-wrap .ceafsn-step {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 0;
+		text-align: left;
+	}
+
+	.ceafsn-ai-wrap .ceafsn-step::after {
+		top: 32px;
+		left: 15px;
+		right: auto;
+		width: 2px;
+		height: 14px;
+	}
+
+	.ceafsn-ai-wrap .ceafsn-step__label {
+		margin-top: 0;
+	}
+}

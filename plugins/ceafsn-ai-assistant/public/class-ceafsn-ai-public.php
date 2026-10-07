@@ -91,6 +91,17 @@ class CEAFSN_AI_Public {
 	 *
 	 * Rate-limited to 20 requests per IP per minute using a transient.
 	 *
+	 * The response body always has the same four keys — answer, sources,
+	 * error, code — so a client can render a reply without branching on HTTP
+	 * status. The status itself still follows HTTP conventions so that
+	 * monitors, caches, and REST clients see something truthful:
+	 *
+	 *   200 ok, 400 empty_question, 404 no_match, 429 rate-limited,
+	 *   502 embed_failed / model_failed (upstream provider failed),
+	 *   503 no_chat_provider / no_embeddings_provider / no_index /
+	 *       index_provider_mismatch (site not configured yet), 500 anything
+	 *       unexpected.
+	 *
 	 * @param WP_REST_Request $request Incoming request.
 	 * @return WP_REST_Response
 	 */
@@ -105,6 +116,7 @@ class CEAFSN_AI_Public {
 					'answer'  => '',
 					'sources' => array(),
 					'error'   => __( 'Too many requests. Please wait a moment before asking again.', 'ceafsn-ai' ),
+					'code'    => 'rate_limited',
 				),
 				429
 			);
@@ -115,9 +127,34 @@ class CEAFSN_AI_Public {
 		$question = (string) $request->get_param( 'question' );
 		$result   = CEAFSN_AI_Query::ask( $question );
 
-		$status = '' === $result['error'] ? 200 : 500;
+		return new WP_REST_Response( $result, self::status_for( $result['code'] ) );
+	}
 
-		return new WP_REST_Response( $result, $status );
+	/**
+	 * Map a CEAFSN_AI_Query result code to an HTTP status.
+	 *
+	 * Codes are produced by CEAFSN_AI_Query::ask(); anything that one day
+	 * becomes an unknown string falls through to 500 rather than pretending
+	 * the request succeeded.
+	 *
+	 * @param string $code Result code from CEAFSN_AI_Query::ask().
+	 * @return int HTTP status code.
+	 */
+	private static function status_for( string $code ): int {
+		$map = array(
+			'ok'                    => 200,
+			'empty_question'        => 400,
+			'no_match'              => 404,
+			'rate_limited'          => 429,
+			'embed_failed'          => 502,
+			'model_failed'          => 502,
+			'no_chat_provider'      => 503,
+			'no_embeddings_provider' => 503,
+			'no_index'              => 503,
+			'index_provider_mismatch' => 503,
+		);
+
+		return $map[ $code ] ?? 500;
 	}
 
 	/**

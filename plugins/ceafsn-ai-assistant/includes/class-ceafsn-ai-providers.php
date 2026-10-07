@@ -27,21 +27,120 @@ final class CEAFSN_AI_Providers {
 	/** @var string Option key for Grok API key. */
 	const OPTION_KEY_GROK = 'ceafsn_ai_key_grok';
 
-	/** @var string Option key for Claude API key. */
+	/** @var string Option key for the Claude API key. */
 	const OPTION_KEY_CLAUDE = 'ceafsn_ai_key_claude';
+
+	/** @var string Option key prefix shared by all four API key options. */
+	const OPTION_KEY_PREFIX = 'ceafsn_ai_key_';
+
+	/** @var string Option key prefix for a per-provider chat model override. */
+	const OPTION_MODEL_PREFIX = 'ceafsn_ai_model_';
+
+	/** @var string Option key prefix for a per-provider embeddings model override. */
+	const OPTION_EMBED_MODEL_PREFIX = 'ceafsn_ai_embed_model_';
+
+	/**
+	 * Default chat and embeddings model for each provider.
+	 *
+	 * Model identifiers are retired on their vendors' schedules, not ours —
+	 * `grok-beta`, `gemini-1.5-flash`, `claude-3-5-haiku`, and
+	 * `text-embedding-004` had all been withdrawn by the time this plugin was
+	 * finished. The defaults below were checked against first-party
+	 * documentation on 2026-10-06, and they will age again, so every one of
+	 * them can be overridden from the settings screen without a code change.
+	 *
+	 * @var array<string,array{chat:string,embed:string}>
+	 */
+	const DEFAULT_MODELS = array(
+		'openai' => array(
+			'chat'  => 'gpt-4o-mini',
+			'embed' => 'text-embedding-3-small',
+		),
+		'gemini' => array(
+			'chat'  => 'gemini-3.5-flash',
+			'embed' => 'gemini-embedding-001',
+		),
+		'grok'   => array(
+			'chat'  => 'grok-4.5',
+			'embed' => '',
+		),
+		'claude' => array(
+			'chat'  => 'claude-haiku-4-5',
+			'embed' => '',
+		),
+	);
 
 	/**
 	 * All supported provider keys in display order.
+	 *
+	 * Labels stay provider-only. The model behind each provider is editable,
+	 * so naming it in the label would make the select wrong the moment an
+	 * operator overrides it.
 	 *
 	 * @return array<string,string> key => human label
 	 */
 	public static function all(): array {
 		return array(
-			'openai' => __( 'OpenAI (GPT-4o-mini)', 'ceafsn-ai' ),
-			'gemini' => __( 'Google Gemini 1.5 Flash', 'ceafsn-ai' ),
-			'grok'   => __( 'xAI Grok (grok-beta)', 'ceafsn-ai' ),
-			'claude' => __( 'Anthropic Claude 3.5 Haiku', 'ceafsn-ai' ),
+			'openai' => __( 'OpenAI', 'ceafsn-ai' ),
+			'gemini' => __( 'Google Gemini', 'ceafsn-ai' ),
+			'grok'   => __( 'xAI Grok', 'ceafsn-ai' ),
+			'claude' => __( 'Anthropic Claude', 'ceafsn-ai' ),
 		);
+	}
+
+	/**
+	 * Resolve the chat model for a provider, honouring any saved override.
+	 *
+	 * A value that is not a plausible model identifier — spaces, quotes,
+	 * control characters — is discarded and the default used instead, so a
+	 * mistyped field can never be carried into an API request as-is.
+	 *
+	 * @param string $provider_key Provider key.
+	 * @return string Model identifier.
+	 */
+	public static function chat_model( string $provider_key ): string {
+		return self::resolve_model(
+			self::OPTION_MODEL_PREFIX . $provider_key,
+			self::DEFAULT_MODELS[ $provider_key ]['chat'] ?? ''
+		);
+	}
+
+	/**
+	 * Resolve the embeddings model for a provider, honouring any override.
+	 *
+	 * Returns an empty string for providers with no embeddings API (Grok and
+	 * Claude); the registry falls back to another provider before this value
+	 * is ever read.
+	 *
+	 * @param string $provider_key Provider key.
+	 * @return string Model identifier, or ''.
+	 */
+	public static function embed_model( string $provider_key ): string {
+		return self::resolve_model(
+			self::OPTION_EMBED_MODEL_PREFIX . $provider_key,
+			self::DEFAULT_MODELS[ $provider_key ]['embed'] ?? ''
+		);
+	}
+
+	/**
+	 * Read a model option and reject values that are not model identifiers.
+	 *
+	 * @param string $option  Option name.
+	 * @param string $default Default model identifier.
+	 * @return string
+	 */
+	private static function resolve_model( string $option, string $default ): string {
+		$saved = trim( (string) get_option( $option, '' ) );
+
+		if ( '' === $saved ) {
+			return $default;
+		}
+
+		if ( 1 === preg_match( '/^[A-Za-z0-9][A-Za-z0-9._\-\/]{0,99}$/', $saved ) ) {
+			return $saved;
+		}
+
+		return $default;
 	}
 
 	/**
@@ -57,9 +156,11 @@ final class CEAFSN_AI_Providers {
 	/**
 	 * Retrieve the stored API key for a given provider.
 	 *
-	 * Keys are stored encrypted at rest using WordPress's built-in option
-	 * store. They are never exposed in page source; only the admin settings
-	 * page reads them back (as masked values for display).
+	 * Keys live in the options table like any other option, so they are only
+	 * as protected as the database and the file system are. Nothing on the
+	 * front end ever reads them, and the settings screen shows a masked value
+	 * (last four characters) rather than the key itself, so a screen share or
+	 * a saved HTML page does not leak the secret.
 	 *
 	 * @param string $provider_key Provider key.
 	 * @return string API key or empty string.

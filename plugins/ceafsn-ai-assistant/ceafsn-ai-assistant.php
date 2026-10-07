@@ -40,7 +40,7 @@ require_once CEAFSN_AI_PLUGIN_DIR . 'public/class-ceafsn-ai-public.php';
 
 // Optional shared library for capabilities and audit log.
 if ( ! class_exists( 'CEAFSN_Caps', false ) ) {
-	$ceafsn_ai_shared = dirname( CEAFSN_AI_PLUGIN_DIR ) . 'ceafsn-shared/ceafsn-shared-load.php';
+	$ceafsn_ai_shared = CEAFSN_AI_PLUGIN_DIR . '../ceafsn-shared/ceafsn-shared-load.php';
 	if ( file_exists( $ceafsn_ai_shared ) ) {
 		require_once $ceafsn_ai_shared;
 		unset( $ceafsn_ai_shared );

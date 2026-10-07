@@ -2,8 +2,10 @@
 /**
  * Google Gemini provider adapter.
  *
- * Uses Gemini 1.5 Flash for completions and text-embedding-004 for embeddings.
- * One API key from Google AI Studio covers both.
+ * One API key from Google AI Studio covers both endpoints. The model
+ * identifiers come from CEAFSN_AI_Providers::chat_model()/embed_model() so an
+ * operator can move to a newer Gemini when Google retires one, without a
+ * plugin update.
  *
  * @package CEAFSN_AI
  */
@@ -18,15 +20,33 @@ class CEAFSN_AI_Provider_Gemini extends CEAFSN_AI_Provider {
 	/** @var string Base URL for Gemini API v1beta. */
 	const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
-	/** @var string Completion model. */
-	const CHAT_MODEL = 'gemini-1.5-flash';
+	/** @var string Fallback completion model. See CEAFSN_AI_Providers::DEFAULT_MODELS. */
+	const CHAT_MODEL = 'gemini-3.5-flash';
 
-	/** @var string Embedding model. */
-	const EMBED_MODEL = 'text-embedding-004';
+	/** @var string Fallback embedding model. See CEAFSN_AI_Providers::DEFAULT_MODELS. */
+	const EMBED_MODEL = 'gemini-embedding-001';
+
+	/**
+	 * Chat model actually used, after any saved override.
+	 *
+	 * @return string
+	 */
+	private function chat_model(): string {
+		return CEAFSN_AI_Providers::chat_model( $this->key() );
+	}
+
+	/**
+	 * Embeddings model actually used, after any saved override.
+	 *
+	 * @return string
+	 */
+	private function embed_model(): string {
+		return CEAFSN_AI_Providers::embed_model( $this->key() );
+	}
 
 	/** {@inheritdoc} */
 	public function name(): string {
-		return 'Google Gemini 1.5 Flash';
+		return 'Google Gemini';
 	}
 
 	/** {@inheritdoc} */
@@ -41,12 +61,12 @@ class CEAFSN_AI_Provider_Gemini extends CEAFSN_AI_Provider {
 
 	/** {@inheritdoc} */
 	public function embed( string $text ): ?array {
-		$url = self::BASE_URL . self::EMBED_MODEL . ':embedContent?key=' . rawurlencode( $this->api_key );
+		$url = self::BASE_URL . $this->embed_model() . ':embedContent?key=' . rawurlencode( $this->api_key );
 
 		$response = $this->http_post(
 			$url,
 			array(
-				'model'   => 'models/' . self::EMBED_MODEL,
+				'model'   => 'models/' . $this->embed_model(),
 				'content' => array(
 					'parts' => array(
 						array( 'text' => $text ),
@@ -66,7 +86,7 @@ class CEAFSN_AI_Provider_Gemini extends CEAFSN_AI_Provider {
 
 	/** {@inheritdoc} */
 	public function complete( string $system_prompt, string $user_message ): ?string {
-		$url = self::BASE_URL . self::CHAT_MODEL . ':generateContent?key=' . rawurlencode( $this->api_key );
+		$url = self::BASE_URL . $this->chat_model() . ':generateContent?key=' . rawurlencode( $this->api_key );
 
 		// Gemini uses a system_instruction field separate from the conversation.
 		$response = $this->http_post(

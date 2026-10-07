@@ -29,10 +29,20 @@ class CEAFSN_AI_Indexer {
 	/**
 	 * Index all content sources and return a summary.
 	 *
+	 * Indexing runs inside the web request that posts the form, so it cannot
+	 * be allowed to run for as long as it likes: a first build over a few
+	 * hundred records makes one embedding API call per chunk, and PHP's
+	 * max_execution_time would kill the request half way through, leaving a
+	 * silently truncated knowledge base. $max_seconds therefore caps the run
+	 * and the caller is told to press the button again — every source wipes
+	 * its own chunks before re-inserting, so repeating the run converges on a
+	 * complete index instead of duplicating rows.
+	 *
 	 * @param bool $full_rebuild Delete existing chunks before indexing.
-	 * @return array{indexed: int, skipped: int, errors: int, sources: string[]}
+	 * @param int  $max_seconds  Stop cleanly after this many seconds. 0 = no cap.
+	 * @return array{indexed: int, skipped: int, errors: int, sources: string[], partial: bool}
 	 */
-	public static function run( bool $full_rebuild = false ): array {
+	public static function run( bool $full_rebuild = false, int $max_seconds = 0 ): array {
 		$embed_provider = CEAFSN_AI_Providers::embeddings();
 
 		$summary = array(
@@ -40,6 +50,7 @@ class CEAFSN_AI_Indexer {
 			'skipped' => 0,
 			'errors'  => 0,
 			'sources' => array(),
+			'partial' => false,
 		);
 
 		if ( null === $embed_provider ) {
@@ -55,7 +66,18 @@ class CEAFSN_AI_Indexer {
 		// Build the list of content items to index.
 		$items = self::collect_items();
 
-		foreach ( $items as $item ) {
+		$started  = microtime( true );
+		$deadline = $max_seconds > 0 ? $started + $max_seconds : 0.0;
+
+		foreach ( $items as $index => $item ) {
+			// Check between items, never in the middle of one, so a source is
+			// either fully re-indexed or left as it was before this run.
+			if ( 0.0 !== $deadline && microtime( true ) >= $deadline ) {
+				$summary['partial'] = true;
+				$summary['sources'] = array_unique( array_slice( array_column( $items, 'source_type' ), 0, $index ) );
+				return $summary;
+			}
+
 			$result = self::index_item( $item, $embed_provider, $full_rebuild );
 			$summary['indexed'] += $result['indexed'];
 			$summary['skipped'] += $result['skipped'];
@@ -146,10 +168,14 @@ class CEAFSN_AI_Indexer {
 
 		$table = $wpdb->prefix . $table_suffix;
 
-		// Check the table exists before querying it.
+		// Check the table exists before querying it. The name is escaped for
+		// LIKE because a table prefix is full of underscores, and an unescaped
+		// underscore matches any single character.
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
-		if ( $exists !== $table ) {
+		$exists = $wpdb->get_var(
+			$wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table ) )
+		);
+		if ( strtolower( (string) $exists ) !== strtolower( $table ) ) {
 			return array();
 		}
 

@@ -22,6 +22,34 @@
 	};
 
 	/**
+	 * Shown when the server replies with a non-OK status but no message we
+	 * recognise — for example a WP core REST validation error, or a plain
+	 * 500 from a reverse proxy.
+	 *
+	 * @param {boolean} isPt
+	 * @returns {string}
+	 */
+	function fallbackMessage( isPt ) {
+		return isPt
+			? 'O assistente não está disponível de momento. Tente novamente dentro de um instante.'
+			: 'The assistant is unavailable right now. Please try again in a moment.';
+	}
+
+	/**
+	 * Shown when the visitor has asked too many questions in the same minute.
+	 * The server answers 429 with a machine-readable `rate_limited` code, so
+	 * the wait can be explained instead of looking like a random failure.
+	 *
+	 * @param {boolean} isPt
+	 * @returns {string}
+	 */
+	function rateLimitedMessage( isPt ) {
+		return isPt
+			? 'Demasiadas perguntas neste minuto. Aguarde um instante e volte a perguntar.'
+			: 'Too many questions in the last minute. Please wait a moment and ask again.';
+	}
+
+	/**
 	 * Detect whether a string looks more like Portuguese than English.
 	 * Heuristic: check for common PT function words.
 	 *
@@ -134,10 +162,24 @@
 					body: JSON.stringify( { question } ),
 				} );
 
-				const data = await response.json();
+				const data = await response.json().catch( function () {
+					return {};
+				} );
+
+				if ( data.code === 'rate_limited' ) {
+					showError( data.error || rateLimitedMessage( isPt ) );
+					return;
+				}
 
 				if ( data.error && data.error !== '' ) {
 					showError( data.error );
+					return;
+				}
+
+				if ( ! response.ok ) {
+					// WordPress rejects malformed requests with its own
+					// { code, message, data } body, which has no `error` key.
+					showError( data.message || fallbackMessage( isPt ) );
 					return;
 				}
 

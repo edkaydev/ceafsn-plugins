@@ -42,21 +42,31 @@ class CEAFSN_AI_Query {
 	/**
 	 * Ask a question and return a grounded answer with source links.
 	 *
+	 * `code` is a stable, untranslated machine token for the outcome. The REST
+	 * layer maps it to an HTTP status so a caller can tell "you have not
+	 * finished setting this up" (503) from "the model failed" (502) without
+	 * having to pattern-match a translated sentence. It is stripped from the
+	 * response body before the answer is sent.
+	 *
 	 * @param string $question Raw question from the visitor.
 	 * @return array{
 	 *   answer: string,
 	 *   sources: array<int,array{label:string,url:string}>,
-	 *   error: string
+	 *   error: string,
+	 *   code: string
 	 * }
 	 */
 	public static function ask( string $question ): array {
-		$empty = array( 'answer' => '', 'sources' => array(), 'error' => '' );
+		$empty = array( 'answer' => '', 'sources' => array(), 'error' => '', 'code' => 'ok' );
 
 		$question = sanitize_textarea_field( wp_unslash( $question ) );
 		$question = trim( $question );
 
 		if ( '' === $question ) {
-			return array_merge( $empty, array( 'error' => __( 'Please enter a question.', 'ceafsn-ai' ) ) );
+			return array_merge( $empty, array(
+				'error' => __( 'Please enter a question.', 'ceafsn-ai' ),
+				'code'  => 'empty_question',
+			) );
 		}
 
 		// --- Step 1: resolve providers ---
@@ -66,12 +76,14 @@ class CEAFSN_AI_Query {
 		if ( null === $chat_provider ) {
 			return array_merge( $empty, array(
 				'error' => __( 'The AI assistant is not configured yet. Please add an API key in the admin settings.', 'ceafsn-ai' ),
+				'code'  => 'no_chat_provider',
 			) );
 		}
 
 		if ( null === $embed_provider ) {
 			return array_merge( $empty, array(
 				'error' => __( 'No embeddings provider is available. Please configure an OpenAI or Gemini API key.', 'ceafsn-ai' ),
+				'code'  => 'no_embeddings_provider',
 			) );
 		}
 
@@ -81,6 +93,7 @@ class CEAFSN_AI_Query {
 		if ( null === $question_vector ) {
 			return array_merge( $empty, array(
 				'error' => __( 'Could not process your question. Please try again in a moment.', 'ceafsn-ai' ),
+				'code'  => 'embed_failed',
 			) );
 		}
 
@@ -89,8 +102,21 @@ class CEAFSN_AI_Query {
 		$candidates   = CEAFSN_AI_DB::get_chunks_with_embeddings( $provider_key );
 
 		if ( empty( $candidates ) ) {
+			// Two different failures share this branch. An index that has never
+			// been built is a setup step; an index built with a different
+			// embeddings provider is a rebuild step, and telling an operator
+			// "the knowledge base is empty" when 900 chunks are sitting in the
+			// table would send them looking in the wrong place.
+			if ( 0 === CEAFSN_AI_DB::count_chunks() ) {
+				return array_merge( $empty, array(
+					'error' => __( 'The knowledge base is empty. Please run the index from the admin settings.', 'ceafsn-ai' ),
+					'code'  => 'no_index',
+				) );
+			}
+
 			return array_merge( $empty, array(
-				'error' => __( 'The knowledge base is empty. Please run the index from the admin settings.', 'ceafsn-ai' ),
+				'error' => __( 'The knowledge base was built with a different embeddings provider. Run a full rebuild in the admin settings.', 'ceafsn-ai' ),
+				'code'  => 'index_provider_mismatch',
 			) );
 		}
 
@@ -120,6 +146,7 @@ class CEAFSN_AI_Query {
 		if ( empty( $scored ) ) {
 			return array_merge( $empty, array(
 				'error' => __( 'No relevant content found. Try rephrasing your question.', 'ceafsn-ai' ),
+				'code'  => 'no_match',
 			) );
 		}
 
@@ -154,6 +181,7 @@ class CEAFSN_AI_Query {
 		if ( null === $answer ) {
 			return array_merge( $empty, array(
 				'error' => __( 'The AI model did not respond. Please try again.', 'ceafsn-ai' ),
+				'code'  => 'model_failed',
 			) );
 		}
 
@@ -161,6 +189,7 @@ class CEAFSN_AI_Query {
 			'answer'  => wp_kses( $answer, array( 'p' => array(), 'br' => array(), 'strong' => array(), 'em' => array(), 'ul' => array(), 'ol' => array(), 'li' => array() ) ),
 			'sources' => $sources,
 			'error'   => '',
+			'code'    => 'ok',
 		);
 	}
 

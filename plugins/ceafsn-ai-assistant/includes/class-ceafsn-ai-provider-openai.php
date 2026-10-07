@@ -2,8 +2,10 @@
 /**
  * OpenAI provider adapter.
  *
- * Uses GPT-4o-mini for completions and text-embedding-3-small for embeddings.
- * Both are covered by the same API key.
+ * Uses one API key for both the chat and the embeddings endpoint. The model
+ * identifiers come from CEAFSN_AI_Providers::chat_model()/embed_model() so an
+ * operator can move to a newer model when OpenAI retires one, without a
+ * plugin update.
  *
  * @package CEAFSN_AI
  */
@@ -21,15 +23,33 @@ class CEAFSN_AI_Provider_OpenAI extends CEAFSN_AI_Provider {
 	/** @var string Embeddings endpoint. */
 	const EMBED_ENDPOINT = 'https://api.openai.com/v1/embeddings';
 
-	/** @var string Completion model. */
+	/** @var string Fallback completion model. See CEAFSN_AI_Providers::DEFAULT_MODELS. */
 	const CHAT_MODEL = 'gpt-4o-mini';
 
-	/** @var string Embedding model. */
+	/** @var string Fallback embedding model. See CEAFSN_AI_Providers::DEFAULT_MODELS. */
 	const EMBED_MODEL = 'text-embedding-3-small';
+
+	/**
+	 * Chat model actually used, after any saved override.
+	 *
+	 * @return string
+	 */
+	private function chat_model(): string {
+		return CEAFSN_AI_Providers::chat_model( $this->key() );
+	}
+
+	/**
+	 * Embeddings model actually used, after any saved override.
+	 *
+	 * @return string
+	 */
+	private function embed_model(): string {
+		return CEAFSN_AI_Providers::embed_model( $this->key() );
+	}
 
 	/** {@inheritdoc} */
 	public function name(): string {
-		return 'OpenAI (GPT-4o-mini)';
+		return 'OpenAI';
 	}
 
 	/** {@inheritdoc} */
@@ -47,7 +67,7 @@ class CEAFSN_AI_Provider_OpenAI extends CEAFSN_AI_Provider {
 		$response = $this->http_post(
 			self::EMBED_ENDPOINT,
 			array(
-				'model' => self::EMBED_MODEL,
+				'model' => $this->embed_model(),
 				'input' => $text,
 			),
 			array( 'Authorization' => 'Bearer ' . $this->api_key )
@@ -67,7 +87,7 @@ class CEAFSN_AI_Provider_OpenAI extends CEAFSN_AI_Provider {
 		$response = $this->http_post(
 			self::CHAT_ENDPOINT,
 			array(
-				'model'       => self::CHAT_MODEL,
+				'model'       => $this->chat_model(),
 				'messages'    => array(
 					array( 'role' => 'system', 'content' => $system_prompt ),
 					array( 'role' => 'user',   'content' => $user_message ),

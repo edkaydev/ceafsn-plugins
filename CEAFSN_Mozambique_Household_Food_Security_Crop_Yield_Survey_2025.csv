@@ -1,0 +1,19 @@
+Household_ID,Province,District,Household_Size,Primary_Crop,Harvest_Yield_Kg,HDDS_Score,Food_Insecure_Status
+HH-2025-001,Maputo,Boane,5,Maize,842.5,8,No
+HH-2025-002,Maputo,Marracuene,7,Cassava,615.0,6,Yes
+HH-2025-003,Maputo,Manhiça,4,Beans,286.4,9,No
+HH-2025-004,Maputo,Moamba,8,Sweet Potato,734.8,7,No
+HH-2025-005,Gaza,Chókwè,6,Maize,1285.0,10,No
+HH-2025-006,Gaza,Guijá,9,Cassava,918.6,5,Yes
+HH-2025-007,Gaza,Massingir,3,Beans,174.2,6,Yes
+HH-2025-008,Gaza,Xai-Xai,5,Sweet Potato,506.7,8,No
+HH-2025-009,Inhambane,Maxixe,6,Cassava,702.3,7,No
+HH-2025-010,Inhambane,Inharrime,10,Maize,967.5,4,Yes
+HH-2025-011,Inhambane,Vilankulo,4,Sweet Potato,448.9,9,No
+HH-2025-012,Inhambane,Morrumbene,7,Beans,321.6,6,Yes
+HH-2025-013,Sofala,Dondo,5,Maize,1108.4,8,No
+HH-2025-014,Sofala,Nhamatanda,8,Cassava,856.2,5,Yes
+HH-2025-015,Sofala,Búzi,6,Beans,264.8,7,No
+HH-2025-016,Sofala,Marromeu,11,Sweet Potato,689.7,4,Yes
+HH-2025-017,Sofala,Beira,3,Maize,492.0,9,No
+HH-2025-018,Gaza,Chibuto,7,Cassava,781.5,6,Yes
