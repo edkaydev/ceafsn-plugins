@@ -1050,6 +1050,14 @@ ok(
 );
 has_substring( '.ceafsn-np', $public_css, 'public styles are component-scoped' );
 
+test( 'the public stylesheet paints no single side of an element' );
+$guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-np-public.css' );
+is_same(
+	0,
+	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $guard_css ),
+	'no rule paints one side of an element with a border'
+);
+
 test( 'the settings screen shows the administrator which shortcode to use' );
 $np_settings_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
 has_substring( '[ceafsn_policy_table]', $np_settings_partial, 'the exact shortcode is shown' );

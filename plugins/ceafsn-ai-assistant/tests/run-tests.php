@@ -2145,6 +2145,14 @@ has_substring( 'href="#ceafsn-ai-help"', $ai_overview_partial, 'and the badge po
 test( 'the public script and stylesheet are branded consistently' );
 $ai_public_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-ai-public.css' );
 has_substring( '.ceafsn-ai-assistant', $ai_public_css, 'the public stylesheet scopes to the assistant' );
+
+test( 'the public stylesheet paints no single side of an element' );
+$guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-ai-public.css' );
+is_same(
+	0,
+	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $guard_css ),
+	'no rule paints one side of an element with a border'
+);
 has_substring( '.ceafsn-ai-wrap', $ai_overview_partial, 'the admin screen uses the same ceafsn-ai namespace' );
 has_substring( 'ceafsn-ai-assistant', (string) file_get_contents( $plugin_dir . '/assets/js/ceafsn-ai-public.js' ), 'the script addresses the same root class' );
 

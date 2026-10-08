@@ -149,14 +149,17 @@
 .ceafsn-np-table th,
 .ceafsn-np-table td {
   padding: 0.85rem 0.75rem;
-  border-bottom: var(--ceafsn-np-border);
   text-align: left;
   vertical-align: top;
 }
 
 .ceafsn-np-table thead th {
-  border-bottom: 2px solid var(--ceafsn-np-accent);
+  background: rgba(31, 92, 61, 0.1);
   white-space: nowrap;
+}
+
+.ceafsn-np-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .ceafsn-np-table thead th a {
@@ -256,7 +259,6 @@
 
   .ceafsn-np-table th,
   .ceafsn-np-table td {
-    border-bottom: 0;
     padding: 0.4rem 0.85rem;
     white-space: normal;
   }

@@ -60,6 +60,35 @@
 	min-width: 0;
 }
 
+/* Touch-sized controls, scoped to the component so the theme keeps its own
+   look for every other form on the site. */
+.ceafsn-rf-filters input:not([type="hidden"]),
+.ceafsn-rf-filters select,
+.ceafsn-rf-filters .button {
+	min-height: 2.75rem;
+	padding: 0.4em 0.7em;
+	border: 1px solid var(--ceafsn-rf-border);
+	border-radius: 4px;
+	font: inherit;
+	color: inherit;
+	background: #fff;
+}
+
+.ceafsn-rf-filters .button {
+	border-color: var(--ceafsn-rf-accent, #1a5f3f);
+	background: var(--ceafsn-rf-accent, #1a5f3f);
+	color: #fff;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.ceafsn-rf-filters .button:hover,
+.ceafsn-rf-filters .button:focus {
+	border-color: #163c56;
+	background: #163c56;
+	color: #fff;
+}
+
 /* Badges ------------------------------------------------------------------- */
 
 .ceafsn-rf-badge {
@@ -121,20 +150,7 @@
 	padding: 1.1em 1.25em;
 	background: #fff;
 	border: 1px solid var(--ceafsn-rf-border);
-	border-left: 4px solid var(--ceafsn-rf-closed);
 	border-radius: 4px;
-}
-
-.ceafsn-rf-card--open {
-	border-left-color: var(--ceafsn-rf-open);
-}
-
-.ceafsn-rf-card--upcoming {
-	border-left-color: var(--ceafsn-rf-upcoming);
-}
-
-.ceafsn-rf-card--unconfirmed {
-	border-left-color: var(--ceafsn-rf-unconfirmed);
 }
 
 .ceafsn-rf-card__status {
@@ -198,7 +214,6 @@
 	flex-wrap: wrap;
 	margin: 0.3em 0 0;
 	padding-top: 0.6em;
-	border-top: 1px solid var(--ceafsn-rf-border);
 }
 
 .ceafsn-rf-card__contact,
@@ -248,6 +263,17 @@
 
 /* Table -------------------------------------------------------------------- */
 
+/* Scroll container so a wide table stays reachable on a narrow screen, and can
+   be scrolled from the keyboard. */
+.ceafsn-rf-table-wrap {
+	overflow-x: auto;
+}
+
+.ceafsn-rf-table-wrap:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
 .ceafsn-rf-table {
 	width: 100%;
 	border-collapse: collapse;
@@ -258,13 +284,16 @@
 .ceafsn-rf-table td {
 	padding: 0.6em 0.7em;
 	text-align: left;
-	border-bottom: 1px solid var(--ceafsn-rf-border);
 	vertical-align: top;
 }
 
 .ceafsn-rf-table thead th {
-	border-bottom-width: 2px;
+	background: rgba(29, 78, 111, 0.1);
 	white-space: nowrap;
+}
+
+.ceafsn-rf-table tbody tr:nth-child(even) {
+	background: rgba(0, 0, 0, 0.02);
 }
 
 .ceafsn-rf-table thead a {
@@ -291,7 +320,6 @@
 	align-items: center;
 	margin: 1.75em 0 0;
 	padding-top: 1.25em;
-	border-top: 1px solid var(--ceafsn-rf-border);
 }
 
 .ceafsn-pagination__status {
@@ -312,10 +340,74 @@
 
 .ceafsn-pagination__link:hover,
 .ceafsn-pagination__link:focus {
-	background: currentColor;
+	background: var(--ceafsn-rf-accent, #1a5f3f);
+	border-color: var(--ceafsn-rf-accent, #1a5f3f);
 	color: #fff;
 }
 
 .ceafsn-pagination__link--next {
 	margin-left: auto;
+}
+
+/* Responsive --------------------------------------------------------------- */
+
+@media (max-width: 48rem) {
+	.ceafsn-rf-filters__row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.ceafsn-rf-filters input[type="search"],
+	.ceafsn-rf-filters select,
+	.ceafsn-rf-filters .button {
+		width: 100%;
+	}
+
+	/* Stack each row into a labelled card so nothing needs horizontal space */
+	.ceafsn-rf-table,
+	.ceafsn-rf-table thead,
+	.ceafsn-rf-table tbody,
+	.ceafsn-rf-table tr,
+	.ceafsn-rf-table th,
+	.ceafsn-rf-table td {
+		display: block;
+	}
+
+	.ceafsn-rf-table thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+
+	.ceafsn-rf-table tr {
+		margin-bottom: 1rem;
+		border: 1px solid var(--ceafsn-rf-border);
+		border-radius: 4px;
+		padding: 0.25rem 0;
+	}
+
+	.ceafsn-rf-table th,
+	.ceafsn-rf-table td {
+		padding: 0.4rem 0.85rem;
+		white-space: normal;
+	}
+
+	.ceafsn-rf-table td::before {
+		content: attr(data-label);
+		display: block;
+		font-size: 0.8em;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--ceafsn-rf-muted);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ceafsn-rf * {
+		animation: none !important;
+		transition: none !important;
+	}
 }

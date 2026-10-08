@@ -41,6 +41,18 @@
   font-weight: 600;
 }
 
+.ceafsn-pp-filters__field input,
+.ceafsn-pp-filters__field select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.6rem;
+  border: var(--ceafsn-pp-border);
+  border-radius: var(--ceafsn-pp-radius);
+  font: inherit;
+  color: inherit;
+  background: #fff;
+}
+
 .ceafsn-pp-filters__actions {
   display: flex;
   gap: 0.5rem;
@@ -65,11 +77,14 @@
   color: var(--ceafsn-pp-muted);
 }
 
+/* The two options sit on a tinted track with a gap between them, so the
+   separation comes from spacing and fill rather than a divider rule. */
 .ceafsn-pp-view {
   display: inline-flex;
-  border: var(--ceafsn-pp-border);
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: rgba(0, 0, 0, 0.05);
   border-radius: var(--ceafsn-pp-radius);
-  overflow: hidden;
 }
 
 .ceafsn-pp-view__btn {
@@ -78,10 +93,7 @@
   color: inherit;
   background: transparent;
   border: 0;
-}
-
-.ceafsn-pp-view__btn + .ceafsn-pp-view__btn {
-  border-left: var(--ceafsn-pp-border);
+  border-radius: var(--ceafsn-pp-radius);
 }
 
 .ceafsn-pp-view__btn.is-active {
@@ -216,12 +228,15 @@
   padding: 0.6rem 0.5rem;
   text-align: left;
   vertical-align: top;
-  border-bottom: var(--ceafsn-pp-border);
 }
 
 .ceafsn-pp-table thead th {
-  border-bottom-width: 2px;
+  background: rgba(31, 92, 61, 0.1);
   white-space: nowrap;
+}
+
+.ceafsn-pp-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .ceafsn-pp-table thead th a {
@@ -311,7 +326,8 @@
 
 .ceafsn-pp-btn {
   display: inline-block;
-  padding: 0.45rem 0.9rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.1rem;
   border: 1px solid var(--ceafsn-pp-accent);
   border-radius: var(--ceafsn-pp-radius);
   background: var(--ceafsn-pp-accent);
@@ -319,6 +335,8 @@
   text-decoration: none;
   cursor: pointer;
   font-size: 1em;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .ceafsn-pp-btn:hover,
@@ -375,6 +393,51 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* =====================
+   Small screens — stack each row into a labelled card
+   ===================== */
+
+@media (max-width: 48rem) {
+  .ceafsn-pp-table,
+  .ceafsn-pp-table thead,
+  .ceafsn-pp-table tbody,
+  .ceafsn-pp-table tr,
+  .ceafsn-pp-table th,
+  .ceafsn-pp-table td {
+    display: block;
+  }
+
+  .ceafsn-pp-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .ceafsn-pp-table tr {
+    margin-bottom: 1rem;
+    border: var(--ceafsn-pp-border);
+    border-radius: var(--ceafsn-pp-radius);
+  }
+
+  .ceafsn-pp-table th,
+  .ceafsn-pp-table td {
+    padding: 0.4rem 0.85rem;
+    white-space: normal;
+  }
+
+  .ceafsn-pp-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ceafsn-pp-muted);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

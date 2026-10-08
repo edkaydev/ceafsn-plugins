@@ -1491,6 +1491,14 @@ ok(
 );
 has_substring( '.ceafsn-od', $public_css, 'public styles are component-scoped' );
 
+test( 'the public stylesheet paints no single side of an element' );
+$guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-od-public.css' );
+is_same(
+	0,
+	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $guard_css ),
+	'no rule paints one side of an element with a border'
+);
+
 test( 'the admin stylesheet is scoped to the component' );
 $admin_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-od-admin.css' );
 ok(

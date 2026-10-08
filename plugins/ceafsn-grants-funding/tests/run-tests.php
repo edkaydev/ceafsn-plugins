@@ -1048,6 +1048,9 @@ $public = new CEAFSN_GF_Public();
 $html   = $public->render_shortcode( array( 'view' => 'table' ) );
 has_substring( '<table class="ceafsn-gf-table">', $html, 'the table layout is used' );
 has_substring( 'aria-sort=', $html, 'sortable headers announce their state' );
+has_substring( 'class="ceafsn-gf-table-wrap" tabindex="0" role="region"', $html, 'the table sits in a wrapper that scrolls with the keyboard' );
+has_substring( 'data-label="Institution"', $html, 'each cell carries the label the card layout reads on a phone' );
+has_substring( 'data-label="Apply"', $html, 'including the action column' );
 
 // -----------------------------------------------------------------------------
 // Regression: the closed-call filter is derived from the deadline and cannot be
@@ -1188,6 +1191,14 @@ $html   = $public->render_shortcode( array() );
 has_substring( 'name="utm_source" value="newsletter"', $html, 'the unrelated scalar arg survives the filter form' );
 lacks_substring( 'name="ceafsn-gf-filter"', $html, 'an array arg cannot become a hidden input' );
 unset( $_GET['ceafsn-gf-filter'], $_GET['utm_source'] );
+
+test( 'the public stylesheet paints no single side of an element' );
+$guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-gf-public.css' );
+is_same(
+	0,
+	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $guard_css ),
+	'no rule paints one side of an element with a border'
+);
 
 // -----------------------------------------------------------------------------
 section( 'Uninstall' );

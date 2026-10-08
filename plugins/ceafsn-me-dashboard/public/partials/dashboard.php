@@ -93,8 +93,10 @@ $current_url  = get_permalink();
 			<!-- Accessible data table backing the visual stat cards -->
 			<details class="ceafsn-med-table-details">
 				<summary><?php esc_html_e( 'View as table', 'ceafsn-med' ); ?></summary>
+				<div class="ceafsn-med-table-wrap" tabindex="0" role="region"
+					aria-labelledby="ceafsn-metrics-caption">
 				<table class="ceafsn-med-table">
-					<caption><?php esc_html_e( 'Key metrics data table', 'ceafsn-med' ); ?></caption>
+					<caption id="ceafsn-metrics-caption"><?php esc_html_e( 'Key metrics data table', 'ceafsn-med' ); ?></caption>
 					<thead>
 						<tr>
 							<th scope="col"><?php esc_html_e( 'Metric', 'ceafsn-med' ); ?></th>
@@ -108,14 +110,15 @@ $current_url  = get_permalink();
 						<?php foreach ( $metrics as $metric ) : ?>
 						<tr>
 							<th scope="row"><?php echo esc_html( $metric->label ); ?></th>
-							<td><?php echo esc_html( $metric->value ); ?></td>
-							<td><?php echo esc_html( $metric->unit ?: '—' ); ?></td>
-							<td><?php echo esc_html( $metric->reporting_period ); ?></td>
-							<td><?php echo esc_html( $metric->source ); ?></td>
+							<td data-label="<?php esc_attr_e( 'Value', 'ceafsn-med' ); ?>"><?php echo esc_html( $metric->value ); ?></td>
+							<td data-label="<?php esc_attr_e( 'Unit', 'ceafsn-med' ); ?>"><?php echo esc_html( $metric->unit ?: '—' ); ?></td>
+							<td data-label="<?php esc_attr_e( 'Reporting Period', 'ceafsn-med' ); ?>"><?php echo esc_html( $metric->reporting_period ); ?></td>
+							<td data-label="<?php esc_attr_e( 'Source', 'ceafsn-med' ); ?>"><?php echo esc_html( $metric->source ); ?></td>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+				</div>
 			</details>
 		<?php endif; ?>
 	</section>
@@ -154,8 +157,10 @@ $current_url  = get_permalink();
 			</div>
 
 			<!-- Accessible data table (always present, chart is enhancement) -->
+			<div class="ceafsn-med-table-wrap" tabindex="0" role="region"
+				aria-labelledby="ceafsn-demographics-caption">
 			<table class="ceafsn-med-table">
-				<caption><?php esc_html_e( 'Demographic groups data table', 'ceafsn-med' ); ?></caption>
+				<caption id="ceafsn-demographics-caption"><?php esc_html_e( 'Demographic groups data table', 'ceafsn-med' ); ?></caption>
 				<thead>
 					<tr>
 						<th scope="col"><?php esc_html_e( 'Group', 'ceafsn-med' ); ?></th>
@@ -169,17 +174,18 @@ $current_url  = get_permalink();
 					<?php foreach ( $demographics as $demo ) : ?>
 					<tr>
 						<th scope="row"><?php echo esc_html( $demo->label ); ?></th>
-						<td>
+						<td data-label="<?php esc_attr_e( 'Value', 'ceafsn-med' ); ?>">
 							<?php echo esc_html( number_format( (float) $demo->value, 2 ) ); ?>
 							<?php echo 'percentage' === $demo->value_type ? '%' : ''; ?>
 						</td>
-						<td><?php echo esc_html( CEAFSN_MED_DB::label( CEAFSN_MED_DB::value_type_labels(), (string) $demo->value_type ) ); ?></td>
-						<td><?php echo esc_html( $demo->reporting_period ); ?></td>
-						<td><?php echo esc_html( $demo->source ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Type', 'ceafsn-med' ); ?>"><?php echo esc_html( CEAFSN_MED_DB::label( CEAFSN_MED_DB::value_type_labels(), (string) $demo->value_type ) ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Reporting Period', 'ceafsn-med' ); ?>"><?php echo esc_html( $demo->reporting_period ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Source', 'ceafsn-med' ); ?>"><?php echo esc_html( $demo->source ); ?></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
+			</div>
 		<?php endif; ?>
 	</section>
 
@@ -226,8 +232,10 @@ $current_url  = get_permalink();
 				<?php esc_html_e( 'No projects match the current filters.', 'ceafsn-med' ); ?>
 			</p>
 		<?php else : ?>
+			<div class="ceafsn-med-table-wrap" tabindex="0" role="region"
+				aria-labelledby="ceafsn-projects-caption">
 			<table class="ceafsn-med-table ceafsn-med-table--projects">
-				<caption>
+				<caption id="ceafsn-projects-caption">
 					<?php
 					printf(
 						/* translators: %d: total projects */
@@ -258,21 +266,21 @@ $current_url  = get_permalink();
 								</a>
 							<?php endif; ?>
 						</th>
-						<td><?php echo esc_html( $project->principal_investigator ); ?></td>
-						<td><?php echo esc_html( $project->target_region ?: '—' ); ?></td>
-						<td>
+						<td data-label="<?php esc_attr_e( 'Principal Investigator', 'ceafsn-med' ); ?>"><?php echo esc_html( $project->principal_investigator ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Region', 'ceafsn-med' ); ?>"><?php echo esc_html( $project->target_region ?: '—' ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Status', 'ceafsn-med' ); ?>">
 							<span class="ceafsn-badge ceafsn-badge--status-<?php echo esc_attr( $project->status ); ?>"
 								aria-label="<?php echo esc_attr( __( 'Status:', 'ceafsn-med' ) . ' ' . ( $status_labels[ $project->status ] ?? $project->status ) ); ?>">
 								<?php echo esc_html( CEAFSN_MED_DB::label( CEAFSN_MED_DB::project_status_labels(), (string) $project->status ) ); ?>
 							</span>
 						</td>
-						<td>
+						<td data-label="<?php esc_attr_e( 'Verification', 'ceafsn-med' ); ?>">
 							<span class="ceafsn-badge ceafsn-badge--verif-<?php echo esc_attr( $project->verification_status ); ?>"
 								aria-label="<?php echo esc_attr( __( 'Verification:', 'ceafsn-med' ) . ' ' . ( $verif_labels[ $project->verification_status ] ?? $project->verification_status ) ); ?>">
 								<?php echo esc_html( CEAFSN_MED_DB::label( CEAFSN_MED_DB::verification_labels(), (string) $project->verification_status ) ); ?>
 							</span>
 						</td>
-						<td>
+						<td data-label="<?php esc_attr_e( 'Last Updated', 'ceafsn-med' ); ?>">
 							<time datetime="<?php echo esc_attr( $project->last_updated ); ?>">
 								<?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $project->last_updated ) ) ); ?>
 							</time>
@@ -281,6 +289,7 @@ $current_url  = get_permalink();
 					<?php endforeach; ?>
 				</tbody>
 			</table>
+			</div>
 
 			<!-- Pagination -->
 			<?php if ( $total_pages > 1 ) : ?>

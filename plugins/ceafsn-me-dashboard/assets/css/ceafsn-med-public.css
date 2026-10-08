@@ -2,6 +2,10 @@
  * CE-AFSN M&E Dashboard — Public Styles
  * Component-scoped to .ceafsn-med-dashboard.
  * Inherits theme typography; never overrides global styles.
+ *
+ * Follows the CE-AFSN public component style: a single thin border token for
+ * boxes, no one-sided rules anywhere, tables separated by shading and spacing
+ * rather than cell grids, and controls sized for touch.
  */
 
 /* =====================
@@ -10,10 +14,13 @@
 
 .ceafsn-med-dashboard {
 	/* Use CSS custom properties for component-local values only */
-	--ceafsn-med-border: 1px solid #ddd;
+	--ceafsn-med-border: 1px solid #d5d8dc;
 	--ceafsn-med-radius: 4px;
 	--ceafsn-med-spacing: 1.25rem;
 	--ceafsn-med-font-sm: 0.875em;
+	--ceafsn-med-muted: #5c6770;
+	--ceafsn-med-accent: #1e4d2b;
+	--ceafsn-med-accent-dark: #163a20;
 }
 
 /* =====================
@@ -37,7 +44,6 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.25rem;
-	border-bottom: 2px solid #ddd;
 	margin-bottom: var(--ceafsn-med-spacing);
 }
 
@@ -45,23 +51,23 @@
 	/* Inherit theme font; don't set font-family */
 	background: transparent;
 	border: none;
-	border-bottom: 3px solid transparent;
+	border-radius: var(--ceafsn-med-radius);
 	cursor: pointer;
-	padding: 0.6rem 1.25rem;
-	margin-bottom: -2px;
+	padding: 0.65rem 1.25rem;
+	min-height: 2.75rem;
 	font-size: inherit;
 	color: inherit;
 	text-decoration: none;
-	transition: border-color 0.15s;
+	transition: background-color 0.15s;
 }
 
 .ceafsn-med-tab:hover {
-	border-bottom-color: #999;
+	background: rgba(0, 0, 0, 0.05);
 }
 
 .ceafsn-med-tab--active,
 .ceafsn-med-tab[aria-selected="true"] {
-	border-bottom-color: currentColor;
+	background: rgba(30, 77, 43, 0.1);
 	font-weight: 600;
 }
 
@@ -87,7 +93,7 @@
 	margin: 0 0 var(--ceafsn-med-spacing);
 	padding: 0;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
 	gap: var(--ceafsn-med-spacing);
 }
 
@@ -145,6 +151,17 @@
 	outline: 2px solid currentColor;
 }
 
+/* Scroll container: keeps a wide table reachable on a narrow screen without
+   shrinking the page, and is focusable so it can be scrolled from the keyboard. */
+.ceafsn-med-table-wrap {
+	overflow-x: auto;
+}
+
+.ceafsn-med-table-wrap:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
 .ceafsn-med-table {
 	width: 100%;
 	border-collapse: collapse;
@@ -160,14 +177,13 @@
 
 .ceafsn-med-table th,
 .ceafsn-med-table td {
-	border: var(--ceafsn-med-border);
-	padding: 0.5rem 0.75rem;
+	padding: 0.65rem 0.75rem;
 	text-align: left;
 	vertical-align: top;
 }
 
 .ceafsn-med-table thead th {
-	background: rgba(0, 0, 0, 0.04);
+	background: rgba(30, 77, 43, 0.1);
 	font-weight: 600;
 }
 
@@ -227,37 +243,52 @@
 .ceafsn-med-filter__search {
 	flex: 1 1 200px;
 	min-width: 160px;
+	min-height: 2.75rem;
 	padding: 0.4rem 0.6rem;
 	border: var(--ceafsn-med-border);
 	border-radius: var(--ceafsn-med-radius);
 	font-size: inherit;
+	color: inherit;
+	background: #fff;
 }
 
 .ceafsn-med-filter__select {
-	padding: 0.4rem 0.6rem;
+	min-height: 2.75rem;
+	padding: 0.4rem 2rem 0.4rem 0.6rem;
 	border: var(--ceafsn-med-border);
 	border-radius: var(--ceafsn-med-radius);
 	font-size: inherit;
+	color: inherit;
+	background: #fff;
 }
 
 .ceafsn-med-filter__submit {
-	padding: 0.4rem 1rem;
-	border: var(--ceafsn-med-border);
+	min-height: 2.75rem;
+	padding: 0.4rem 1.25rem;
+	border: 1px solid var(--ceafsn-med-accent);
 	border-radius: var(--ceafsn-med-radius);
 	cursor: pointer;
 	font-size: inherit;
-	background: transparent;
-	color: inherit;
+	font-weight: 600;
+	background: var(--ceafsn-med-accent);
+	color: #fff;
 }
 
 .ceafsn-med-filter__submit:hover,
 .ceafsn-med-filter__submit:focus-visible {
+	background: var(--ceafsn-med-accent-dark);
+	border-color: var(--ceafsn-med-accent-dark);
+	color: #fff;
+}
+
+.ceafsn-med-filter__submit:focus-visible {
 	outline: 2px solid currentColor;
+	outline-offset: 2px;
 }
 
 .ceafsn-med-filter__reset {
 	font-size: var(--ceafsn-med-font-sm);
-	opacity: 0.8;
+	color: var(--ceafsn-med-muted);
 }
 
 /* =====================
@@ -295,7 +326,8 @@
 
 .ceafsn-med-pagination__link {
 	display: inline-block;
-	padding: 0.3rem 0.65rem;
+	min-height: 2.5rem;
+	padding: 0.35rem 0.85rem;
 	border: var(--ceafsn-med-border);
 	border-radius: var(--ceafsn-med-radius);
 	text-decoration: none;
@@ -305,12 +337,16 @@
 
 .ceafsn-med-pagination__link:hover,
 .ceafsn-med-pagination__link:focus-visible {
+	background: rgba(0, 0, 0, 0.05);
 	outline: 2px solid currentColor;
+	outline-offset: 2px;
 }
 
 .ceafsn-med-pagination__link--current {
+	background: var(--ceafsn-med-accent);
+	border-color: var(--ceafsn-med-accent);
+	color: #fff;
 	font-weight: 700;
-	border-color: currentColor;
 }
 
 /* =====================
@@ -319,11 +355,10 @@
 
 .ceafsn-med-empty {
 	padding: var(--ceafsn-med-spacing);
-	border: var(--ceafsn-med-border);
 	border-radius: var(--ceafsn-med-radius);
-	background: rgba(0, 0, 0, 0.02);
+	background: rgba(0, 0, 0, 0.03);
 	font-style: italic;
-	color: inherit;
+	color: var(--ceafsn-med-muted);
 }
 
 /* =====================
@@ -340,7 +375,7 @@
    Responsive
    ===================== */
 
-@media (max-width: 600px) {
+@media (max-width: 48rem) {
 	.ceafsn-med-cards {
 		grid-template-columns: 1fr;
 	}
@@ -360,10 +395,54 @@
 		width: 100%;
 	}
 
-	/* Allow horizontal scroll on tables on small screens */
-	.ceafsn-med-table--projects {
+	/* Stack each row into a labelled card so nothing needs horizontal space */
+	.ceafsn-med-table,
+	.ceafsn-med-table thead,
+	.ceafsn-med-table tbody,
+	.ceafsn-med-table tr,
+	.ceafsn-med-table th,
+	.ceafsn-med-table td {
 		display: block;
-		overflow-x: auto;
-		-webkit-overflow-scrolling: touch;
+	}
+
+	.ceafsn-med-table thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+
+	.ceafsn-med-table tr {
+		margin-bottom: 1rem;
+		border: var(--ceafsn-med-border);
+		border-radius: var(--ceafsn-med-radius);
+	}
+
+	.ceafsn-med-table th,
+	.ceafsn-med-table td {
+		padding: 0.4rem 0.85rem;
+		white-space: normal;
+	}
+
+	.ceafsn-med-table td::before {
+		content: attr(data-label);
+		display: block;
+		font-size: 0.8em;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--ceafsn-med-muted);
+	}
+}
+
+/* =====================
+   Reduced motion
+   ===================== */
+
+@media (prefers-reduced-motion: reduce) {
+	.ceafsn-med-dashboard * {
+		animation: none !important;
+		transition: none !important;
 	}
 }

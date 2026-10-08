@@ -649,10 +649,25 @@ has_substring( 'tabindex="-1"', $html, 'unselected tabs are removed from tab ord
 test( 'charts are paired with data tables' );
 $html = render_dashboard( array( metric_row( 'Households surveyed', '1,240' ) ), array( demographic_row( 'Rural', 62.5 ) ), array( project_row() ) );
 has_substring( 'aria-hidden="true"', $html, 'decorative chart hidden from assistive tech' );
-has_substring( '<caption>', $html, 'data table has a caption' );
+has_substring( '<caption', $html, 'data table has a caption' );
 is_same( 3, substr_count( $html, '<table' ), 'one table per panel' );
 has_substring( 'scope="col"', $html, 'table headers use scope' );
 has_substring( 'View as table', $html, 'toggle for the equivalent table exists' );
+
+test( 'every table sits in a keyboard-scrollable wrapper' );
+is_same( 3, substr_count( $html, 'class="ceafsn-med-table-wrap"' ), 'one wrapper per table' );
+is_same( 3, substr_count( $html, 'role="region"' ), 'each wrapper is announced as a region' );
+is_same( 3, substr_count( $html, 'class="ceafsn-med-table-wrap" tabindex="0"' ), 'each wrapper can be reached and scrolled by keyboard' );
+has_substring( 'aria-labelledby="ceafsn-projects-caption"', $html, 'the project region is named by its caption' );
+
+test( 'table cells carry the label the card layout reads on a phone' );
+$html = render_dashboard( array( metric_row( 'Households surveyed', '1,240' ) ), array( demographic_row( 'Rural', 62.5 ) ), array( project_row() ) );
+has_substring( 'data-label="Principal Investigator"', $html, 'the project row names its columns for a narrow screen' );
+has_substring( 'data-label="Verification"', $html, 'including the badge columns' );
+has_substring( 'data-label="Reporting Period"', $html, 'the metrics and demographics tables do too' );
+$med_public_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-med-public.css' );
+has_substring( 'attr(data-label)', $med_public_css, 'the stylesheet reads that label back' );
+has_substring( 'min-height: 2.75rem', $med_public_css, 'the filter controls are sized for a thumb' );
 
 test( 'record values are rendered and escaped' );
 $html = render_dashboard(
@@ -860,6 +875,14 @@ test( 'referenced asset files exist' );
 foreach ( array( 'assets/css/ceafsn-med-public.css', 'assets/css/ceafsn-med-admin.css', 'assets/js/ceafsn-med-public.js', 'assets/js/ceafsn-med-admin.js' ) as $asset ) {
 	ok( file_exists( $plugin_dir . '/' . $asset ), "asset exists: {$asset}" );
 }
+
+test( 'the public stylesheet paints no single side of an element' );
+$guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-med-public.css' );
+is_same(
+	0,
+	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $guard_css ),
+	'no rule paints one side of an element with a border'
+);
 
 test( 'table names use the site prefix' );
 $db_source = (string) file_get_contents( $plugin_dir . '/includes/class-ceafsn-med-db.php' );

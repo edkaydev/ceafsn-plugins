@@ -100,8 +100,10 @@ defined( 'ABSPATH' ) || exit;
 
 	<?php elseif ( 'table' === $view ) : ?>
 
+		<div class="ceafsn-gf-table-wrap" tabindex="0" role="region"
+			aria-labelledby="ceafsn-gf-table-caption">
 		<table class="ceafsn-gf-table">
-			<caption class="screen-reader-text"><?php esc_html_e( 'Grants and scholarships', 'ceafsn-gf' ); ?></caption>
+			<caption id="ceafsn-gf-table-caption" class="screen-reader-text"><?php esc_html_e( 'Grants and scholarships', 'ceafsn-gf' ); ?></caption>
 			<thead>
 				<tr>
 					<?php
@@ -142,8 +144,8 @@ defined( 'ABSPATH' ) || exit;
 							</span>
 							<?php echo esc_html( (string) $gf_card['row']->title ); ?>
 						</th>
-						<td><?php echo esc_html( '' !== (string) $gf_card['row']->funding_institution ? (string) $gf_card['row']->funding_institution : '—' ); ?></td>
-						<td>
+						<td data-label="<?php esc_attr_e( 'Institution', 'ceafsn-gf' ); ?>"><?php echo esc_html( '' !== (string) $gf_card['row']->funding_institution ? (string) $gf_card['row']->funding_institution : '—' ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Deadline', 'ceafsn-gf' ); ?>">
 							<?php if ( '' !== $gf_card['deadline_iso'] ) : ?>
 								<time datetime="<?php echo esc_attr( $gf_card['deadline_iso'] ); ?>">
 									<?php echo esc_html( CEAFSN_GF_Public::format_deadline( (string) $gf_card['row']->deadline, false ) ); ?>
@@ -152,12 +154,13 @@ defined( 'ABSPATH' ) || exit;
 								—
 							<?php endif; ?>
 						</td>
-						<td><?php echo esc_html( '' !== (string) $gf_card['row']->award_range ? (string) $gf_card['row']->award_range : '—' ); ?></td>
-						<td><?php CEAFSN_GF_Public::render_apply( $gf_card ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Award range', 'ceafsn-gf' ); ?>"><?php echo esc_html( '' !== (string) $gf_card['row']->award_range ? (string) $gf_card['row']->award_range : '—' ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Apply', 'ceafsn-gf' ); ?>"><?php CEAFSN_GF_Public::render_apply( $gf_card ); ?></td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		</div>
 
 	<?php else : ?>
 

@@ -58,6 +58,35 @@
 	min-width: 0;
 }
 
+/* Touch-sized controls, scoped to the component so the theme keeps its own
+   look for every other form on the site. */
+.ceafsn-gf-filters input:not([type="hidden"]),
+.ceafsn-gf-filters select,
+.ceafsn-gf-filters .button {
+	min-height: 2.75rem;
+	padding: 0.4em 0.7em;
+	border: 1px solid var(--ceafsn-gf-border);
+	border-radius: 4px;
+	font: inherit;
+	color: inherit;
+	background: #fff;
+}
+
+.ceafsn-gf-filters .button {
+	border-color: var(--ceafsn-gf-accent);
+	background: var(--ceafsn-gf-accent);
+	color: #fff;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.ceafsn-gf-filters .button:hover,
+.ceafsn-gf-filters .button:focus {
+	border-color: #163c56;
+	background: #163c56;
+	color: #fff;
+}
+
 /* Badges ------------------------------------------------------------------- */
 
 .ceafsn-gf-badge {
@@ -113,16 +142,7 @@
 	padding: 1.1em 1.25em;
 	background: #fff;
 	border: 1px solid var(--ceafsn-gf-border);
-	border-left: 4px solid var(--ceafsn-gf-closed);
 	border-radius: 4px;
-}
-
-.ceafsn-gf-card--open {
-	border-left-color: var(--ceafsn-gf-open);
-}
-
-.ceafsn-gf-card--upcoming {
-	border-left-color: var(--ceafsn-gf-upcoming);
 }
 
 .ceafsn-gf-card__status {
@@ -186,7 +206,6 @@
 	flex-wrap: wrap;
 	margin: 0.3em 0 0;
 	padding-top: 0.6em;
-	border-top: 1px solid var(--ceafsn-gf-border);
 }
 
 .ceafsn-gf-card__contact,
@@ -236,6 +255,17 @@
 
 /* Table -------------------------------------------------------------------- */
 
+/* Scroll container so a wide table stays reachable on a narrow screen, and can
+   be scrolled from the keyboard. */
+.ceafsn-gf-table-wrap {
+	overflow-x: auto;
+}
+
+.ceafsn-gf-table-wrap:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
 .ceafsn-gf-table {
 	width: 100%;
 	border-collapse: collapse;
@@ -246,13 +276,16 @@
 .ceafsn-gf-table td {
 	padding: 0.6em 0.7em;
 	text-align: left;
-	border-bottom: 1px solid var(--ceafsn-gf-border);
 	vertical-align: top;
 }
 
 .ceafsn-gf-table thead th {
-	border-bottom-width: 2px;
+	background: rgba(29, 78, 111, 0.1);
 	white-space: nowrap;
+}
+
+.ceafsn-gf-table tbody tr:nth-child(even) {
+	background: rgba(0, 0, 0, 0.02);
 }
 
 .ceafsn-gf-table thead a {
@@ -279,7 +312,6 @@
 	align-items: center;
 	margin: 1.75em 0 0;
 	padding-top: 1.25em;
-	border-top: 1px solid var(--ceafsn-gf-border);
 }
 
 .ceafsn-pagination__status {
@@ -300,10 +332,74 @@
 
 .ceafsn-pagination__link:hover,
 .ceafsn-pagination__link:focus {
-	background: currentColor;
+	background: var(--ceafsn-gf-accent, #1a5f3f);
+	border-color: var(--ceafsn-gf-accent, #1a5f3f);
 	color: #fff;
 }
 
 .ceafsn-pagination__link--next {
 	margin-left: auto;
+}
+
+/* Responsive --------------------------------------------------------------- */
+
+@media (max-width: 48rem) {
+	.ceafsn-gf-filters__row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.ceafsn-gf-filters input[type="search"],
+	.ceafsn-gf-filters select,
+	.ceafsn-gf-filters .button {
+		width: 100%;
+	}
+
+	/* Stack each row into a labelled card so nothing needs horizontal space */
+	.ceafsn-gf-table,
+	.ceafsn-gf-table thead,
+	.ceafsn-gf-table tbody,
+	.ceafsn-gf-table tr,
+	.ceafsn-gf-table th,
+	.ceafsn-gf-table td {
+		display: block;
+	}
+
+	.ceafsn-gf-table thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+
+	.ceafsn-gf-table tr {
+		margin-bottom: 1rem;
+		border: 1px solid var(--ceafsn-gf-border);
+		border-radius: 4px;
+		padding: 0.25rem 0;
+	}
+
+	.ceafsn-gf-table th,
+	.ceafsn-gf-table td {
+		padding: 0.4rem 0.85rem;
+		white-space: normal;
+	}
+
+	.ceafsn-gf-table td::before {
+		content: attr(data-label);
+		display: block;
+		font-size: 0.8em;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--ceafsn-gf-muted);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ceafsn-gf * {
+		animation: none !important;
+		transition: none !important;
+	}
 }

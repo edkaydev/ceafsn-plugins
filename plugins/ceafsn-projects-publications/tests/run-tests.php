@@ -1834,6 +1834,14 @@ has_substring( 'prefers-reduced-motion', $public_css, 'motion is reduced when th
 test( 'the layout reflows to one column on a narrow screen' );
 has_substring( 'minmax(min(100%, 17rem), 1fr)', $public_css, 'the grid track can shrink to the viewport width' );
 
+test( 'the public stylesheet paints no single side of an element' );
+$guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-pp-public.css' );
+is_same(
+	0,
+	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $guard_css ),
+	'no rule paints one side of an element with a border'
+);
+
 test( 'the admin stylesheet is scoped to the component' );
 $pp_admin_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-pp-admin.css' );
 ok(

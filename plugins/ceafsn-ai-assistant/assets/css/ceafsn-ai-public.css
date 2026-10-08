@@ -122,12 +122,14 @@
 }
 
 /* ---- Spinner ---- */
+/* One full ring, lit on the leading side by the four-value border shorthand —
+   no single-side declarations anywhere in this stylesheet. */
 .ceafsn-ai-assistant__spinner {
 	display: inline-block;
 	width: 1rem;
 	height: 1rem;
 	border: 2px solid rgba(255, 255, 255, 0.4);
-	border-top-color: #fff;
+	border-color: #fff rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.4);
 	border-radius: 50%;
 	animation: ceafsn-ai-spin 0.7s linear infinite;
 }
@@ -168,9 +170,8 @@
 
 /* ---- Sources ---- */
 .ceafsn-ai-assistant__sources {
-	margin-top: 1rem;
+	margin-top: 1.25rem;
 	padding-top: 0.75rem;
-	border-top: 1px solid #d4e6db;
 }
 
 .ceafsn-ai-assistant__sources-label {
@@ -244,3 +245,12 @@
 		justify-content: center;
 	}
 }
+
+@media (prefers-reduced-motion: reduce) {
+	.ceafsn-ai-assistant,
+	.ceafsn-ai-assistant * {
+		animation: none !important;
+		transition: none !important;
+	}
+}
+

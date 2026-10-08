@@ -106,8 +106,10 @@ foreach ( $present as $rf_status ) {
 
 	<?php elseif ( 'table' === $view ) : ?>
 
+		<div class="ceafsn-rf-table-wrap" tabindex="0" role="region"
+			aria-labelledby="ceafsn-rf-table-caption">
 		<table class="ceafsn-rf-table">
-			<caption class="screen-reader-text"><?php esc_html_e( 'Research fellowship opportunities', 'ceafsn-rf' ); ?></caption>
+			<caption id="ceafsn-rf-table-caption" class="screen-reader-text"><?php esc_html_e( 'Research fellowship opportunities', 'ceafsn-rf' ); ?></caption>
 			<thead>
 				<tr>
 					<?php
@@ -149,15 +151,16 @@ foreach ( $present as $rf_status ) {
 							</span>
 							<?php echo esc_html( (string) $rf_card['row']->title ); ?>
 						</th>
-						<td><?php echo esc_html( '' !== (string) $rf_card['row']->track_domain ? (string) $rf_card['row']->track_domain : '—' ); ?></td>
-						<td><?php echo esc_html( '' !== $rf_card['opening_date'] ? CEAFSN_RF_Public::format_date( (string) $rf_card['row']->opening_date ) : '—' ); ?></td>
-						<td><?php echo esc_html( '' !== $rf_card['closing_date'] ? CEAFSN_RF_Public::format_date( (string) $rf_card['row']->closing_date ) : '—' ); ?></td>
-						<td><?php echo esc_html( '' !== (string) $rf_card['row']->duration ? (string) $rf_card['row']->duration : '—' ); ?></td>
-						<td><?php CEAFSN_RF_Public::render_apply( $rf_card ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Track', 'ceafsn-rf' ); ?>"><?php echo esc_html( '' !== (string) $rf_card['row']->track_domain ? (string) $rf_card['row']->track_domain : '—' ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Opens', 'ceafsn-rf' ); ?>"><?php echo esc_html( '' !== $rf_card['opening_date'] ? CEAFSN_RF_Public::format_date( (string) $rf_card['row']->opening_date ) : '—' ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Closes', 'ceafsn-rf' ); ?>"><?php echo esc_html( '' !== $rf_card['closing_date'] ? CEAFSN_RF_Public::format_date( (string) $rf_card['row']->closing_date ) : '—' ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Duration', 'ceafsn-rf' ); ?>"><?php echo esc_html( '' !== (string) $rf_card['row']->duration ? (string) $rf_card['row']->duration : '—' ); ?></td>
+						<td data-label="<?php esc_attr_e( 'Apply', 'ceafsn-rf' ); ?>"><?php CEAFSN_RF_Public::render_apply( $rf_card ); ?></td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		</div>
 
 	<?php else : ?>
 
