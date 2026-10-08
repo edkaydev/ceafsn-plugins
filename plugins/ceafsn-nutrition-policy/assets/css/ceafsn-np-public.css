@@ -122,7 +122,6 @@
 
 .ceafsn-np-empty {
   padding: 2rem 1.25rem;
-  border: 1px dashed var(--ceafsn-np-border);
   border-radius: var(--ceafsn-np-radius);
   background: #fafbfb;
   color: var(--ceafsn-np-muted);

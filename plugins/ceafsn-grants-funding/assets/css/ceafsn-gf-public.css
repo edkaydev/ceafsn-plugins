@@ -299,7 +299,6 @@
 	text-align: center;
 	color: var(--ceafsn-gf-muted);
 	background: #f7f8f9;
-	border: 1px dashed var(--ceafsn-gf-border);
 	border-radius: 4px;
 }
 

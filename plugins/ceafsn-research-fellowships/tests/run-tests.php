@@ -1302,6 +1302,14 @@ is_same(
 	'no rule paints one side of an element with a border'
 );
 
+test( 'the admin stylesheet paints no single side of an element' );
+$admin_guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-rf-admin.css' );
+is_same(
+	0,
+	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $admin_guard_css ),
+	'no admin rule paints one side of an element with a border'
+);
+
 // -----------------------------------------------------------------------------
 section( 'Uninstall' );
 

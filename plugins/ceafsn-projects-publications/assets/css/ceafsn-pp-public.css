@@ -316,7 +316,7 @@
   padding: 2rem 1rem;
   text-align: center;
   color: var(--ceafsn-pp-muted);
-  border: 1px dashed var(--ceafsn-pp-border);
+  background: #fafbfb;
   border-radius: var(--ceafsn-pp-radius);
 }
 

@@ -884,6 +884,14 @@ is_same(
 	'no rule paints one side of an element with a border'
 );
 
+test( 'the admin stylesheet paints no single side of an element' );
+$admin_guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-med-admin.css' );
+is_same(
+	0,
+	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $admin_guard_css ),
+	'no admin rule paints one side of an element with a border'
+);
+
 test( 'table names use the site prefix' );
 $db_source = (string) file_get_contents( $plugin_dir . '/includes/class-ceafsn-med-db.php' );
 has_substring( '{$wpdb->prefix}ceafsn_med_metrics', $db_source, 'metrics table uses $wpdb->prefix' );

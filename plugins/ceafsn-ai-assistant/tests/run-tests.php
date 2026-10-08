@@ -2153,6 +2153,14 @@ is_same(
 	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $guard_css ),
 	'no rule paints one side of an element with a border'
 );
+
+test( 'the admin stylesheet paints no single side of an element' );
+$admin_guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-ai-admin.css' );
+is_same(
+	0,
+	(int) preg_match( '/border-(top|right|bottom|left)(-\w+)?\s*:/', $admin_guard_css ),
+	'no admin rule paints one side of an element with a border'
+);
 has_substring( '.ceafsn-ai-wrap', $ai_overview_partial, 'the admin screen uses the same ceafsn-ai namespace' );
 has_substring( 'ceafsn-ai-assistant', (string) file_get_contents( $plugin_dir . '/assets/js/ceafsn-ai-public.js' ), 'the script addresses the same root class' );
 

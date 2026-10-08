@@ -307,7 +307,6 @@
 	text-align: center;
 	color: var(--ceafsn-rf-muted);
 	background: #f7f8f9;
-	border: 1px dashed var(--ceafsn-rf-border);
 	border-radius: 4px;
 }
 
