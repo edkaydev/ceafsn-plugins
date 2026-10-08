@@ -16,6 +16,20 @@ defined( 'ABSPATH' ) || exit;
 class CEAFSN_AI_Public {
 
 	/**
+	 * Questions per IP per window.
+	 *
+	 * @var int
+	 */
+	const RATE_LIMIT_MAX = 20;
+
+	/**
+	 * Length of that window in seconds.
+	 *
+	 * @var int
+	 */
+	const RATE_LIMIT_WINDOW = 60;
+
+	/**
 	 * Register WordPress hooks.
 	 *
 	 * @return void
@@ -77,8 +91,13 @@ class CEAFSN_AI_Public {
 						'required'          => true,
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_textarea_field',
+						// Both ends of the range are enforced here rather than
+						// only in the textarea: the endpoint is public, so the
+						// limit has to hold for anyone who posts to it directly.
 						'validate_callback' => static function ( $value ): bool {
-							return is_string( $value ) && mb_strlen( trim( $value ) ) >= 3;
+							return is_string( $value )
+								&& mb_strlen( trim( $value ) ) >= 3
+								&& mb_strlen( $value ) <= CEAFSN_AI_Query::MAX_QUESTION_LENGTH;
 						},
 					),
 				),
@@ -89,16 +108,17 @@ class CEAFSN_AI_Public {
 	/**
 	 * Handle a POST to /wp-json/ceafsn-ai/v1/ask.
 	 *
-	 * Rate-limited to 20 requests per IP per minute using a transient.
+	 * Rate-limited to 20 requests per IP in a fixed one-minute window; the
+	 * route also rejects an empty or over-long question before this runs.
 	 *
 	 * The response body always has the same four keys — answer, sources,
 	 * error, code — so a client can render a reply without branching on HTTP
 	 * status. The status itself still follows HTTP conventions so that
 	 * monitors, caches, and REST clients see something truthful:
 	 *
-	 *   200 ok, 400 empty_question, 404 no_match, 429 rate-limited,
-	 *   502 embed_failed / model_failed (upstream provider failed),
-	 *   503 no_chat_provider / no_embeddings_provider / no_index /
+	 *   200 ok, 400 empty_question / question_too_long, 404 no_match,
+	 *   429 rate-limited, 502 embed_failed / model_failed (upstream provider
+	 *   failed), 503 no_chat_provider / no_embeddings_provider / no_index /
 	 *       index_provider_mismatch (site not configured yet), 500 anything
 	 *       unexpected.
 	 *
@@ -106,11 +126,49 @@ class CEAFSN_AI_Public {
 	 * @return WP_REST_Response
 	 */
 	public function rest_ask( WP_REST_Request $request ): WP_REST_Response {
-		// Basic rate limit: 20 questions per IP per minute.
-		$ip_hash = 'ceafsn_ai_rl_' . md5( (string) ( $_SERVER['REMOTE_ADDR'] ?? 'unknown' ) );
-		$hits    = (int) get_transient( $ip_hash );
+		$rate_limited = $this->hit_rate_limit();
 
-		if ( $hits >= 20 ) {
+		if ( null !== $rate_limited ) {
+			return $rate_limited;
+		}
+
+		$question = (string) $request->get_param( 'question' );
+		$result   = CEAFSN_AI_Query::ask( $question );
+
+		return new WP_REST_Response( $result, self::status_for( $result['code'] ) );
+	}
+
+	/**
+	 * Count this request against the caller's IP and refuse when over the cap.
+	 *
+	 * The window is fixed rather than sliding. An earlier version re-set the
+	 * counter's expiry on every hit, so one more question every 59 seconds
+	 * kept a single visitor inside the limit forever; and the address came
+	 * straight from REMOTE_ADDR, which in front of a proxy is the proxy.
+	 *
+	 * The counter itself is stored as the plain number of hits, and the start
+	 * of the window lives in a second transient that is written once and then
+	 * left alone. The counter's remaining life is shortened to match, so both
+	 * expire together and a fresh window never inherits an old count.
+	 *
+	 * @return WP_REST_Response|null The 429 response, or null to allow the request.
+	 */
+	private function hit_rate_limit(): ?WP_REST_Response {
+		$address    = (string) ( $this->request_ip() );
+		$window_key = 'ceafsn_ai_rl_win_' . md5( $address );
+		$count_key  = 'ceafsn_ai_rl_' . md5( $address );
+
+		$now           = (int) time();
+		$window_start  = (int) get_transient( $window_key );
+		$hits          = (int) get_transient( $count_key );
+		$window_is_new = ( $window_start <= 0 ) || ( $now - $window_start ) >= self::RATE_LIMIT_WINDOW;
+
+		if ( $window_is_new ) {
+			$window_start = $now;
+			set_transient( $window_key, $window_start, self::RATE_LIMIT_WINDOW );
+		}
+
+		if ( $hits >= self::RATE_LIMIT_MAX ) {
 			return new WP_REST_Response(
 				array(
 					'answer'  => '',
@@ -122,12 +180,53 @@ class CEAFSN_AI_Public {
 			);
 		}
 
-		set_transient( $ip_hash, $hits + 1, 60 );
+		$remaining = max( 1, self::RATE_LIMIT_WINDOW - ( $now - $window_start ) );
+		set_transient( $count_key, $hits + 1, $remaining );
 
-		$question = (string) $request->get_param( 'question' );
-		$result   = CEAFSN_AI_Query::ask( $question );
+		return null;
+	}
 
-		return new WP_REST_Response( $result, self::status_for( $result['code'] ) );
+	/**
+	 * The address this question should be counted against.
+	 *
+	 * Forwarding headers are read only when the address that reached PHP is a
+	 * private or loopback one, which is what a reverse proxy on the same
+	 * machine or network looks like. When REMOTE_ADDR is a public address the
+	 * visitor talked to PHP directly, and any X-Forwarded-For they send is
+	 * their own invention — believing it would hand them a fresh bucket for
+	 * every request.
+	 *
+	 * @return string
+	 */
+	private function request_ip(): string {
+		$remote = (string) ( $_SERVER['REMOTE_ADDR'] ?? '' );
+		if ( '' === $remote ) {
+			return 'unknown';
+		}
+
+		$is_public = (bool) filter_var(
+			$remote,
+			FILTER_VALIDATE_IP,
+			FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+		);
+
+		if ( $is_public ) {
+			return $remote;
+		}
+
+		foreach ( array( 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP' ) as $header ) {
+			$forwarded = (string) ( $_SERVER[ $header ] ?? '' );
+			if ( '' === $forwarded ) {
+				continue;
+			}
+
+			$first = trim( explode( ',', $forwarded )[0] );
+			if ( false !== filter_var( $first, FILTER_VALIDATE_IP ) ) {
+				return $first;
+			}
+		}
+
+		return $remote;
 	}
 
 	/**
@@ -144,6 +243,7 @@ class CEAFSN_AI_Public {
 		$map = array(
 			'ok'                    => 200,
 			'empty_question'        => 400,
+			'question_too_long'     => 400,
 			'no_match'              => 404,
 			'rate_limited'          => 429,
 			'embed_failed'          => 502,

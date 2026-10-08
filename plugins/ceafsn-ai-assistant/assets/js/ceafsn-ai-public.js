@@ -75,6 +75,21 @@
 	}
 
 	/**
+	 * Escape a string for safe use inside a double-quoted HTML attribute.
+	 *
+	 * esc() runs text through innerHTML, which escapes <, > and & but leaves
+	 * quotation marks alone. That is fine inside an element, and not fine
+	 * inside an attribute: one " in a URL would close the attribute early and
+	 * hand the rest of the string to the parser as markup.
+	 *
+	 * @param {string} str
+	 * @returns {string}
+	 */
+	function escAttr( str ) {
+		return esc( str ).replace( /"/g, '&quot;' ).replace( /'/g, '&#39;' );
+	}
+
+	/**
 	 * Convert plain-text answer lines into minimal HTML.
 	 * The server may return newlines; wrap each non-empty paragraph in <p>.
 	 *
@@ -193,10 +208,13 @@
 				if ( sources.length > 0 ) {
 					sourcesList.innerHTML = sources
 						.map( s => {
-							const label = esc( s.label || s.url );
-							const url   = esc( s.url || '' );
-							return url
-								? `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></li>`
+							const rawUrl = String( s.url || '' ).trim();
+							const label  = esc( String( s.label || rawUrl ) );
+							// Only a real web address becomes a link. A source
+							// stored as javascript: or data: is shown as text.
+							const safe   = /^https?:\/\//i.test( rawUrl );
+							return safe
+								? `<li><a href="${escAttr( rawUrl )}" target="_blank" rel="noopener noreferrer">${label}</a></li>`
 								: `<li>${label}</li>`;
 						} )
 						.join( '' );

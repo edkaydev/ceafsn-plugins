@@ -497,6 +497,11 @@ if ( ! function_exists( 'number_format_i18n' ) ) {
 if ( ! function_exists( 'date_i18n' ) ) {
 	function date_i18n( $format, int $ts = 0 ): string { return gmdate( (string) $format, $ts ?: time() ); }
 }
+if ( ! function_exists( 'current_time' ) ) {
+	function current_time( string $type, int $gmt = 0 ): string {
+		return 'timestamp' === $type ? (string) time() : gmdate( 'Y-m-d H:i:s' );
+	}
+}
 if ( ! function_exists( 'home_url' ) ) {
 	function home_url( string $path = '' ): string { return 'https://example.test/' . ltrim( $path, '/' ); }
 }

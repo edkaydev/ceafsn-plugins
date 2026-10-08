@@ -997,7 +997,12 @@ CEAFSN_AI_Test_State::queue_http(
 );
 is_same( array( 1.0, 2.0 ), $ai_gemini->embed( 'question' ), 'the values array is unwrapped' );
 has_substring( 'models/gemini-embedding-001:embedContent', ai_last_request_url(), 'the embedding model is in the path' );
-has_substring( 'key=AIza-live-1234', ai_last_request_url(), 'the key is a query parameter for this vendor' );
+lacks_substring( 'AIza-live-1234', ai_last_request_url(), 'the key is never placed in the request URL, where logs would keep it' );
+is_same(
+	'AIza-live-1234',
+	end( CEAFSN_AI_Test_State::$http_calls )['args']['headers']['x-goog-api-key'] ?? '',
+	'the key travels as the x-goog-api-key header instead'
+);
 is_same( 'models/gemini-embedding-001', ai_last_request_body()['model'] ?? '', 'and the body names the same model' );
 
 test( 'Gemini chat reads the first candidate text' );
@@ -1495,6 +1500,173 @@ has_substring( '3', $ai_notice['message'], 'it reports the skipped count' );
 has_substring( '1', $ai_notice['message'], 'and it reports the error count' );
 
 // -----------------------------------------------------------------------------
+section( 'Indexer: visibility and invalidation' );
+// -----------------------------------------------------------------------------
+
+test( 'a password-protected page is not collected' );
+ceafsn_ai_test_reload();
+update_option( CEAFSN_AI_Providers::OPTION_KEY_OPENAI, 'sk-live-1' );
+$wpdb->results_queue = array( array() );
+CEAFSN_AI_Indexer::run();
+$ai_wp_select = '';
+foreach ( $wpdb->queries as $ai_query ) {
+	if ( str_contains( (string) $ai_query, 'post_status' ) ) {
+		$ai_wp_select = (string) $ai_query;
+	}
+}
+has_substring( "post_password = ''", $ai_wp_select, 'the query only takes pages a visitor can read without a password' );
+
+test( 'a members-only publication is left out of the index' );
+ceafsn_ai_test_reload();
+update_option( CEAFSN_AI_Providers::OPTION_KEY_OPENAI, 'sk-live-1' );
+$wpdb->var_queue     = array( null, null, 'wp_ceafsn_pp_publications', null, null, null );
+$wpdb->results_queue = array( array(), array() );
+CEAFSN_AI_Indexer::run();
+$ai_pp_select = '';
+foreach ( $wpdb->queries as $ai_query ) {
+	if ( str_contains( (string) $ai_query, 'FROM `wp_ceafsn_pp_publications`' ) ) {
+		$ai_pp_select = (string) $ai_query;
+	}
+}
+has_substring( "access_level = 'public'", $ai_pp_select, 'only publicly readable publications are collected' );
+has_substring( "status = 'published'", $ai_pp_select, 'and only published ones' );
+
+test( 'M&E projects are collected whatever their status says' );
+ceafsn_ai_test_reload();
+update_option( CEAFSN_AI_Providers::OPTION_KEY_OPENAI, 'sk-live-1' );
+$wpdb->var_queue     = array( null, null, null, null, null, 'wp_ceafsn_med_projects' );
+$wpdb->results_queue = array( array(), array() );
+CEAFSN_AI_Indexer::run();
+$ai_med_select = '';
+foreach ( $wpdb->queries as $ai_query ) {
+	if ( str_contains( (string) $ai_query, 'FROM `wp_ceafsn_med_projects`' ) ) {
+		$ai_med_select = (string) $ai_query;
+	}
+}
+has_substring( 'WHERE (1 = 1)', $ai_med_select, 'the registry carries every row' );
+lacks_substring( "status = 'published'", $ai_med_select, 'the blanket predicate would have matched no rows at all' );
+
+test( 'saving a draft takes the page out of the index' );
+ceafsn_ai_test_reload();
+CEAFSN_AI_Indexer::on_post_saved( 9, (object) array( 'post_type' => 'page', 'post_status' => 'draft' ) );
+has_substring(
+	'wp_ceafsn_ai_chunks {"source_type":"wp_page","source_id":9}',
+	(string) end( $wpdb->queries ),
+	'the page\'s chunks are dropped'
+);
+
+test( 'a post type this plugin never indexes is left alone' );
+ceafsn_ai_test_reload();
+$wpdb->queries = array();
+CEAFSN_AI_Indexer::on_post_saved( 4, (object) array( 'post_type' => 'ceafsn_gf', 'post_status' => 'publish' ) );
+is_same( array(), $wpdb->queries, 'no query runs for another plugin\'s record' );
+
+test( 'trashing a post without a post object purges both indexed types' );
+ceafsn_ai_test_reload();
+CEAFSN_AI_Indexer::on_post_removed( 12 );
+$ai_purge = implode( "\n", $wpdb->queries );
+has_substring( '"source_type":"wp_page","source_id":12', $ai_purge, 'the page is purged' );
+has_substring( '"source_type":"wp_post","source_id":12', $ai_purge, 'and so is the post, since only an id was given' );
+
+test( 'a record saved from another plugin is re-indexed once that request has written' );
+ceafsn_ai_test_reload();
+update_option( CEAFSN_AI_Providers::OPTION_KEY_OPENAI, 'sk-live-1' );
+$wpdb->var_queue     = array( 'wp_ceafsn_gf_grants' );
+$wpdb->results_queue = array(
+	array(
+		(object) array(
+			'grant_id'   => 5,
+			'title'      => 'Seed funding call',
+			'eligibility' => 'Open to UEM staff.',
+		),
+	),
+);
+CEAFSN_AI_Test_State::queue_http(
+	array(
+		'code' => 200,
+		'body' => (string) wp_json_encode( array( 'data' => array( array( 'embedding' => array( 0.2, 0.3 ) ) ) ) ),
+	)
+);
+$_POST['grant_id'] = '5';
+CEAFSN_AI_Indexer::queue_record_event( 'ceafsn_gf', 'grant_id', 'save' );
+CEAFSN_AI_Indexer::flush_pending_events();
+unset( $_POST['grant_id'] );
+$ai_refresh = implode( "\n", $wpdb->queries );
+has_substring( '"source_type":"ceafsn_gf","source_id":5', $ai_refresh, 'the old chunks for that grant are dropped' );
+has_substring( '"source_type":"ceafsn_gf"', (string) end( $wpdb->queries ), 'and the new ones are written' );
+is_same( 0, CEAFSN_AI_Indexer::dirty_state()['count'], 'the index kept up, so nothing is flagged' );
+
+test( 'the same save with no embeddings provider flags the index as stale instead' );
+ceafsn_ai_test_reload();
+$wpdb->var_queue     = array( 'wp_ceafsn_gf_grants' );
+$wpdb->results_queue = array(
+	array(
+		(object) array( 'grant_id' => 5, 'title' => 'Seed funding call', 'eligibility' => 'Open to UEM staff.' ),
+	),
+);
+$_POST['grant_id'] = '5';
+CEAFSN_AI_Indexer::queue_record_event( 'ceafsn_gf', 'grant_id', 'save' );
+CEAFSN_AI_Indexer::flush_pending_events();
+unset( $_POST['grant_id'] );
+$ai_stale = CEAFSN_AI_Indexer::dirty_state();
+is_same( 1, $ai_stale['count'], 'one unindexed change is counted' );
+ok( $ai_stale['first'] > 0 && $ai_stale['last'] >= $ai_stale['first'], 'and the first and last change are both recorded' );
+has_substring(
+	'wp_ceafsn_ai_chunks {"source_type":"ceafsn_gf","source_id":5}',
+	implode( "\n", $wpdb->queries ),
+	'the stale text was dropped rather than left to be retrieved'
+);
+
+test( 'deleting a record from another plugin drops only that record' );
+ceafsn_ai_test_reload();
+$_POST['grant_id'] = '5';
+CEAFSN_AI_Indexer::queue_record_event( 'ceafsn_gf', 'grant_id', 'delete' );
+CEAFSN_AI_Indexer::flush_pending_events();
+unset( $_POST['grant_id'] );
+has_substring(
+	'wp_ceafsn_ai_chunks {"source_type":"ceafsn_gf","source_id":5}',
+	(string) end( $wpdb->queries ),
+	'the deleted grant\'s chunks are gone'
+ );
+is_same( 0, CEAFSN_AI_Indexer::dirty_state()['count'], 'nothing else needs rebuilding' );
+
+test( 'a complete run clears the stale flag, a partial one does not' );
+ceafsn_ai_test_reload();
+update_option( CEAFSN_AI_Providers::OPTION_KEY_OPENAI, 'sk-live-1' );
+CEAFSN_AI_Indexer::mark_dirty();
+CEAFSN_AI_Indexer::mark_dirty();
+is_same( 2, CEAFSN_AI_Indexer::dirty_state()['count'], 'the flag counts every change' );
+$wpdb->results_queue = array( array() );
+CEAFSN_AI_Indexer::run();
+is_same( 0, CEAFSN_AI_Indexer::dirty_state()['count'], 'a clean run catches up and resets it' );
+
+ceafsn_ai_test_reload();
+update_option( CEAFSN_AI_Providers::OPTION_KEY_OPENAI, 'sk-live-1' );
+CEAFSN_AI_Indexer::mark_dirty();
+$ai_rows = array();
+for ( $ai_i = 1; $ai_i <= 30; $ai_i++ ) {
+	$ai_rows[] = (object) array(
+		'ID'           => $ai_i,
+		'post_title'   => 'Page ' . $ai_i,
+		'post_content' => 'Content for page ' . $ai_i . '.',
+		'post_type'    => 'page',
+		'post_name'    => 'page-' . $ai_i,
+	);
+}
+$wpdb->results_queue = array( $ai_rows );
+for ( $ai_i = 0; $ai_i < 30; $ai_i++ ) {
+	CEAFSN_AI_Test_State::queue_http(
+		array(
+			'code' => 200,
+			'body' => (string) wp_json_encode( array( 'data' => array( array( 'embedding' => array( 0.1, 0.1 ) ) ) ) ),
+		)
+	);
+}
+$ai_partial_summary = CEAFSN_AI_Indexer::run( true, 1 );
+is_same( true, $ai_partial_summary['partial'], 'the run stopped at its deadline' );
+is_same( 1, CEAFSN_AI_Indexer::dirty_state()['count'], 'a run that stopped early is still behind, so the flag survives' );
+
+// -----------------------------------------------------------------------------
 section( 'Public: REST and shortcode' );
 // -----------------------------------------------------------------------------
 
@@ -1565,6 +1737,56 @@ has_substring( 'Too many requests', $ai_response->get_data()['error'], 'and a me
 is_same( 60, CEAFSN_AI_Test_State::$transients[ $ai_limit_key ]['expiry'], 'the counter expires after a minute' );
 unset( $_SERVER['REMOTE_ADDR'] );
 
+test( 'the rate-limit window is fixed, so a hit cannot push it forward' );
+ceafsn_ai_test_reload();
+$_SERVER['REMOTE_ADDR'] = '203.0.113.7';
+$ai_count_key           = 'ceafsn_ai_rl_' . md5( '203.0.113.7' );
+$ai_window_key          = 'ceafsn_ai_rl_win_' . md5( '203.0.113.7' );
+set_transient( $ai_window_key, time() - 50, 60 );
+set_transient( $ai_count_key, 5, 60 );
+$ai_public = new CEAFSN_AI_Public();
+$ai_public->rest_ask( new WP_REST_Request( array( 'question' => 'What is CE-AFSN?' ) ) );
+is_same( 6, get_transient( $ai_count_key ), 'the question was counted' );
+$ai_remaining = (int) CEAFSN_AI_Test_State::$transients[ $ai_count_key ]['expiry'];
+ok( $ai_remaining > 0 && $ai_remaining <= 10, "the counter expires with its window ({$ai_remaining}s left), not a fresh minute later" );
+is_same( 60, CEAFSN_AI_Test_State::$transients[ $ai_window_key ]['expiry'], 'and the window itself was not restarted' );
+unset( $_SERVER['REMOTE_ADDR'] );
+
+test( 'a visitor at the cap is refused without being counted again' );
+ceafsn_ai_test_reload();
+$_SERVER['REMOTE_ADDR'] = '203.0.113.8';
+$ai_count_key           = 'ceafsn_ai_rl_' . md5( '203.0.113.8' );
+$ai_window_key          = 'ceafsn_ai_rl_win_' . md5( '203.0.113.8' );
+set_transient( $ai_window_key, time() - 30, 60 );
+set_transient( $ai_count_key, 20, 60 );
+$ai_public = new CEAFSN_AI_Public();
+$ai_response = $ai_public->rest_ask( new WP_REST_Request( array( 'question' => 'What is CE-AFSN?' ) ) );
+is_same( 429, $ai_response->get_status(), 'the request is refused' );
+is_same( 20, get_transient( $ai_count_key ), 'the counter was left where it was' );
+is_same( 60, CEAFSN_AI_Test_State::$transients[ $ai_count_key ]['expiry'], 'and nothing was rewritten to buy the visitor more time' );
+unset( $_SERVER['REMOTE_ADDR'] );
+
+test( 'an over-long question is refused before any provider is called' );
+ceafsn_ai_test_reload();
+$ai_status_ref = new ReflectionClass( 'CEAFSN_AI_Public' );
+$ai_result     = CEAFSN_AI_Query::ask( str_repeat( 'a', CEAFSN_AI_Query::MAX_QUESTION_LENGTH + 1 ) );
+is_same( 'question_too_long', $ai_result['code'], 'the code names the problem' );
+has_substring( '500', $ai_result['error'], 'the message says how long the limit is' );
+is_same( 400, call_static( $ai_status_ref, 'status_for', $ai_result['code'] ), '400: the request was malformed, not the server' );
+is_same( array(), CEAFSN_AI_Test_State::$http_calls, 'and no API money was spent on it' );
+$ai_short = CEAFSN_AI_Query::ask( 'What is CE-AFSN?' );
+lacks_substring( 'question_too_long', $ai_short['code'], 'a normal question is not caught by it' );
+
+test( 'the route validates the length before the handler runs' );
+ceafsn_ai_test_reload();
+ceafsn_ai_test_fire_action( 'plugins_loaded' );
+ceafsn_ai_test_fire_action( 'rest_api_init' );
+$ai_validate = CEAFSN_AI_Test_State::$rest_routes[0]['args']['args']['question']['validate_callback'] ?? null;
+ok( is_callable( $ai_validate ), 'the question carries a validate_callback' );
+is_same( false, call_user_func( $ai_validate, str_repeat( 'a', 501 ) ), 'a 501-character question is rejected' );
+is_same( true, call_user_func( $ai_validate, str_repeat( 'a', 500 ) ), 'a 500-character question is accepted' );
+is_same( false, call_user_func( $ai_validate, 'ab' ), 'and a two-character question still is not' );
+
 test( 'the shortcode renders the assistant UI with its REST wiring' );
 ceafsn_ai_test_reload();
 ceafsn_ai_test_fire_action( 'plugins_loaded' );
@@ -1597,6 +1819,9 @@ has_substring( 'fallbackMessage', $ai_js, 'there is a localised fallback message
 has_substring( '.catch(', $ai_js, 'a JSON parse failure is caught' );
 has_substring( 'response.ok', $ai_js, 'non-2xx responses are treated as failures' );
 has_substring( 'rate_limited', $ai_js, 'the script knows what a rate limit looks like' );
+has_substring( 'escAttr( rawUrl )', $ai_js, 'the source link is escaped for its attribute, not just as text' );
+lacks_substring( 'href="${url}"', $ai_js, 'the plain escaper is no longer trusted inside an attribute' );
+has_substring( '/^https?:\\/\\//i', $ai_js, 'only a real web address is turned into a link' );
 
 // -----------------------------------------------------------------------------
 section( 'Admin: menu and assets' );
@@ -2200,7 +2425,7 @@ foreach (
 
 test( 'the POT file is a real catalogue for this textdomain' );
 $ai_pot = (string) file_get_contents( $plugin_dir . '/languages/ceafsn-ai.pot' );
-has_substring( 'Text Domain: ceafsn-ai', $ai_pot, 'the catalogue declares the domain' );
+has_substring( 'X-Domain: ceafsn-ai', $ai_pot, 'the catalogue declares the domain' );
 has_substring( 'msgid "', $ai_pot, 'and it contains message entries' );
 has_substring( 'CE-AFSN AI Assistant', $ai_pot, 'and pulls real strings from the plugin' );
 ok( substr_count( $ai_pot, 'msgid "' ) > 30, 'more than a handful of strings are extracted' );

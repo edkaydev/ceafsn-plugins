@@ -71,6 +71,8 @@ add_action( 'init', 'ceafsn_ai_load_textdomain' );
  * @return void
  */
 function ceafsn_ai_init(): void {
+	CEAFSN_AI_Indexer::register_hooks();
+
 	if ( is_admin() ) {
 		$admin = new CEAFSN_AI_Admin();
 		$admin->init();

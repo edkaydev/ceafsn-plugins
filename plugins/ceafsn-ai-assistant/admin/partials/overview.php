@@ -60,6 +60,13 @@ $ai_ready        = ( 0 === count( $ai_blocking ) );
 $ai_block_count  = count( $ai_blocking );
 $ai_partial      = ( $ai_ready && $unembedded > 0 );
 
+// Content changes that arrived without a usable embeddings provider, or that a
+// single-record refresh was too large to absorb. The count is read from the
+// option the indexer writes, so this screen reports the state of the index
+// rather than a guess about it.
+$ai_dirty       = CEAFSN_AI_Indexer::dirty_state();
+$ai_dirty_count = (int) $ai_dirty['count'];
+
 // The status pill text is built here so the markup below can emit it in one
 // line: the pill reads "Ready" only when nothing blocks answering.
 $ai_pill_text = $ai_ready
@@ -393,6 +400,25 @@ foreach ( $ai_steps as $ai_index => $ai_step ) {
 				<span class="ceafsn-pill <?php echo $ai_ready ? 'ceafsn-pill--green' : ''; ?>"><?php echo esc_html( $ai_pill_text ); ?></span>
 				</div>
 				<div class="ceafsn-card__body">
+
+					<?php if ( $ai_dirty_count > 0 ) : ?>
+						<div class="ceafsn-alert ceafsn-alert--warn">
+							<span class="ceafsn-alert__icon" aria-hidden="true">i</span>
+							<div class="ceafsn-alert__body">
+								<p class="ceafsn-alert__title"><?php esc_html_e( 'The index has not caught up with recent content', 'ceafsn-ai' ); ?></p>
+								<p class="ceafsn-alert__text">
+									<?php
+									printf(
+										/* translators: %s: number of content changes since the last complete index run. */
+										esc_html__( '%s content changes have not been indexed yet. The assistant will answer from what it already has until indexing runs again.', 'ceafsn-ai' ),
+										esc_html( number_format_i18n( $ai_dirty_count ) )
+									);
+									?>
+									<a class="ceafsn-alert__action" href="<?php echo esc_url( $ai_index_anchor ); ?>"><?php esc_html_e( 'Run indexing', 'ceafsn-ai' ); ?></a>
+								</p>
+							</div>
+						</div>
+					<?php endif; ?>
 
 					<table class="ceafsn-embed__table">
 						<caption class="ceafsn-sr"><?php esc_html_e( 'Index status', 'ceafsn-ai' ); ?></caption>

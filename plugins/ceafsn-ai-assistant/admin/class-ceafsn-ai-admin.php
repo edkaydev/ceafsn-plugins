@@ -239,11 +239,62 @@ class CEAFSN_AI_Admin {
 		$this->require_access();
 		check_admin_referer( 'ceafsn_ai_settings' );
 
-		$tab = $this->posted_tab( wp_unslash( $_POST ) );
+		$tab    = $this->posted_tab( wp_unslash( $_POST ) );
+		$before = self::settings_snapshot();
 
 		$this->persist_settings( wp_unslash( $_POST ), $tab );
 
+		$this->audit( 'update', 'ai_settings', 0, $before, self::settings_snapshot() );
+
 		$this->redirect( array( 'page' => self::PAGE_SETTINGS, 'tab' => $tab, 'saved' => '1' ) );
+	}
+
+	/**
+	 * Record a write in the shared audit log.
+	 *
+	 * A no-op when the shared library is absent, so this plugin stays usable on
+	 * its own.
+	 *
+	 * @param string                $action      create, update, or delete.
+	 * @param string                $entity_type Record type.
+	 * @param int                   $entity_id   Record id.
+	 * @param array<string,mixed>|object|null $before Previous row.
+	 * @param array<string,mixed>|object|null $after  New row.
+	 * @return void
+	 */
+	private function audit( string $action, string $entity_type, int $entity_id, array|object|null $before, array|object|null $after ): void {
+		if ( ! class_exists( 'CEAFSN_Audit_Log' ) ) {
+			return;
+		}
+
+		CEAFSN_Audit_Log::record( $action, $entity_type, $entity_id, $before, $after );
+	}
+
+	/**
+	 * The settings this plugin holds, shaped for the audit log.
+	 *
+	 * Keys are reduced to their last four characters, which is all the
+	 * settings screen itself ever shows. That makes a rotation visible —
+	 * 1234 giving way to 5678 is a change the log can report — without
+	 * writing a working credential into a table anybody can read.
+	 *
+	 * @return array<string,mixed>
+	 */
+	private static function settings_snapshot(): array {
+		$snapshot = array(
+			'provider'  => (string) get_option( CEAFSN_AI_Providers::OPTION_ACTIVE, '' ),
+			'uninstall' => (bool) get_option( 'ceafsn_ai_uninstall_delete_data', false ),
+		);
+
+		foreach ( array_keys( CEAFSN_AI_Providers::all() ) as $provider_key ) {
+			$saved_key = (string) get_option( CEAFSN_AI_Providers::OPTION_KEY_PREFIX . $provider_key, '' );
+
+			$snapshot[ $provider_key . '_key_last4' ]  = '' === $saved_key ? '' : substr( $saved_key, -4 );
+			$snapshot[ $provider_key . '_chat_model' ]  = (string) get_option( CEAFSN_AI_Providers::OPTION_MODEL_PREFIX . $provider_key, '' );
+			$snapshot[ $provider_key . '_embed_model' ] = (string) get_option( CEAFSN_AI_Providers::OPTION_EMBED_MODEL_PREFIX . $provider_key, '' );
+		}
+
+		return $snapshot;
 	}
 
 	/**
@@ -354,6 +405,20 @@ class CEAFSN_AI_Admin {
 		$result = CEAFSN_AI_Indexer::run( $full, 90 );
 		$notice = self::index_notice( $result );
 
+		$this->audit(
+			'update',
+			'ai_index',
+			0,
+			null,
+			array(
+				'full_rebuild' => (bool) $full,
+				'indexed'      => (int) $result['indexed'],
+				'skipped'      => (int) $result['skipped'],
+				'errors'       => (int) $result['errors'],
+				'partial'      => (bool) $result['partial'],
+			)
+		);
+
 		$this->add_notice( 'index_done', $notice['message'], $notice['type'] );
 
 		$this->redirect( array( 'page' => self::MENU_SLUG, 'indexed' => '1' ) );
@@ -404,7 +469,11 @@ class CEAFSN_AI_Admin {
 		$this->require_access();
 		check_admin_referer( 'ceafsn_ai_clear' );
 
+		$chunks = CEAFSN_AI_DB::count_chunks();
+
 		CEAFSN_AI_DB::delete_all_chunks();
+
+		$this->audit( 'delete', 'ai_index', 0, array( 'chunks' => (int) $chunks ), null );
 
 		$this->add_notice( 'index_cleared', __( 'Index cleared. Run indexing again to rebuild.', 'ceafsn-ai' ) );
 

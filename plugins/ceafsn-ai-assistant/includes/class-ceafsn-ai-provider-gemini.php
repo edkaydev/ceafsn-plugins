@@ -59,9 +59,23 @@ class CEAFSN_AI_Provider_Gemini extends CEAFSN_AI_Provider {
 		return true;
 	}
 
+	/**
+	 * Send the key as a header rather than as a query parameter.
+	 *
+	 * A key in the URL is copied into proxy logs, CDN logs, browser history,
+	 * and any Referer a redirected page chooses to send. Google accepts the
+	 * same credential as `x-goog-api-key`, so there is no reason for it to be
+	 * in the request line.
+	 *
+	 * @return array<string,string>
+	 */
+	private function auth_headers(): array {
+		return array( 'x-goog-api-key' => $this->api_key );
+	}
+
 	/** {@inheritdoc} */
 	public function embed( string $text ): ?array {
-		$url = self::BASE_URL . $this->embed_model() . ':embedContent?key=' . rawurlencode( $this->api_key );
+		$url = self::BASE_URL . $this->embed_model() . ':embedContent';
 
 		$response = $this->http_post(
 			$url,
@@ -72,7 +86,8 @@ class CEAFSN_AI_Provider_Gemini extends CEAFSN_AI_Provider {
 						array( 'text' => $text ),
 					),
 				),
-			)
+			),
+			$this->auth_headers()
 		);
 
 		if ( is_wp_error( $response ) ) {
@@ -86,7 +101,7 @@ class CEAFSN_AI_Provider_Gemini extends CEAFSN_AI_Provider {
 
 	/** {@inheritdoc} */
 	public function complete( string $system_prompt, string $user_message ): ?string {
-		$url = self::BASE_URL . $this->chat_model() . ':generateContent?key=' . rawurlencode( $this->api_key );
+		$url = self::BASE_URL . $this->chat_model() . ':generateContent';
 
 		// Gemini uses a system_instruction field separate from the conversation.
 		$response = $this->http_post(
@@ -105,7 +120,8 @@ class CEAFSN_AI_Provider_Gemini extends CEAFSN_AI_Provider {
 					'maxOutputTokens' => 600,
 					'temperature'     => 0.2,
 				),
-			)
+			),
+			$this->auth_headers()
 		);
 
 		if ( is_wp_error( $response ) ) {

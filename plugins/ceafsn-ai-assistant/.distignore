@@ -1,0 +1,15 @@
+# Not shipped in a release ZIP.
+tests
+.distignore
+.git
+.gitignore
+.DS_Store
+*.log
+node_modules
+vendor
+composer.json
+composer.lock
+package.json
+package-lock.json
+phpcs.xml
+phpunit.xml
