@@ -9,15 +9,16 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-08T12:21:40+00:00\n"
+"POT-Creation-Date: 2026-10-09T14:04:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ceafsn-ai\n"
 
 #. Plugin Name of the plugin
 #: ceafsn-ai-assistant.php
-#: admin/class-ceafsn-ai-admin.php:76
-#: public/partials/assistant.php:23
+#: admin/class-ceafsn-ai-admin.php:77
+#: public/partials/assistant.php:27
+#: public/partials/floater.php:27
 msgid "CE-AFSN AI Assistant"
 msgstr ""
 
@@ -41,39 +42,39 @@ msgstr ""
 msgid "https://www.linkedin.com/in/edkaydev"
 msgstr ""
 
-#: admin/class-ceafsn-ai-admin.php:77
+#: admin/class-ceafsn-ai-admin.php:78
 #: admin/partials/overview.php:204
 msgid "AI Assistant"
 msgstr ""
 
-#: admin/class-ceafsn-ai-admin.php:87
 #: admin/class-ceafsn-ai-admin.php:88
+#: admin/class-ceafsn-ai-admin.php:89
 msgid "Overview"
 msgstr ""
 
-#: admin/class-ceafsn-ai-admin.php:96
 #: admin/class-ceafsn-ai-admin.php:97
-#: admin/partials/settings.php:80
+#: admin/class-ceafsn-ai-admin.php:98
+#: admin/partials/settings.php:86
 msgid "Settings"
 msgstr ""
 
 #. translators: 1: indexed chunks, 2: skipped, 3: errors.
-#: admin/class-ceafsn-ai-admin.php:442
+#: admin/class-ceafsn-ai-admin.php:457
 #, php-format
 msgid "Indexing paused after reaching its time budget — indexed %1$d chunks, skipped %2$d, errors %3$d. Run it again to continue from where it stopped."
 msgstr ""
 
 #. translators: 1: indexed chunks, 2: skipped, 3: errors.
-#: admin/class-ceafsn-ai-admin.php:454
+#: admin/class-ceafsn-ai-admin.php:469
 #, php-format
 msgid "Indexing complete. Indexed: %1$d chunks, skipped %2$d, errors %3$d."
 msgstr ""
 
-#: admin/class-ceafsn-ai-admin.php:478
+#: admin/class-ceafsn-ai-admin.php:493
 msgid "Index cleared. Run indexing again to rebuild."
 msgstr ""
 
-#: admin/class-ceafsn-ai-admin.php:563
+#: admin/class-ceafsn-ai-admin.php:578
 msgid "You do not have permission to access this page."
 msgstr ""
 
@@ -282,7 +283,7 @@ msgid "The assistant can answer a question now"
 msgstr ""
 
 #: admin/partials/overview.php:336
-#: admin/partials/settings.php:101
+#: admin/partials/settings.php:155
 msgid "Display the assistant"
 msgstr ""
 
@@ -474,166 +475,201 @@ msgstr ""
 msgid "Jump to how the assistant answers"
 msgstr ""
 
-#: admin/partials/settings.php:56
+#: admin/partials/settings.php:62
 msgid "Settings saved."
 msgstr ""
 
-#: admin/partials/settings.php:71
+#: admin/partials/settings.php:77
 msgid "No embeddings provider is configured. The assistant cannot look anything up until an OpenAI or Gemini API key is set below."
 msgstr ""
 
-#: admin/partials/settings.php:79
+#: admin/partials/settings.php:85
 msgid "CE-AFSN · AI Assistant"
 msgstr ""
 
-#: admin/partials/settings.php:82
+#: admin/partials/settings.php:88
 msgid "Where the assistant appears, which model answers, and what happens to the index when the plugin is removed."
 msgstr ""
 
-#: admin/partials/settings.php:86
+#: admin/partials/settings.php:92
 msgid "Settings sections"
 msgstr ""
 
-#: admin/partials/settings.php:102
-msgid "Nothing appears to visitors until this shortcode is on a published page, and the assistant cannot answer until the index has been built."
+#: admin/partials/settings.php:107
+msgid "Floating chat button"
 msgstr ""
 
 #: admin/partials/settings.php:108
-msgid "Paste this shortcode into the page that should offer the assistant"
+msgid "Show a floating button in the corner of every page that opens the assistant in place — no shortcode or page edit needed."
 msgstr ""
 
-#: admin/partials/settings.php:113
-msgid "It goes in the page content, in a Code / Preformatted block, or anywhere the block editor accepts HTML."
+#: admin/partials/settings.php:123
+msgid "Enable the floating chat button on the whole site"
 msgstr ""
 
-#: admin/partials/settings.php:117
-msgid "Optional attributes"
+#: admin/partials/settings.php:126
+msgid "Off by default. The shortcode keeps working either way, so a dedicated page can still host the full inline assistant."
 msgstr ""
 
-#: admin/partials/settings.php:120
-msgid "Attribute"
-msgstr ""
-
-#: admin/partials/settings.php:121
-msgid "Default"
-msgstr ""
-
-#: admin/partials/settings.php:122
-msgid "What it does"
-msgstr ""
-
-#: admin/partials/settings.php:128
-#: public/class-ceafsn-ai-public.php:62
-msgid "Ask a question about CE-AFSN research, fellowships, grants…"
-msgstr ""
-
-#: admin/partials/settings.php:129
-msgid "Placeholder shown before the visitor has typed anything, while the text still reads as English."
-msgstr ""
-
-#: admin/partials/settings.php:133
-#: public/class-ceafsn-ai-public.php:66
-msgid "Faça uma pergunta sobre pesquisa, bolsas, financiamentos da CE-AFSN…"
+#: admin/partials/settings.php:132
+msgid "Corner"
 msgstr ""
 
 #: admin/partials/settings.php:134
-msgid "Placeholder used once the visitor starts typing in Portuguese."
+msgid "Bottom right"
 msgstr ""
 
-#: admin/partials/settings.php:140
-msgid "Example: [ceafsn_ai_assistant placeholder_en=\"Ask about fellowships\" placeholder_pt=\"Pergunte sobre bolsas\"]"
+#: admin/partials/settings.php:135
+msgid "Bottom left"
 msgstr ""
 
-#: admin/partials/settings.php:146
-msgid "The placeholder switches as the visitor types"
+#: admin/partials/settings.php:138
+msgid "On phones the panel opens full-screen and the button is hidden while it is open."
 msgstr ""
 
-#: admin/partials/settings.php:148
-msgid "Language is guessed from the words already typed, so the choice is made on the visitor’s machine and no page reload happens. Both attributes should therefore be filled in whenever the site serves readers in the two languages."
-msgstr ""
-
-#: admin/partials/settings.php:161
-msgid "Data removal on uninstall"
-msgstr ""
-
-#: admin/partials/settings.php:162
-msgid "Deleting the plugin is the only thing that can remove the index, and only when you ask for it here."
-msgstr ""
-
-#: admin/partials/settings.php:173
-msgid "Deactivating the plugin never deletes anything. Tick the box below only if you intend to delete the plugin and permanently remove the knowledge base, the stored API keys, and the model overrides."
-msgstr ""
-
-#: admin/partials/settings.php:181
-msgid "Delete the knowledge base, stored API keys, and model overrides when the plugin is deleted"
-msgstr ""
-
-#: admin/partials/settings.php:184
-msgid "Off by default, so removing the plugin never destroys a month of indexing — or a key another tool still uses — by surprise. A few bookkeeping options are always removed either way, and your own pages and posts are never touched."
-msgstr ""
-
-#: admin/partials/settings.php:191
-#: admin/partials/settings.php:309
+#: admin/partials/settings.php:144
+#: admin/partials/settings.php:245
+#: admin/partials/settings.php:363
 msgid "Save settings"
 msgstr ""
 
-#: admin/partials/settings.php:204
-msgid "Providers and models"
+#: admin/partials/settings.php:156
+msgid "Nothing appears to visitors until this shortcode is on a published page, and the assistant cannot answer until the index has been built."
 msgstr ""
 
-#: admin/partials/settings.php:205
-msgid "One provider answers the question, a second one builds the vectors. OpenAI and Gemini do both on a single key."
+#: admin/partials/settings.php:162
+msgid "Paste this shortcode into the page that should offer the assistant"
+msgstr ""
+
+#: admin/partials/settings.php:167
+msgid "It goes in the page content, in a Code / Preformatted block, or anywhere the block editor accepts HTML."
+msgstr ""
+
+#: admin/partials/settings.php:171
+msgid "Optional attributes"
+msgstr ""
+
+#: admin/partials/settings.php:174
+msgid "Attribute"
+msgstr ""
+
+#: admin/partials/settings.php:175
+msgid "Default"
+msgstr ""
+
+#: admin/partials/settings.php:176
+msgid "What it does"
+msgstr ""
+
+#: admin/partials/settings.php:182
+#: public/class-ceafsn-ai-public.php:77
+#: public/class-ceafsn-ai-public.php:108
+msgid "Ask a question about CE-AFSN research, fellowships, grants…"
+msgstr ""
+
+#: admin/partials/settings.php:183
+msgid "Placeholder shown before the visitor has typed anything, while the text still reads as English."
+msgstr ""
+
+#: admin/partials/settings.php:187
+#: public/class-ceafsn-ai-public.php:81
+#: public/class-ceafsn-ai-public.php:109
+msgid "Faça uma pergunta sobre pesquisa, bolsas, financiamentos da CE-AFSN…"
+msgstr ""
+
+#: admin/partials/settings.php:188
+msgid "Placeholder used once the visitor starts typing in Portuguese."
+msgstr ""
+
+#: admin/partials/settings.php:194
+msgid "Example: [ceafsn_ai_assistant placeholder_en=\"Ask about fellowships\" placeholder_pt=\"Pergunte sobre bolsas\"]"
+msgstr ""
+
+#: admin/partials/settings.php:200
+msgid "The placeholder switches as the visitor types"
+msgstr ""
+
+#: admin/partials/settings.php:202
+msgid "Language is guessed from the words already typed, so the choice is made on the visitor’s machine and no page reload happens. Both attributes should therefore be filled in whenever the site serves readers in the two languages."
+msgstr ""
+
+#: admin/partials/settings.php:215
+msgid "Data removal on uninstall"
 msgstr ""
 
 #: admin/partials/settings.php:216
+msgid "Deleting the plugin is the only thing that can remove the index, and only when you ask for it here."
+msgstr ""
+
+#: admin/partials/settings.php:227
+msgid "Deactivating the plugin never deletes anything. Tick the box below only if you intend to delete the plugin and permanently remove the knowledge base, the stored API keys, and the model overrides."
+msgstr ""
+
+#: admin/partials/settings.php:235
+msgid "Delete the knowledge base, stored API keys, and model overrides when the plugin is deleted"
+msgstr ""
+
+#: admin/partials/settings.php:238
+msgid "Off by default, so removing the plugin never destroys a month of indexing — or a key another tool still uses — by surprise. A few bookkeeping options are always removed either way, and your own pages and posts are never touched."
+msgstr ""
+
+#: admin/partials/settings.php:258
+msgid "Providers and models"
+msgstr ""
+
+#: admin/partials/settings.php:259
+msgid "One provider answers the question, a second one builds the vectors. OpenAI and Gemini do both on a single key."
+msgstr ""
+
+#: admin/partials/settings.php:270
 msgid "Active AI provider"
 msgstr ""
 
-#: admin/partials/settings.php:225
+#: admin/partials/settings.php:279
 msgid "Grok and Claude have no embeddings API. When either is selected, vectors are built by OpenAI if a key is set, then Gemini."
 msgstr ""
 
-#: admin/partials/settings.php:242
+#: admin/partials/settings.php:296
 msgid "Key set"
 msgstr ""
 
-#: admin/partials/settings.php:242
+#: admin/partials/settings.php:296
 msgid "No key"
 msgstr ""
 
-#: admin/partials/settings.php:247
+#: admin/partials/settings.php:301
 msgid "API key"
 msgstr ""
 
-#: admin/partials/settings.php:257
+#: admin/partials/settings.php:311
 msgid "Leave blank to keep the key already stored. Enter a new value to replace it."
 msgstr ""
 
-#: admin/partials/settings.php:262
+#: admin/partials/settings.php:316
 msgid "Chat model"
 msgstr ""
 
 #. translators: 1: default chat model identifier, 2: what filling the field does.
-#: admin/partials/settings.php:275
+#: admin/partials/settings.php:329
 #, php-format
 msgid "Leave empty to use the built-in default, %s. Fill this in when a vendor retires it and the assistant stops responding."
 msgstr ""
 
-#: admin/partials/settings.php:284
+#: admin/partials/settings.php:338
 msgid "Embeddings model"
 msgstr ""
 
 #. translators: %s: default embeddings model identifier.
-#: admin/partials/settings.php:297
+#: admin/partials/settings.php:351
 #, php-format
 msgid "Leave empty to use the built-in default, %s. Changing this invalidates the existing index — run a full rebuild afterwards."
 msgstr ""
 
-#: admin/partials/settings.php:317
+#: admin/partials/settings.php:371
 msgid "Changing the embeddings model empties the index in practice"
 msgstr ""
 
-#: admin/partials/settings.php:319
+#: admin/partials/settings.php:373
 msgid "Vectors from one model cannot be compared with vectors from another, so the assistant will report a provider mismatch until you run a full rebuild from the Overview."
 msgstr ""
 
@@ -795,35 +831,43 @@ msgstr ""
 msgid "The AI model did not respond. Please try again."
 msgstr ""
 
-#: public/class-ceafsn-ai-public.php:176
+#: public/class-ceafsn-ai-public.php:113
+msgid "Open the CE-AFSN assistant"
+msgstr ""
+
+#: public/class-ceafsn-ai-public.php:114
+msgid "Close the assistant"
+msgstr ""
+
+#: public/class-ceafsn-ai-public.php:236
 msgid "Too many requests. Please wait a moment before asking again."
 msgstr ""
 
-#: public/partials/assistant.php:35
+#: public/partials/assistant.php:39
 msgid "CE-AFSN Knowledge Assistant"
 msgstr ""
 
-#: public/partials/assistant.php:38
+#: public/partials/assistant.php:42
 msgid "Ask anything about our research, fellowships, grants, datasets and publications — in English or Portuguese."
 msgstr ""
 
-#: public/partials/assistant.php:40
+#: public/partials/assistant.php:44
 msgid "Faça perguntas em inglês ou português sobre pesquisa, bolsas, financiamentos e publicações."
 msgstr ""
 
-#: public/partials/assistant.php:47
+#: public/partials/assistant.php:51
 msgid "Your question"
 msgstr ""
 
-#: public/partials/assistant.php:60
-#: public/partials/assistant.php:62
+#: public/partials/assistant.php:64
+#: public/partials/assistant.php:66
 msgid "Ask"
 msgstr ""
 
-#: public/partials/assistant.php:68
+#: public/partials/assistant.php:72
 msgid "Answers are generated from CE-AFSN's published content only."
 msgstr ""
 
-#: public/partials/assistant.php:76
+#: public/partials/assistant.php:80
 msgid "Sources"
 msgstr ""

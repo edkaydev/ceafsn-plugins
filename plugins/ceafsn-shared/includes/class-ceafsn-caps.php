@@ -49,6 +49,15 @@ final class CEAFSN_Caps {
 	public const EDITOR_ROLE = 'ceafsn_research_editor';
 
 	/**
+	 * Slug of the CE-AFSN Staff role added by {@see self::install()}.
+	 *
+	 * A staff member can create, edit, and delete records in all six CE-AFSN
+	 * plugins, and can publish/verify them. They cannot change WordPress site
+	 * settings (`manage_options` is intentionally withheld).
+	 */
+	public const STAFF_ROLE = 'ceafsn_staff';
+
+	/**
 	 * Roles that receive every CE-AFSN capability.
 	 *
 	 * Administrators are included so an existing installation keeps working
@@ -80,6 +89,19 @@ final class CEAFSN_Caps {
 	}
 
 	/**
+	 * Capabilities granted to the CE-AFSN Staff role.
+	 *
+	 * Staff can do everything with records across all six plugins — create,
+	 * edit, delete, publish, and verify — but cannot touch WordPress site
+	 * settings. `manage_options` is deliberately absent.
+	 *
+	 * @return string[] Capability names.
+	 */
+	public static function staff_capabilities(): array {
+		return array( self::EDIT, self::APPROVE, self::MANAGE );
+	}
+
+	/**
 	 * Register the capabilities and the research editor role.
 	 *
 	 * Idempotent, because each of the six plugins may call this from its own
@@ -96,15 +118,26 @@ final class CEAFSN_Caps {
 			}
 		}
 
+		// CE-AFSN Research Editor: can edit and approve records.
 		$editor = get_role( self::EDITOR_ROLE );
 		if ( null === $editor ) {
 			$editor = add_role( self::EDITOR_ROLE, __( 'CE-AFSN Research Editor', 'ceafsn' ), array( 'read' => true ) );
 		}
-		if ( null === $editor ) {
-			return;
+		if ( null !== $editor ) {
+			foreach ( self::editor_capabilities() as $cap ) {
+				$editor->add_cap( $cap );
+			}
 		}
-		foreach ( self::editor_capabilities() as $cap ) {
-			$editor->add_cap( $cap );
+
+		// CE-AFSN Staff: full CRUD across all six plugins, no WP site settings.
+		$staff = get_role( self::STAFF_ROLE );
+		if ( null === $staff ) {
+			$staff = add_role( self::STAFF_ROLE, __( 'CE-AFSN Staff', 'ceafsn' ), array( 'read' => true ) );
+		}
+		if ( null !== $staff ) {
+			foreach ( self::staff_capabilities() as $cap ) {
+				$staff->add_cap( $cap );
+			}
 		}
 	}
 
@@ -132,6 +165,14 @@ final class CEAFSN_Caps {
 				$editor->remove_cap( $cap );
 			}
 			remove_role( self::EDITOR_ROLE );
+		}
+
+		$staff = get_role( self::STAFF_ROLE );
+		if ( null !== $staff ) {
+			foreach ( self::staff_capabilities() as $cap ) {
+				$staff->remove_cap( $cap );
+			}
+			remove_role( self::STAFF_ROLE );
 		}
 	}
 

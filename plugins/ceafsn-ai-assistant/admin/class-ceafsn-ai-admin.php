@@ -23,7 +23,8 @@ class CEAFSN_AI_Admin {
 	const PAGE_SETTINGS = 'ceafsn-ai-settings';
 
 	/**
-	 * Settings tabs. `display` is documentation only and posts nothing.
+	 * Settings tabs. `display` carries the shortcode reference and the
+	 * floating-launcher switch; `providers` holds the keys and models.
 	 *
 	 * @var array<string,string>
 	 */
@@ -282,8 +283,10 @@ class CEAFSN_AI_Admin {
 	 */
 	private static function settings_snapshot(): array {
 		$snapshot = array(
-			'provider'  => (string) get_option( CEAFSN_AI_Providers::OPTION_ACTIVE, '' ),
-			'uninstall' => (bool) get_option( 'ceafsn_ai_uninstall_delete_data', false ),
+			'provider'      => (string) get_option( CEAFSN_AI_Providers::OPTION_ACTIVE, '' ),
+			'uninstall'     => (bool) get_option( 'ceafsn_ai_uninstall_delete_data', false ),
+			'float_enabled' => (bool) get_option( CEAFSN_AI_Public::OPTION_FLOAT_ENABLED, false ),
+			'float_position' => (string) get_option( CEAFSN_AI_Public::OPTION_FLOAT_POSITION, 'right' ),
 		);
 
 		foreach ( array_keys( CEAFSN_AI_Providers::all() ) as $provider_key ) {
@@ -312,6 +315,18 @@ class CEAFSN_AI_Admin {
 	private function persist_settings( array $post, string $tab ): void {
 		if ( 'providers' === $tab ) {
 			$this->persist_providers( $post );
+		}
+
+		if ( 'display' === $tab ) {
+			// Explicit opt-in for the checkbox; the position is constrained to
+			// the two corners the launcher actually knows how to sit in.
+			update_option( CEAFSN_AI_Public::OPTION_FLOAT_ENABLED, isset( $post['ceafsn_ai_float_enabled'] ) );
+
+			$position = sanitize_key( (string) ( $post['ceafsn_ai_float_position'] ?? 'right' ) );
+			if ( ! in_array( $position, array( 'right', 'left' ), true ) ) {
+				$position = 'right';
+			}
+			update_option( CEAFSN_AI_Public::OPTION_FLOAT_POSITION, $position );
 		}
 
 		if ( 'uninstall' === $tab ) {

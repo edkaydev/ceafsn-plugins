@@ -8,11 +8,15 @@
  * @var string $placeholder_pt Portuguese placeholder text.
  * @var string $rest_url        REST endpoint URL.
  * @var string $nonce           wp_rest nonce.
+ * @var string $input_id        DOM id for the question field.
  *
  * @package CEAFSN_AI
  */
 
 defined( 'ABSPATH' ) || exit;
+
+$input_id = $input_id ?? 'ceafsn-ai-question';
+$hint_id  = $input_id . '-hint';
 ?>
 <div class="ceafsn-ai-assistant"
 	data-rest-url="<?php echo esc_url( $rest_url ); ?>"
@@ -43,19 +47,19 @@ defined( 'ABSPATH' ) || exit;
 	</div>
 
 	<form class="ceafsn-ai-assistant__form" novalidate>
-		<label for="ceafsn-ai-question" class="screen-reader-text">
+		<label for="<?php echo esc_attr( $input_id ); ?>" class="screen-reader-text">
 			<?php esc_html_e( 'Your question', 'ceafsn-ai' ); ?>
 		</label>
 		<div class="ceafsn-ai-assistant__input-row">
 			<textarea
-				id="ceafsn-ai-question"
+				id="<?php echo esc_attr( $input_id ); ?>"
 				class="ceafsn-ai-assistant__input"
 				name="question"
 				rows="2"
 				placeholder="<?php echo esc_attr( $placeholder_en ); ?>"
 				maxlength="500"
 				aria-required="true"
-				aria-describedby="ceafsn-ai-hint"
+				aria-describedby="<?php echo esc_attr( $hint_id ); ?>"
 			></textarea>
 			<button type="submit" class="ceafsn-ai-assistant__submit" aria-label="<?php esc_attr_e( 'Ask', 'ceafsn-ai' ); ?>">
 				<span class="ceafsn-ai-assistant__submit-label" aria-hidden="true">
@@ -64,7 +68,7 @@ defined( 'ABSPATH' ) || exit;
 				<span class="ceafsn-ai-assistant__spinner" aria-hidden="true" hidden></span>
 			</button>
 		</div>
-		<p id="ceafsn-ai-hint" class="ceafsn-ai-assistant__hint">
+		<p id="<?php echo esc_attr( $hint_id ); ?>" class="ceafsn-ai-assistant__hint">
 			<?php esc_html_e( 'Answers are generated from CE-AFSN\'s published content only.', 'ceafsn-ai' ); ?>
 		</p>
 	</form>

@@ -9,7 +9,6 @@
 .ceafsn-ai-assistant {
 	max-width: 760px;
 	margin: 2rem auto;
-	font-family: inherit;
 	color: inherit;
 }
 
@@ -69,8 +68,8 @@
 .ceafsn-ai-assistant__input {
 	flex: 1;
 	padding: 0.75rem 1rem;
+	font: inherit;
 	font-size: 1rem;
-	font-family: inherit;
 	border: 2px solid #ccd;
 	border-radius: 6px;
 	resize: vertical;
@@ -92,8 +91,8 @@
 	color: #fff;
 	border: none;
 	border-radius: 6px;
+	font: inherit;
 	font-size: 1rem;
-	font-family: inherit;
 	font-weight: 600;
 	cursor: pointer;
 	transition: background 0.15s, opacity 0.15s;
@@ -221,6 +220,140 @@
 	font-size: 0.95rem;
 }
 
+/* ---- Floating launcher ---- */
+/* The wrapper is layout-neutral; the launcher and panel are each fixed so the
+   panel can cover the viewport on its own on small screens. */
+.ceafsn-ai-floater {
+	position: static;
+}
+
+.ceafsn-ai-floater__launcher {
+	position: fixed;
+	z-index: 99991;
+	bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+	right: calc(1.25rem + env(safe-area-inset-right, 0px));
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 3.75rem;
+	height: 3.75rem;
+	padding: 0;
+	background: #2c6e49;
+	color: #fff;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+	transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.ceafsn-ai-floater[data-position="left"] .ceafsn-ai-floater__launcher {
+	right: auto;
+	left: calc(1.25rem + env(safe-area-inset-left, 0px));
+}
+
+.ceafsn-ai-floater__launcher:hover,
+.ceafsn-ai-floater__launcher:focus-visible {
+	background: #235c3c;
+	transform: translateY(-2px);
+	outline: none;
+	box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+}
+
+.ceafsn-ai-floater__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ceafsn-ai-floater__icon--close {
+	display: none;
+}
+
+.ceafsn-ai-floater[data-open="true"] .ceafsn-ai-floater__icon--open {
+	display: none;
+}
+
+.ceafsn-ai-floater[data-open="true"] .ceafsn-ai-floater__icon--close {
+	display: inline-flex;
+}
+
+/* ---- Floating panel ---- */
+.ceafsn-ai-floater__panel {
+	position: fixed;
+	z-index: 99992;
+	bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px) + 3.75rem + 0.75rem);
+	right: calc(1.25rem + env(safe-area-inset-right, 0px));
+	display: flex;
+	flex-direction: column;
+	width: min(24rem, calc(100vw - 2.5rem));
+	height: min(38rem, calc(100vh - 8rem));
+	height: min(38rem, calc(100dvh - 8rem));
+	background: #fff;
+	border: 1px solid #d4e6db;
+	border-radius: 16px;
+	box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+	overflow: hidden;
+	color: inherit;
+}
+
+.ceafsn-ai-floater[data-position="left"] .ceafsn-ai-floater__panel {
+	right: auto;
+	left: calc(1.25rem + env(safe-area-inset-left, 0px));
+}
+
+.ceafsn-ai-floater__panel[hidden] {
+	display: none;
+}
+
+.ceafsn-ai-floater__panel:not([hidden]) {
+	animation: ceafsn-ai-floater-in 0.18s ease;
+}
+
+@keyframes ceafsn-ai-floater-in {
+	from { opacity: 0; transform: translateY(8px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+.ceafsn-ai-floater__panel-body {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	padding: 1.5rem;
+}
+
+/* The compact panel drops the shortcode's outer spacing so the assistant
+   fills the whole surface. */
+.ceafsn-ai-floater .ceafsn-ai-assistant {
+	max-width: none;
+	margin: 0;
+}
+
+.ceafsn-ai-floater__close {
+	position: absolute;
+	top: 0.6rem;
+	right: 0.6rem;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	background: rgba(44, 110, 73, 0.08);
+	color: #2c6e49;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.ceafsn-ai-floater__close:hover,
+.ceafsn-ai-floater__close:focus-visible {
+	background: rgba(44, 110, 73, 0.18);
+	outline: none;
+}
+
 /* ---- Screen reader utilities ---- */
 .screen-reader-text {
 	clip: rect(1px, 1px, 1px, 1px);
@@ -246,9 +379,32 @@
 	}
 }
 
+/* Phones: the panel takes the whole screen, like a native chat app, so no
+   pinch-zoom or horizontal scrolling is ever needed to read an answer. */
+@media (max-width: 600px) {
+	.ceafsn-ai-floater__panel {
+		inset: 0;
+		width: auto;
+		height: auto;
+		border: none;
+		border-radius: 0;
+	}
+
+	.ceafsn-ai-floater__panel-body {
+		padding: 1.25rem 1rem;
+		padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+	}
+
+	.ceafsn-ai-floater[data-open="true"] .ceafsn-ai-floater__launcher {
+		display: none;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.ceafsn-ai-assistant,
-	.ceafsn-ai-assistant * {
+	.ceafsn-ai-assistant *,
+	.ceafsn-ai-floater,
+	.ceafsn-ai-floater * {
 		animation: none !important;
 		transition: none !important;
 	}

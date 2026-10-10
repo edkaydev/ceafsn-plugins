@@ -15,9 +15,12 @@
  * writes are skipped. A plugin on its own therefore stays fully functional, it
  * just does not contribute to the shared log.
  *
- * Loading this file has no side effects. It defines classes and nothing else, so
- * requiring it from an activation hook, an admin_init hook, or a test bootstrap
- * is equally safe.
+ * Loading this file defines classes and attaches the ceafsn_staff role hooks
+ * (login redirect and admin-menu cleanup). The hooks are guarded by a constant
+ * so they are only attached once, even when multiple plugins load this file in
+ * the same request. Requiring it from an activation hook or a test bootstrap is
+ * safe because WordPress's add_action / add_filter are no-ops until the
+ * corresponding hook fires.
  *
  * @package CEAFSN_Shared
  */
@@ -34,4 +37,17 @@ if ( ! class_exists( 'CEAFSN_Audit_Log', false ) ) {
 
 if ( ! class_exists( 'CEAFSN_Search', false ) ) {
 	require_once __DIR__ . '/includes/class-ceafsn-search.php';
+}
+
+/**
+ * Attach hooks that enforce the ceafsn_staff role experience (login redirect
+ * and admin menu cleanup). These hooks must run on every admin request, not
+ * just during activation, so they live outside the class files.
+ *
+ * The guard prevents re-attaching hooks if multiple plugins load this file
+ * during the same request.
+ */
+if ( ! defined( 'CEAFSN_STAFF_HOOKS_LOADED' ) ) {
+	define( 'CEAFSN_STAFF_HOOKS_LOADED', true );
+	require_once __DIR__ . '/includes/class-ceafsn-staff-hooks.php';
 }

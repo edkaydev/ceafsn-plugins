@@ -30,6 +30,20 @@ class CEAFSN_AI_Public {
 	const RATE_LIMIT_WINDOW = 60;
 
 	/**
+	 * Option: whether the floating launcher is shown on every front-end page.
+	 *
+	 * @var string
+	 */
+	const OPTION_FLOAT_ENABLED = 'ceafsn_ai_float_enabled';
+
+	/**
+	 * Option: which bottom corner the launcher sits in (right or left).
+	 *
+	 * @var string
+	 */
+	const OPTION_FLOAT_POSITION = 'ceafsn_ai_float_position';
+
+	/**
 	 * Register WordPress hooks.
 	 *
 	 * @return void
@@ -37,6 +51,7 @@ class CEAFSN_AI_Public {
 	public function init(): void {
 		add_shortcode( 'ceafsn_ai_assistant', array( $this, 'render_shortcode' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+		add_action( 'wp_footer', array( $this, 'render_floater' ) );
 	}
 
 	/**
@@ -65,6 +80,51 @@ class CEAFSN_AI_Public {
 			? $atts['placeholder_pt']
 			: __( 'Faça uma pergunta sobre pesquisa, bolsas, financiamentos da CE-AFSN…', 'ceafsn-ai' );
 
+		return $this->assistant_html( $placeholder_en, $placeholder_pt );
+	}
+
+	/**
+	 * Render the site-wide floating launcher and its panel.
+	 *
+	 * Output on wp_footer only, and only once the operator has switched it on
+	 * from Settings → Display. The panel reuses the exact same assistant
+	 * markup as the shortcode, so both entry points behave identically.
+	 *
+	 * @return void
+	 */
+	public function render_floater(): void {
+		if ( is_admin() || ! (bool) get_option( self::OPTION_FLOAT_ENABLED, false ) ) {
+			return;
+		}
+
+		$this->enqueue_public_assets();
+
+		$position = (string) get_option( self::OPTION_FLOAT_POSITION, 'right' );
+		if ( ! in_array( $position, array( 'right', 'left' ), true ) ) {
+			$position = 'right';
+		}
+
+		$assistant_html = $this->assistant_html(
+			__( 'Ask a question about CE-AFSN research, fellowships, grants…', 'ceafsn-ai' ),
+			__( 'Faça uma pergunta sobre pesquisa, bolsas, financiamentos da CE-AFSN…', 'ceafsn-ai' ),
+			'ceafsn-ai-floater-question'
+		);
+
+		$open_label  = __( 'Open the CE-AFSN assistant', 'ceafsn-ai' );
+		$close_label = __( 'Close the assistant', 'ceafsn-ai' );
+
+		require CEAFSN_AI_PLUGIN_DIR . 'public/partials/floater.php';
+	}
+
+	/**
+	 * Build the assistant widget markup exactly as the shortcode renders it.
+	 *
+	 * @param string $placeholder_en English placeholder text.
+	 * @param string $placeholder_pt Portuguese placeholder text.
+	 * @param string $input_id       DOM id for the question field.
+	 * @return string HTML output.
+	 */
+	private function assistant_html( string $placeholder_en, string $placeholder_pt, string $input_id = 'ceafsn-ai-question' ): string {
 		$rest_url = rest_url( 'ceafsn-ai/v1/ask' );
 		$nonce    = wp_create_nonce( 'wp_rest' );
 

@@ -1813,6 +1813,49 @@ has_substring( 'placeholder="Ask about fellowships"', $html, 'the English placeh
 has_substring( 'data-placeholder-pt="Pergunte sobre bolsas"', $html, 'the Portuguese placeholder is overridden' );
 lacks_substring( 'Ask a question about CE-AFSN research', $html, 'and the default is gone' );
 
+test( 'the floating launcher stays hidden until it is switched on' );
+ceafsn_ai_test_reload();
+$ai_public = new CEAFSN_AI_Public();
+ob_start();
+$ai_public->render_floater();
+is_same( '', (string) ob_get_clean(), 'nothing is printed while the option is off' );
+
+update_option( CEAFSN_AI_Public::OPTION_FLOAT_ENABLED, true );
+update_option( CEAFSN_AI_Public::OPTION_FLOAT_POSITION, 'left' );
+ob_start();
+$ai_public->render_floater();
+$ai_float_on = (string) ob_get_clean();
+has_substring( 'class="ceafsn-ai-floater"', $ai_float_on, 'the wrapper is rendered once enabled' );
+has_substring( 'data-position="left"', $ai_float_on, 'the chosen corner is honoured' );
+has_substring( 'class="ceafsn-ai-floater__launcher"', $ai_float_on, 'the round launcher button is rendered' );
+has_substring( 'class="ceafsn-ai-floater__panel"', $ai_float_on, 'and so is the panel it opens' );
+has_substring( 'aria-expanded="false"', $ai_float_on, 'the launcher starts collapsed for screen readers' );
+has_substring( 'aria-controls="ceafsn-ai-floater-panel"', $ai_float_on, 'the button is wired to its panel' );
+has_substring( 'role="dialog"', $ai_float_on, 'the panel is announced as a dialog' );
+has_substring( 'ceafsn-ai-floater-question', $ai_float_on, 'its question field gets a DOM id of its own' );
+has_substring( 'class="ceafsn-ai-assistant"', $ai_float_on, 'the panel reuses the assistant widget' );
+has_substring( 'data-rest-url=', $ai_float_on, 'wired to the same REST route as the shortcode' );
+ok( wp_style_is( 'ceafsn-ai-public' ), 'the stylesheet is enqueued' );
+ok( wp_script_is( 'ceafsn-ai-public' ), 'and the script is enqueued' );
+
+test( 'an unknown floating corner falls back instead of escaping' );
+ceafsn_ai_test_reload();
+update_option( CEAFSN_AI_Public::OPTION_FLOAT_ENABLED, true );
+update_option( CEAFSN_AI_Public::OPTION_FLOAT_POSITION, 'sideways' );
+$ai_public = new CEAFSN_AI_Public();
+ob_start();
+$ai_public->render_floater();
+has_substring( 'data-position="right"', (string) ob_get_clean(), 'a nonsense corner renders as bottom right' );
+
+test( 'the floating panel is opened and closed from the keyboard' );
+$ai_float_js = (string) file_get_contents( $plugin_dir . '/assets/js/ceafsn-ai-public.js' );
+has_substring( 'initFloater', $ai_float_js, 'the launcher has an initialiser' );
+has_substring( "'Escape'", $ai_float_js, 'Escape closes the panel' );
+has_substring( 'aria-expanded', $ai_float_js, 'the expanded state is announced' );
+has_substring( 'aria-label', $ai_float_js, 'the button keeps its label' );
+has_substring( 'setAttribute', $ai_float_js, 'the attribute is updated, not rewritten by hand' );
+has_substring( '.ceafsn-ai-floater', $ai_float_js, 'the script addresses the wrapper class' );
+
 test( 'the public script handles a WordPress error body without a blank screen' );
 $ai_js = (string) file_get_contents( $plugin_dir . '/assets/js/ceafsn-ai-public.js' );
 has_substring( 'fallbackMessage', $ai_js, 'there is a localised fallback message' );
@@ -1966,6 +2009,36 @@ update_option( 'ceafsn_ai_uninstall_delete_data', true );
 save_ai_settings( array( 'ceafsn_ai_settings_scope' => 'uninstall' ) );
 is_same( false, get_option( 'ceafsn_ai_uninstall_delete_data' ), 'an absent checkbox is an explicit off' );
 
+test( 'saving the Display tab writes the floating switch and nothing else' );
+ceafsn_ai_test_reload();
+update_option( CEAFSN_AI_Providers::OPTION_KEY_OPENAI, 'sk-live-original' );
+update_option( 'ceafsn_ai_uninstall_delete_data', true );
+save_ai_settings(
+	array(
+		'ceafsn_ai_settings_scope' => 'display',
+		'ceafsn_ai_float_enabled'  => '1',
+		'ceafsn_ai_float_position' => 'left',
+		'ceafsn_ai_key_openai'     => 'sk-live-wiped',
+	)
+);
+is_same( true, get_option( CEAFSN_AI_Public::OPTION_FLOAT_ENABLED ), 'the launcher switch saves as on' );
+is_same( 'left', get_option( CEAFSN_AI_Public::OPTION_FLOAT_POSITION ), 'the chosen corner saves' );
+is_same( 'sk-live-original', get_option( CEAFSN_AI_Providers::OPTION_KEY_OPENAI ), 'a key posted alongside it is ignored' );
+is_same( true, get_option( 'ceafsn_ai_uninstall_delete_data' ), 'the uninstall opt-in on another tab is untouched' );
+
+test( 'an unticked floating switch saves as false, and a bad corner is discarded' );
+ceafsn_ai_test_reload();
+update_option( CEAFSN_AI_Public::OPTION_FLOAT_ENABLED, true );
+update_option( CEAFSN_AI_Public::OPTION_FLOAT_POSITION, 'left' );
+save_ai_settings(
+	array(
+		'ceafsn_ai_settings_scope' => 'display',
+		'ceafsn_ai_float_position' => 'sideways',
+	)
+);
+is_same( false, get_option( CEAFSN_AI_Public::OPTION_FLOAT_ENABLED ), 'an absent checkbox is an explicit off' );
+is_same( 'right', get_option( CEAFSN_AI_Public::OPTION_FLOAT_POSITION ), 'an unknown corner falls back to the default' );
+
 test( 'a masked placeholder in the key field is never mistaken for a new key' );
 ceafsn_ai_test_reload();
 update_option( CEAFSN_AI_Providers::OPTION_KEY_OPENAI, 'sk-live-real-key-1234' );
@@ -2011,10 +2084,11 @@ is_same( false, get_option( CEAFSN_AI_Providers::OPTION_MODEL_PREFIX . 'openai' 
 test( 'each settings form declares the scope it owns' );
 $ai_set_partial = (string) file_get_contents( $plugin_dir . '/admin/partials/settings.php' );
 has_substring( 'name="ceafsn_ai_settings_scope"', $ai_set_partial, 'the scope field is posted' );
+has_substring( 'value="display"', $ai_set_partial, 'the display form declares display' );
 has_substring( 'value="providers"', $ai_set_partial, 'the providers form declares providers' );
 has_substring( 'value="uninstall"', $ai_set_partial, 'the uninstall form declares uninstall' );
-is_same( 2, substr_count( $ai_set_partial, 'name="ceafsn_ai_settings_scope"' ), 'exactly two forms carry a scope' );
-is_same( 2, substr_count( $ai_set_partial, '<form' ), 'there are exactly two forms' );
+is_same( 3, substr_count( $ai_set_partial, 'name="ceafsn_ai_settings_scope"' ), 'exactly three forms carry a scope' );
+is_same( 3, substr_count( $ai_set_partial, '<form' ), 'there are exactly three forms' );
 
 test( 'the settings tabs are declared in one place the screens share' );
 is_same(
@@ -2154,6 +2228,15 @@ is_same(
 	'no rule paints one side of an element with a border'
 );
 
+test( 'the floating launcher is styled, responsive, and polite about motion' );
+has_substring( '.ceafsn-ai-floater__launcher', $guard_css, 'the launcher button is styled' );
+has_substring( '.ceafsn-ai-floater__panel', $guard_css, 'the panel is styled' );
+has_substring( '@media (max-width: 600px)', $guard_css, 'the panel collapses to full screen on phones' );
+has_substring( 'safe-area-inset-bottom', $guard_css, 'the button clears the iPhone home indicator' );
+has_substring( 'prefers-reduced-motion', $guard_css, 'a visitor who asked for less motion gets it' );
+has_substring( 'z-index: 99991', $guard_css, 'the launcher sits above ordinary page chrome' );
+has_substring( '100dvh', $guard_css, 'the panel tracks the visual viewport rather than the browser bar' );
+
 test( 'the admin stylesheet paints no single side of an element' );
 $admin_guard_css = (string) file_get_contents( $plugin_dir . '/assets/css/ceafsn-ai-admin.css' );
 is_same(
@@ -2260,8 +2343,11 @@ has_substring( '<code>placeholder_pt</code>', $html, 'the Portuguese placeholder
 has_substring( 'ceafsn-embed__code', $html, 'the shortcode uses the shared embed code style' );
 has_substring( 'ceafsn-embed__table', $html, 'the attribute table uses the shared embed table' );
 has_substring( 'ceafsn-embed__caption', $html, 'and its caption' );
-lacks_substring( 'name="ceafsn_ai_settings_scope"', $html, 'the Display tab posts nothing' );
-lacks_substring( '<form', $html, 'because it has no form at all' );
+has_substring( 'value="display"', $html, 'the floating-button form declares the display scope' );
+has_substring( 'name="ceafsn_ai_float_enabled"', $html, 'the floating switch is posted' );
+is_same( 1, substr_count( $html, '<form' ), 'the Display tab posts nothing but the floating switch' );
+ok( strpos( $html, 'value="providers"' ) === false, 'and it cannot touch the providers tab' );
+ok( strpos( $html, 'value="uninstall"' ) === false, 'nor the uninstall tab' );
 
 test( 'the Providers tab posts its own scope and masks the stored key' );
 $_GET = array( 'tab' => 'providers' );
@@ -2434,6 +2520,7 @@ foreach (
 		'assets/css/ceafsn-ai-admin.css',
 		'assets/css/ceafsn-ai-public.css',
 		'assets/js/ceafsn-ai-public.js',
+		'public/partials/floater.php',
 	) as $ai_required
 ) {
 	ok( file_exists( $plugin_dir . '/' . $ai_required ), "{$ai_required} exists" );

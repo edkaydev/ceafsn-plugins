@@ -242,9 +242,71 @@
 		}
 	}
 
-	// Boot all widgets on the page.
+	/**
+	 * Initialise the floating launcher that wraps a panel.
+	 *
+	 * The panel is a non-modal dialog: opening it moves focus into the
+	 * question field, Escape closes it, and focus returns to the launcher so
+	 * keyboard visitors are never dropped back at the top of the page.
+	 *
+	 * @param {HTMLElement} floater
+	 */
+	function initFloater( floater ) {
+		const launcher = floater.querySelector( '.ceafsn-ai-floater__launcher' );
+		const panel    = floater.querySelector( '.ceafsn-ai-floater__panel' );
+		const closeBtn = floater.querySelector( '.ceafsn-ai-floater__close' );
+		const textarea = floater.querySelector( '.ceafsn-ai-assistant__input' );
+
+		if ( ! launcher || ! panel ) {
+			return;
+		}
+
+		const labelOpen  = floater.dataset.labelOpen  || launcher.getAttribute( 'aria-label' ) || '';
+		const labelClose = floater.dataset.labelClose || labelOpen;
+
+		function open() {
+			panel.hidden = false;
+			floater.dataset.open = 'true';
+			launcher.setAttribute( 'aria-expanded', 'true' );
+			launcher.setAttribute( 'aria-label', labelClose );
+			if ( textarea ) {
+				window.requestAnimationFrame( function () {
+					textarea.focus();
+				} );
+			}
+		}
+
+		function close() {
+			panel.hidden = true;
+			floater.dataset.open = 'false';
+			launcher.setAttribute( 'aria-expanded', 'false' );
+			launcher.setAttribute( 'aria-label', labelOpen );
+			launcher.focus();
+		}
+
+		launcher.addEventListener( 'click', function () {
+			if ( panel.hidden ) {
+				open();
+			} else {
+				close();
+			}
+		} );
+
+		if ( closeBtn ) {
+			closeBtn.addEventListener( 'click', close );
+		}
+
+		document.addEventListener( 'keydown', function ( e ) {
+			if ( e.key === 'Escape' && ! panel.hidden ) {
+				close();
+			}
+		} );
+	}
+
+	// Boot all widgets and floaters on the page.
 	document.addEventListener( 'DOMContentLoaded', function () {
 		document.querySelectorAll( '.ceafsn-ai-assistant' ).forEach( init );
+		document.querySelectorAll( '.ceafsn-ai-floater' ).forEach( initFloater );
 	} );
 
 } )();

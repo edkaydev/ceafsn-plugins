@@ -3,8 +3,9 @@
  * Admin settings partial for CE-AFSN AI Assistant.
  *
  * Three tabs, each posting its own `ceafsn_ai_settings_scope` so that saving
- * one tab cannot clear options that belong to another one. Display is
- * documentation only and posts nothing.
+ * one tab cannot clear options that belong to another one. Display owns the
+ * floating-launcher switch and documents the shortcode; Providers holds the
+ * keys; Uninstall decides what removal deletes.
  *
  * Variables in scope (set by CEAFSN_AI_Admin::render_settings_page()):
  *   @var string                   $active_key     Active provider key
@@ -41,6 +42,11 @@ foreach ( array_keys( $providers ) as $ai_pk ) {
 }
 
 $ai_uninstall_flag = (bool) get_option( 'ceafsn_ai_uninstall_delete_data', false );
+$ai_float_enabled  = (bool) get_option( CEAFSN_AI_Public::OPTION_FLOAT_ENABLED, false );
+$ai_float_position = (string) get_option( CEAFSN_AI_Public::OPTION_FLOAT_POSITION, 'right' );
+if ( ! in_array( $ai_float_position, array( 'right', 'left' ), true ) ) {
+	$ai_float_position = 'right';
+}
 
 $ai_key_prefixes = array(
 	'openai' => 'sk-…',
@@ -94,6 +100,54 @@ $ai_key_prefixes = array(
 	</nav>
 
 	<?php if ( 'display' === $ai_active_tab ) : ?>
+
+		<section class="ceafsn-card">
+			<div class="ceafsn-card__head">
+				<div>
+					<h2 class="ceafsn-card__title"><?php esc_html_e( 'Floating chat button', 'ceafsn-ai' ); ?></h2>
+					<p class="ceafsn-card__hint"><?php esc_html_e( 'Show a floating button in the corner of every page that opens the assistant in place — no shortcode or page edit needed.', 'ceafsn-ai' ); ?></p>
+				</div>
+			</div>
+			<div class="ceafsn-card__body">
+
+				<form class="ceafsn-form" method="post" action="<?php echo esc_url( $ai_form_url ); ?>">
+					<?php wp_nonce_field( 'ceafsn_ai_settings' ); ?>
+					<input type="hidden" name="action" value="ceafsn_ai_save_settings" />
+					<input type="hidden" name="ceafsn_ai_settings_scope" value="display" />
+
+					<div class="ceafsn-check">
+						<input type="checkbox" id="ceafsn-ai-float-enabled" name="ceafsn_ai_float_enabled" value="1"
+							<?php checked( $ai_float_enabled ); ?> />
+						<div class="ceafsn-check__body">
+							<label class="ceafsn-check__title" for="ceafsn-ai-float-enabled">
+								<?php esc_html_e( 'Enable the floating chat button on the whole site', 'ceafsn-ai' ); ?>
+							</label>
+							<span class="ceafsn-check__hint">
+								<?php esc_html_e( 'Off by default. The shortcode keeps working either way, so a dedicated page can still host the full inline assistant.', 'ceafsn-ai' ); ?>
+							</span>
+						</div>
+					</div>
+
+					<div class="ceafsn-field">
+						<label for="ceafsn-ai-float-position"><?php esc_html_e( 'Corner', 'ceafsn-ai' ); ?></label>
+						<select id="ceafsn-ai-float-position" name="ceafsn_ai_float_position">
+							<option value="right"<?php selected( 'right', $ai_float_position ); ?>><?php esc_html_e( 'Bottom right', 'ceafsn-ai' ); ?></option>
+							<option value="left"<?php selected( 'left', $ai_float_position ); ?>><?php esc_html_e( 'Bottom left', 'ceafsn-ai' ); ?></option>
+						</select>
+						<p class="ceafsn-field__hint">
+							<?php esc_html_e( 'On phones the panel opens full-screen and the button is hidden while it is open.', 'ceafsn-ai' ); ?>
+						</p>
+					</div>
+
+					<div class="ceafsn-form__actions">
+						<button type="submit" class="ceafsn-btn ceafsn-btn--primary">
+							<?php esc_html_e( 'Save settings', 'ceafsn-ai' ); ?>
+						</button>
+					</div>
+				</form>
+
+			</div>
+		</section>
 
 		<section class="ceafsn-card">
 			<div class="ceafsn-card__head">
