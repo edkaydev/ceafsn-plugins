@@ -53,12 +53,14 @@ Questions are capped at 500 characters and 20 questions per IP per fixed one-min
 1. Activate the plugin.
 2. Add your API key under **CE-AFSN → AI Assistant → Providers**.
 3. Press **Run indexing** to build the knowledge base.
-4. Place the `[ceafsn_ai_assistant]` shortcode on a page.
+4. Place the `[ceafsn_ai_assistant]` shortcode on a page, or turn on the floating chat button under **Settings → Display** to show it on every page instead.
 
 Shortcode attributes:
 
 * `placeholder_en` — English placeholder text.
 * `placeholder_pt` — Portuguese placeholder text.
+
+The floating button opens the same assistant in a panel: bottom right or bottom left, full screen on phones, closed with Escape.
 
 = Data =
 
