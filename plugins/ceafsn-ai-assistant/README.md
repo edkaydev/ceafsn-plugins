@@ -16,7 +16,7 @@ Attributes: `placeholder_en`, `placeholder_pt`.
 
 Answers a visitor's question from the site's own published content only — never from outside knowledge — and returns the pages it used so the answer can be checked.
 
-Text domain: `ceafsn-ai`. No public route of its own; it renders wherever the shortcode is placed and posts to `/wp-json/ceafsn-ai/v1/ask`.
+Text domain: `ceafsn-ai`. No public route of its own; it renders wherever the shortcode is placed, or in the site-wide floating button when that is switched on, and posts to `/wp-json/ceafsn-ai/v1/ask`.
 
 ---
 
@@ -56,6 +56,8 @@ The rules live in `CEAFSN_AI_Indexer::TABLE_SOURCES`, so a source cannot be adde
 ## Admin screens
 
 `ceafsn-ai` → Overview, Settings. Settings has three scopes: `display`, `providers`, `uninstall`. Each is its own form, so a tab only submits its own fields.
+
+`display` carries the floating-launcher switch and corner (`CEAFSN_AI_Public::OPTION_FLOAT_ENABLED` / `OPTION_FLOAT_POSITION`). When on, `render_floater()` prints a launcher and panel in the footer of every front-end page; the panel reuses the shortcode's assistant markup, so both entry points behave the same.
 
 Indexing runs inside the request that pressed the button and is capped at 90 seconds; a run that hits the cap reports itself partial rather than finished.
 
