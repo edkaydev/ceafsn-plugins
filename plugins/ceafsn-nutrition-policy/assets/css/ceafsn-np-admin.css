@@ -65,6 +65,7 @@
 	--ceafsn-shadow: 0 1px 2px rgba(17, 21, 24, .05), 0 4px 12px rgba(17, 21, 24, .06);
 	--ceafsn-shadow-lg: 0 2px 4px rgba(17, 21, 24, .06), 0 12px 28px rgba(17, 21, 24, .1);
 	--ceafsn-ring: 0 0 0 3px rgba(30, 77, 43, .28);
+	--ceafsn-mono: ui-monospace, Menlo, Consolas, "Cascadia Code", monospace;
 
 	max-width: 1240px;
 	margin-right: 24px;
@@ -979,7 +980,7 @@
 
 /* Monospace input for file names. */
 .ceafsn-np-wrap .ceafsn-field__mono {
-	font-family: Menlo, Consolas, monaco, monospace;
+	font-family: var(--ceafsn-mono);
 	font-size: 13px;
 	line-height: 1.7;
 }
@@ -1204,7 +1205,7 @@
 	border: 1px solid var(--ceafsn-line);
 	border-radius: var(--ceafsn-radius-sm);
 	color: var(--ceafsn-ink);
-	font-family: Menlo, Consolas, "Andale Mono", monospace;
+	font-family: var(--ceafsn-mono);
 	font-size: 15px;
 	overflow-wrap: anywhere;
 	user-select: all;
@@ -1250,7 +1251,7 @@
 
 /* One-line lists an administrator edits directly. */
 .ceafsn-np-wrap .ceafsn-code {
-	font-family: Menlo, Consolas, "Andale Mono", monospace;
+	font-family: var(--ceafsn-mono);
 	font-size: 13px;
 	line-height: 1.6;
 }
